@@ -908,7 +908,13 @@
 <script>
 // ==================== FIREBASE CONFIG ====================
 const firebaseConfig = {
-    databaseURL: "https://zea-crew-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    apiKey: "AIzaSyDmOFQpEWU_vN0fYc6yATolXGIYKq8e7P4",
+    authDomain: "zea-crew.firebaseapp.com",
+    databaseURL: "https://zea-crew-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "zea-crew",
+    storageBucket: "zea-crew.firebasestorage.app",
+    messagingSenderId: "1043212202064",
+    appId: "1:1043212202064:web:8bd9e3e0e9f1c5eb0ee155"
 };
 
 // Initialize Firebase
@@ -1025,7 +1031,9 @@ function setSyncStatus(status) {
     const el = $('syncStatus');
     const text = $('syncText');
     el.className = 'sync-status ' + status;
-    text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
+    if (status === 'online') text.textContent = '🟢 Online';
+    else if (status === 'offline') text.textContent = '🔴 Offline';
+    else text.textContent = '🔄 Syncing...';
 }
 
 function hideLoading() {
@@ -1046,8 +1054,21 @@ async function initFirebase() {
         setSyncStatus(snap.val() ? 'online' : 'offline');
     });
     
-    // Load all data
-    await loadAllData();
+    // Timeout 8 detik - kalau Firebase tidak respond, lanjut dengan data lokal
+    const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout')), 8000)
+    );
+    
+    try {
+        await Promise.race([loadAllData(), timeout]);
+    } catch (e) {
+        console.warn('Firebase timeout/error, menggunakan data lokal:', e.message);
+        if (!users.length) users = [...defaultUsers];
+        if (!unitList.length) unitList = [...defaultUnits];
+        if (!posts.length) posts = [...defaultPosts];
+        setSyncStatus('offline');
+        toast('⚠️ Koneksi lambat. Login menggunakan data lokal.', 'error');
+    }
     
     // Setup realtime listeners
     setupRealtimeListeners();
@@ -1107,7 +1128,11 @@ async function loadAllData() {
         
     } catch (error) {
         console.error('Error loading data:', error);
-        toast('Gagal memuat data dari Firebase!', 'error');
+        // Fallback ke data default agar login tetap bisa jalan
+        if (!users.length) users = [...defaultUsers];
+        if (!unitList.length) unitList = [...defaultUnits];
+        if (!posts.length) posts = [...defaultPosts];
+        toast('⚠️ Firebase tidak terhubung. Mode offline aktif.', 'error');
     }
 }
 
@@ -1178,58 +1203,57 @@ function setupRealtimeListeners() {
 // Firebase save functions
 function saveUser(user) {
     setSyncStatus('syncing');
-    return db.ref('users/' + user.id).set(user).then(() => setSyncStatus('online'));
+    return db.ref('users/' + user.id).set(user).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function saveUnit(unit) {
     setSyncStatus('syncing');
-    return db.ref('units/' + unit.id).set(unit).then(() => setSyncStatus('online'));
+    return db.ref('units/' + unit.id).set(unit).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function savePost(post) {
     setSyncStatus('syncing');
-    return db.ref('posts/' + post.id).set(post).then(() => setSyncStatus('online'));
+    return db.ref('posts/' + post.id).set(post).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function saveStaff(staff) {
     setSyncStatus('syncing');
-    return db.ref('staff/' + staff.id).set(staff).then(() => setSyncStatus('online'));
+    return db.ref('staff/' + staff.id).set(staff).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function deleteStaffFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('staff/' + id).remove().then(() => setSyncStatus('online'));
+    return db.ref('staff/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function savePengajuan(p) {
     setSyncStatus('syncing');
-    return db.ref('pengajuan/' + p.id).set(p).then(() => setSyncStatus('online'));
+    return db.ref('pengajuan/' + p.id).set(p).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function saveReport(r) {
     setSyncStatus('syncing');
-    return db.ref('reports/' + r.id).set(r).then(() => setSyncStatus('online'));
+    return db.ref('reports/' + r.id).set(r).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function saveAbsensi(a) {
     setSyncStatus('syncing');
-    return db.ref('absensi/' + a.id).set(a).then(() => setSyncStatus('online'));
+    return db.ref('absensi/' + a.id).set(a).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function saveToken(t) {
     setSyncStatus('syncing');
-    return db.ref('tokens/' + t.id).set(t).then(() => setSyncStatus('online'));
+    return db.ref('tokens/' + t.id).set(t).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function deleteTokenFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('tokens/' + id).remove().then(() => setSyncStatus('online'));
-}
+    return db.ref('tokens/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function deleteUserFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('users/' + id).remove().then(() => setSyncStatus('online'));
+    return db.ref('users/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 // ==================== AUTH ====================
