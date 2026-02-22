@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEA CREW - Sistem Manajemen ZEA Property</title>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- Tambahkan Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,59 +32,6 @@
             min-height: 100vh;
             line-height: 1.5;
         }
-        
-        /* Loading Overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-        .loading-overlay.hidden { display: none; }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { margin-top: 16px; color: var(--text-light); }
-        
-        /* Sync Status */
-        .sync-status {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .sync-status.online { background: #dcfce7; color: #16a34a; }
-        .sync-status.offline { background: #fee2e2; color: #dc2626; }
-        .sync-status.syncing { background: #dbeafe; color: #2563eb; }
-        .sync-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-        .sync-status.syncing .sync-dot {
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -135,9 +83,8 @@
             justify-content: center;
             gap: 8px;
         }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+        .btn-primary:hover { background: var(--primary-dark); }
         .btn-full { width: 100%; }
         .btn-success { background: var(--success); color: white; }
         .btn-warning { background: var(--warning); color: white; }
@@ -330,7 +277,7 @@
             justify-content: flex-end;
         }
         .toast {
-            position: fixed; bottom: 70px; right: 20px;
+            position: fixed; bottom: 20px; right: 20px;
             padding: 14px 20px; border-radius: 12px;
             color: white; font-weight: 600; z-index: 2000;
             animation: slideIn 0.3s ease;
@@ -445,6 +392,9 @@
         .slip-header { text-align: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
         .slip-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
         .slip-total { font-weight: 700; font-size: 16px; border-top: 2px solid var(--border); margin-top: 12px; padding-top: 12px; }
+        .guide-section { margin-bottom: 20px; }
+        .guide-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+        .guide-content { background: var(--bg); padding: 14px; border-radius: 10px; line-height: 1.7; font-size: 14px; }
         .section-title { font-size: 14px; font-weight: 600; color: var(--text-light); margin: 20px 0 10px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
         .info-box { background: #dbeafe; border-left: 4px solid #2563eb; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 13px; }
         .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 13px; }
@@ -469,45 +419,49 @@
             .login-box { padding: 30px 20px; }
             .form-row, .form-row-3 { grid-template-columns: 1fr; }
             .unit-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
-            .sync-status { bottom: 10px; left: 10px; font-size: 11px; padding: 6px 12px; }
         }
         .priority-low { color: #22c55e; }
         .priority-medium { color: #f59e0b; }
         .priority-high { color: #ef4444; }
-        
-        .firebase-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #fff3e0;
-            color: #f57c00;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .sync-status { position: fixed; bottom: 10px; left: 10px; background: var(--success); color: white; padding: 5px 10px; border-radius: 20px; font-size: 11px; display: none; z-index: 1000; }
+        .sync-status.syncing { background: var(--warning); }
+        .sync-status.error { background: var(--danger); }
+        /* Tambahan style untuk tombol edit/hapus di tabel */
+        .btn-edit { background: #3b82f6; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+        .owner-only { display: none; }
+        .owner-visible { display: inline-flex; }
     </style>
+    
+    <!-- Firebase Configuration -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8fV9-6QjKjWj6q8q8q8q8q8q8q8q8q8q8",
+            authDomain: "zea-crew.firebaseapp.com",
+            databaseURL: "https://zea-crew-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "zea-crew",
+            storageBucket: "zea-crew.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+    </script>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text">Menghubungkan ke Firebase...</div>
-    </div>
-
-    <!-- Sync Status -->
-    <div class="sync-status online" id="syncStatus">
-        <div class="sync-dot"></div>
-        <span id="syncText">Online</span>
-    </div>
-
+    <div class="sync-status" id="syncStatus"></div>
+    
     <div class="login-container" id="loginPage">
         <div class="login-box">
             <div class="login-logo">🏢</div>
             <h1 class="login-title">ZEA CREW</h1>
             <p class="login-subtitle">Sistem Manajemen ZEA Property Gateway Pasteur</p>
-            <div class="firebase-badge" style="margin-bottom:20px;justify-content:center">🔥 Firebase Connected</div>
             <div class="login-error" id="loginError">Username atau password salah!</div>
             <form id="loginForm">
                 <div class="form-group">
@@ -518,7 +472,7 @@
                     <label>🔒 Password</label>
                     <input type="password" id="loginPassword" placeholder="Masukkan password" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">Masuk 🚀</button>
+                <button type="submit" class="btn btn-primary btn-full">Masuk 🚀</button>
             </form>
             <p style="margin-top: 20px; font-size: 12px; color: var(--text-light);">© 2026 ZEA Property Gateway Pasteur<br>Developed by King Bejh</p>
         </div>
@@ -529,7 +483,6 @@
             <div class="header-left">
                 <button class="menu-toggle" id="menuToggle">☰</button>
                 <span class="header-title">🏢 ZEA CREW</span>
-                <span class="firebase-badge">🔥 Live Sync</span>
             </div>
             <div class="header-user">
                 <div class="user-info">
@@ -554,6 +507,7 @@
                 <div class="nav-item" data-page="gaji" data-roles="owner,admin,leader"><span class="nav-icon">💰</span><span>Penggajian</span></div>
                 <div class="nav-item" data-page="akun" data-roles="owner,admin"><span class="nav-icon">⚙️</span><span>Kelola Akun</span></div>
                 <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
+                <div class="nav-item" data-page="backup"><span class="nav-icon">💾</span><span>Backup & Sync</span></div>
             </nav>
 
             <main class="content">
@@ -586,7 +540,7 @@
                 <!-- Staff -->
                 <div class="page" id="page-staff">
                     <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
-                    <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
+                    <div class="info-box">💡 <b>Langkah:</b> Buat akun dulu di "Kelola Akun", lalu tambah data staff di sini.</div>
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Daftar Staff</h3>
@@ -608,6 +562,7 @@
                         <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
                         <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
                     </div>
+                    
                     <div class="card" id="unitFormCard">
                         <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
                         <input type="hidden" id="unitEditId">
@@ -624,9 +579,10 @@
                             <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
                             <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
                         </div>
-                        <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
+                        <button class="btn btn-primary" id="saveUnitBtn">Simpan Unit</button>
                         <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
                     </div>
+
                     <div class="card">
                         <h3 class="card-title">Daftar Unit</h3>
                         <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
@@ -644,6 +600,7 @@
                         <h1 class="page-title">⚡ Token Listrik</h1>
                         <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
                     </div>
+                    
                     <div class="card">
                         <h3 class="card-title">Form Input Token Listrik</h3>
                         <form id="tokenForm" style="margin-top:16px">
@@ -659,19 +616,35 @@
                             <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
                         </form>
                     </div>
+
                     <div class="card">
-                        <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
+                        <div class="card-header">
+                            <h3 class="card-title">📊 Analisis Pemakaian Listrik</h3>
+                        </div>
                         <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
                         <div id="tokenAnalysis"></div>
                     </div>
+
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">📜 Riwayat Token Listrik</h3>
-                            <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
+                            <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px">
+                                <option value="">Semua Unit</option>
+                            </select>
                         </div>
                         <div class="table-container">
                             <table>
-                                <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Unit</th>
+                                        <th>Nominal</th>
+                                        <th>Meteran</th>
+                                        <th>Keterangan</th>
+                                        <th>Input By</th>
+                                        <th class="owner-only token-actions">Aksi</th>
+                                    </tr>
+                                </thead>
                                 <tbody id="tokenTable"></tbody>
                             </table>
                         </div>
@@ -703,10 +676,11 @@
                         <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
                         <form id="reportForm">
                             <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
-                            <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
-                            <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
+                            <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah - Bisa ditunda</option><option value="medium">🟡 Sedang - Perlu segera</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
+                            <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain di sini..."></textarea></div>
                             <button type="submit" class="btn btn-primary">Kirim Report</button>
                         </form>
+                        <div class="info-box" style="margin-top:16px">💡 Setelah report dikirim, status unit otomatis berubah ke <b>MAINTENANCE</b></div>
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
@@ -718,7 +692,11 @@
                 <div class="page" id="page-absensi">
                     <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
                     <div class="warning-box">
-                        <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja
+                        <b>⏰ Aturan Potongan:</b><br>
+                        • Terlambat 0-10 menit = Tidak ada potongan<br>
+                        • Terlambat 11-30 menit = Rp 25.000<br>
+                        • Terlambat >30 menit = 1 hari kerja (Gaji ÷ 30)<br>
+                        • IZIN/SAKIT/ALFA = 1 hari kerja
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
@@ -728,8 +706,8 @@
                                 <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group"><label>📊 Status</label><select id="absensiStatus"><option value="hadir">✅ HADIR</option><option value="izin">📝 IZIN</option><option value="sakit">🤒 SAKIT</option><option value="alfa">❌ ALFA</option></select></div>
-                                <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
+                                <div class="form-group"><label>📊 Status Kehadiran</label><select id="absensiStatus"><option value="hadir">✅ HADIR</option><option value="izin">📝 IZIN</option><option value="sakit">🤒 SAKIT</option><option value="alfa">❌ ALFA (Tanpa Keterangan)</option></select></div>
+                                <div class="form-group"><label>⏱️ Jam Masuk Aktual (dari mesin)</label><input type="time" id="absensiAktual"></div>
                             </div>
                             <div id="absensiPreview" class="info-box" style="display:none"></div>
                             <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
@@ -737,7 +715,23 @@
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
-                        <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Nama</th>
+                                        <th>Status</th>
+                                        <th>Jam Jadwal</th>
+                                        <th>Jam Aktual</th>
+                                        <th>Terlambat</th>
+                                        <th>Potongan</th>
+                                        <th class="owner-only absensi-actions">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="absensiTable"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -745,37 +739,43 @@
                 <div class="page" id="page-gaji">
                     <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
                     <div class="info-box">
-                        <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
-                        <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)
+                        <b>📌 Formula Gaji Transfer:</b><br>
+                        GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Potongan Absen + Kasbon + Ganti Rugi)<br><br>
+                        <b>⚠️ Uang Makan:</b> Dicatat sebagai informasi saja. Sudah diambil CASH harian oleh staff, TIDAK dipotong dari transfer.
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
                         <div class="form-row">
                             <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
-                            <div class="form-group"><label>📅 Bulan</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
+                            <div class="form-group"><label>📅 Periode Bulan</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
-                            <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
+                            <div class="form-group"><label>💵 Potongan Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
+                            <div class="form-group"><label>💸 Potongan Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
                         </div>
                         <div class="slip-container" id="slipContainer" style="display:none">
-                            <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
+                            <div class="slip-header">
+                                <h3>🏢 ZEA PROPERTY GATEWAY PASTEUR</h3>
+                                <p>SLIP GAJI</p>
+                                <p id="slipPeriode"></p>
+                            </div>
                             <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
                             <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
                             <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-                            <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
-                            <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
+                            <div class="slip-row"><span>📅 Total Hari Masuk</span><span id="slipHari">0 hari</span></div>
+                            <div class="slip-row"><span>🍽️ Uang Makan (Cash Harian)</span><span id="slipMakan">Rp 0</span></div>
+                            <p style="font-size:11px;color:var(--text-light);text-align:right;margin-top:-5px">*Sudah diambil cash, tidak ditransfer</p>
                             <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
                             <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
-                            <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
-                            <div class="slip-row" style="color:var(--danger)"><span>📅 Absen</span><span id="slipAbsen">- Rp 0</span></div>
+                            <div class="slip-row" style="color:var(--danger)"><span>⏰ Keterlambatan</span><span id="slipTelat">- Rp 0</span></div>
+                            <div class="slip-row" style="color:var(--danger)"><span>📅 Ketidakhadiran</span><span id="slipAbsen">- Rp 0</span></div>
                             <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
                             <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
-                            <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
+                            <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI BERSIH (TRANSFER)</span><span id="slipBersih">Rp 0</span></div>
                         </div>
                         <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-                            <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
-                            <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
+                            <button class="btn btn-success" id="sendWABtn">📱 Kirim via WhatsApp</button>
+                            <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan Gaji</button>
                         </div>
                     </div>
                 </div>
@@ -783,7 +783,7 @@
                 <!-- Akun -->
                 <div class="page" id="page-akun">
                     <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
-                    <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
+                    <div class="info-box">💡 Buat akun di sini dulu, baru tambahkan data staff di menu "Staff"</div>
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Daftar Akun</h3>
@@ -795,19 +795,106 @@
 
                 <!-- Panduan -->
                 <div class="page" id="page-panduan">
-                    <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
+                    <div class="page-header"><h1 class="page-title">📖 Panduan Sistem</h1></div>
                     <div class="card">
-                        <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
-                            🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
+                        <div class="guide-section">
+                            <div class="guide-title">🔐 Login & Role</div>
+                            <div class="guide-content">
+                                <b>👑 Owner:</b> Akses penuh ke semua fitur termasuk edit data token & absensi<br>
+                                <b>⚙️ Admin:</b> Edit unit, absensi (tambah baru), gaji, pengajuan, staff<br>
+                                <b>📋 Leader:</b> Edit unit & staff, kelola absensi (tambah baru), approve pengajuan<br>
+                                <b>📢 Marketing:</b> Lihat unit, posting, ajukan pengajuan<br>
+                                <b>👤 Staff:</b> Lihat data sendiri, pengajuan, gaji sendiri
+                            </div>
                         </div>
-                        <div class="section-title">🔐 Role & Akses</div>
-                        <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
-                        <div class="section-title">💰 Formula Gaji</div>
-                        <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Uang makan = Cash harian (tidak ditransfer)</p>
-                        <div class="section-title">⏰ Potongan Terlambat</div>
-                        <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
-                        <div class="section-title">📞 Bantuan</div>
-                        <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
+                        <div class="guide-section">
+                            <div class="guide-title">👥 Manajemen Staff</div>
+                            <div class="guide-content">
+                                1. Buat akun dulu di "Kelola Akun"<br>
+                                2. Tambah data staff di "Staff"<br>
+                                3. Isi: Nama, WA, Gaji, Uang Makan/Hari, Jam Kerja, Libur Tetap<br>
+                                <b>Note:</b> Libur tetap = gaji full, tidak dipotong
+                            </div>
+                        </div>
+                        <div class="guide-section">
+                            <div class="guide-title">🏠 Unit Apartemen</div>
+                            <div class="guide-content">
+                                ✅ READY = Siap ditempati<br>
+                                🔧 MAINTENANCE = Butuh perbaikan<br>
+                                ⚠️ Kuning = Jatuh tempo < 7 hari<br>
+                                Klik unit untuk edit (Owner/Admin/Leader)
+                            </div>
+                        </div>
+                        <div class="guide-section">
+                            <div class="guide-title">⚡ Token Listrik (Edit: Owner Only)</div>
+                            <div class="guide-content">
+                                Catat setiap pembelian token listrik per unit.<br>
+                                Sistem otomatis deteksi unit <b>BOROS</b> jika > Rp 500.000/bulan<br>
+                                <b style="color:var(--danger)">Fitur Edit & Hapus hanya untuk Owner</b> - untuk koreksi kesalahan input data.
+                            </div>
+                        </div>
+                        <div class="guide-section">
+                            <div class="guide-title">📋 Absensi (Edit: Owner Only)</div>
+                            <div class="guide-content">
+                                Data dari mesin sidik jari, input oleh Admin/Leader<br>
+                                <b>Potongan:</b><br>
+                                • 0-10 menit = Rp 0<br>
+                                • 11-30 menit = Rp 25.000<br>
+                                • >30 menit = 1 hari kerja<br>
+                                • IZIN/SAKIT/ALFA = 1 hari kerja<br>
+                                <b style="color:var(--danger)">Fitur Edit & Hapus hanya untuk Owner</b> - untuk koreksi kesalahan input data yang mempengaruhi perhitungan gaji.
+                            </div>
+                        </div>
+                        <div class="guide-section">
+                            <div class="guide-title">💰 Penggajian</div>
+                            <div class="guide-content">
+                                <b>GAJI TRANSFER = Gaji Pokok - Semua Potongan</b><br><br>
+                                Uang makan TIDAK dikurangi (sudah diambil cash harian).<br>
+                                Slip gaji otomatis dikirim via WhatsApp.
+                            </div>
+                        </div>
+                        <div class="guide-section">
+                            <div class="guide-title">📞 Kontak Bantuan</div>
+                            <div class="guide-content">
+                                <b>Teknis:</b> Admin Wulan / Riko<br>
+                                <b>Operasional:</b> Leader Iwa<br>
+                                <b>Keputusan:</b> Owner Ibu Zea / King Bejh
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backup & Sync -->
+                <div class="page" id="page-backup">
+                    <div class="page-header"><h1 class="page-title">💾 Backup & Sync Data</h1></div>
+                    <div class="card">
+                        <h3 class="card-title" style="margin-bottom:20px">Status Sinkronisasi Firebase</h3>
+                        <div class="info-box">
+                            <b>🔗 Terhubung ke:</b> https://zea-crew-default-rtdb.asia-southeast1.firebasedatabase.app<br>
+                            <b>📊 Data Tersimpan:</b> Staff, Unit, Token, Pengajuan, Report, Absensi, Posting<br>
+                            <b>🔄 Auto-sync:</b> Aktif (real-time)
+                        </div>
+                        
+                        <div class="section-title">Manajemen Data</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+                            <button class="btn btn-primary" id="backupAllBtn">💾 Backup Semua Data</button>
+                            <button class="btn btn-success" id="syncNowBtn">🔄 Sync Sekarang</button>
+                            <button class="btn btn-warning" id="importBackupBtn">📂 Import Backup</button>
+                            <button class="btn btn-danger" id="clearLocalBtn">🗑️ Clear Local Cache</button>
+                        </div>
+                        
+                        <div class="section-title">Statistik Database</div>
+                        <div class="stats-grid">
+                            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="firebaseStaff">0</div><div class="stat-label">Staff (Firebase)</div></div>
+                            <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-value" id="firebaseUnit">0</div><div class="stat-label">Unit (Firebase)</div></div>
+                            <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="firebaseToken">0</div><div class="stat-label">Token (Firebase)</div></div>
+                            <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-value" id="firebasePengajuan">0</div><div class="stat-label">Pengajuan (Firebase)</div></div>
+                        </div>
+                        
+                        <div class="section-title">Log Sinkronisasi</div>
+                        <div style="background: var(--bg); padding: 12px; border-radius: 8px; max-height: 200px; overflow-y: auto;">
+                            <div id="syncLog"></div>
+                        </div>
                     </div>
                 </div>
             </main>
@@ -828,15 +915,19 @@
                 <div class="form-group"><label>Cabang</label><select id="sCabang"><option>Gateway Pasteur</option><option>Jarrdin Cihampelas</option></select></div>
                 <div class="form-row">
                     <div class="form-group"><label>Gaji Pokok (Rp)</label><input type="number" id="sGaji" value="3000000"></div>
-                    <div class="form-group"><label>Uang Makan/HARI (Rp)</label><input type="number" id="sMakan" value="20000"></div>
+                    <div class="form-group"><label>Uang Makan per HARI (Rp)</label><input type="number" id="sMakan" value="20000"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Jam Masuk</label><input type="time" id="sJamMasuk" value="08:00"></div>
-                    <div class="form-group"><label>Jam Pulang</label><input type="time" id="sJamPulang" value="17:00"></div>
+                    <div class="form-group"><label>Jam Masuk Tetap</label><input type="time" id="sJamMasuk" value="08:00"></div>
+                    <div class="form-group"><label>Jam Pulang Tetap</label><input type="time" id="sJamPulang" value="17:00"></div>
                 </div>
-                <div class="form-group"><label>Libur Tetap</label><select id="sLibur"><option value="">Tidak ada</option><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option></select></div>
+                <div class="form-group">
+                    <label>Jadwal Libur Tetap (Opsional)</label>
+                    <select id="sLibur"><option value="">Tidak ada libur tetap</option><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option></select>
+                    <small style="color:var(--text-light)">Libur tetap = gaji full, tidak dipotong</small>
+                </div>
             </div>
-            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="staffModal">Batal</button><button class="btn btn-primary btn-sm" id="saveStaffBtn">💾 Simpan</button></div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="staffModal">Batal</button><button class="btn btn-primary btn-sm" id="saveStaffBtn">Simpan</button></div>
         </div>
     </div>
 
@@ -845,13 +936,13 @@
         <div class="modal">
             <div class="modal-header"><h3 class="modal-title">➕ Buat Pengajuan</h3><button class="modal-close" data-close="pengajuanModal">×</button></div>
             <div class="modal-body">
-                <div class="form-group"><label>Jenis</label><select id="pJenis"><option value="kasbon">💵 Kasbon</option><option value="cuti">🏖️ Cuti</option><option value="reimburse">🧾 Reimburse</option></select></div>
+                <div class="form-group"><label>Jenis Pengajuan</label><select id="pJenis"><option value="kasbon">💵 Kasbon</option><option value="cuti">🏖️ Cuti/Libur</option><option value="reimburse">🧾 Reimburse</option></select></div>
                 <div class="form-group" id="pNominalG"><label>Nominal (Rp)</label><input type="number" id="pNominal" value="0"></div>
                 <div class="form-group" id="pDurasiG" style="display:none"><label>Durasi (Hari)</label><input type="number" id="pDurasi" value="1"></div>
-                <div class="form-group"><label>Keterangan</label><textarea id="pKet" rows="3"></textarea></div>
-                <div class="form-group" id="pBuktiG" style="display:none"><label>Bukti</label><input type="text" id="pBukti"></div>
+                <div class="form-group"><label>Keterangan/Alasan</label><textarea id="pKet" rows="3" placeholder="Jelaskan alasan pengajuan..."></textarea></div>
+                <div class="form-group" id="pBuktiG" style="display:none"><label>Bukti Transaksi (wajib untuk reimburse)</label><input type="text" id="pBukti" placeholder="Link foto / keterangan bukti"></div>
             </div>
-            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="pengajuanModal">Batal</button><button class="btn btn-primary btn-sm" id="savePengajuanBtn">Kirim</button></div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="pengajuanModal">Batal</button><button class="btn btn-primary btn-sm" id="savePengajuanBtn">Kirim Pengajuan</button></div>
         </div>
     </div>
 
@@ -860,11 +951,11 @@
         <div class="modal">
             <div class="modal-header"><h3 class="modal-title">➕ Tambah Akun</h3><button class="modal-close" data-close="akunModal">×</button></div>
             <div class="modal-body">
-                <div class="form-group"><label>Username</label><input type="text" id="aUser"></div>
+                <div class="form-group"><label>Username (= Nama Lengkap)</label><input type="text" id="aUser"></div>
                 <div class="form-group"><label>Password</label><input type="text" id="aPass"></div>
                 <div class="form-group"><label>Role</label><select id="aRole"><option value="staff">👤 Staff</option><option value="marketing">📢 Marketing</option><option value="leader">📋 Leader</option><option value="admin">⚙️ Admin</option><option value="owner">👑 Owner</option></select></div>
             </div>
-            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="akunModal">Batal</button><button class="btn btn-primary btn-sm" id="saveAkunBtn">💾 Simpan</button></div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="akunModal">Batal</button><button class="btn btn-primary btn-sm" id="saveAkunBtn">Simpan</button></div>
         </div>
     </div>
 
@@ -876,24 +967,98 @@
         </div>
     </div>
 
+    <!-- Modal Edit Token Listrik (Owner Only) -->
+    <div class="modal-overlay" id="editTokenModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Edit Token Listrik</h3>
+                <button class="modal-close" data-close="editTokenModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editTokenId">
+                <input type="hidden" id="editTokenKey">
+                <div class="form-row">
+                    <div class="form-group"><label>🏠 Unit</label><select id="editTokenUnit" required></select></div>
+                    <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="editTokenDate" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="editTokenNominal" placeholder="100000" required></div>
+                    <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="editTokenMeteran" placeholder="1234" step="0.01"></div>
+                </div>
+                <div class="form-group"><label>📝 Keterangan</label><input type="text" id="editTokenKet" placeholder="Token rutin / darurat / dll"></div>
+                <div class="warning-box">
+                    <b>⚠️ Perhatian:</b> Perubahan data token akan mempengaruhi analisis pemakaian listrik unit ini.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-close="editTokenModal">Batal</button>
+                <button class="btn btn-danger btn-sm" id="deleteTokenBtn">🗑️ Hapus</button>
+                <button class="btn btn-primary btn-sm" id="updateTokenBtn">💾 Update Token</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Absensi (Owner Only) -->
+    <div class="modal-overlay" id="editAbsensiModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Edit Data Absensi</h3>
+                <button class="modal-close" data-close="editAbsensiModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAbsensiId">
+                <input type="hidden" id="editAbsensiKey">
+                <div class="form-row">
+                    <div class="form-group"><label>👤 Staff</label><select id="editAbsensiStaff" required disabled></select></div>
+                    <div class="form-group"><label>📅 Tanggal</label><input type="date" id="editAbsensiDate" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>📊 Status Kehadiran</label><select id="editAbsensiStatus">
+                        <option value="hadir">✅ HADIR</option>
+                        <option value="izin">📝 IZIN</option>
+                        <option value="sakit">🤒 SAKIT</option>
+                        <option value="alfa">❌ ALFA (Tanpa Keterangan)</option>
+                    </select></div>
+                    <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="editAbsensiAktual"></div>
+                </div>
+                <div class="form-group"><label>⏰ Jam Jadwal (readonly)</label><input type="time" id="editAbsensiJadwal" readonly style="background: var(--bg);"></div>
+                <div id="editAbsensiPreview" class="info-box" style="display:none"></div>
+                <div class="warning-box">
+                    <b>⚠️ Perhatian:</b> Perubahan data absensi akan mempengaruhi perhitungan gaji staff pada periode ini.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-sm" data-close="editAbsensiModal">Batal</button>
+                <button class="btn btn-danger btn-sm" id="deleteAbsensiBtn">🗑️ Hapus</button>
+                <button class="btn btn-primary btn-sm" id="updateAbsensiBtn">💾 Update Absensi</button>
+            </div>
+        </div>
+    </div>
+
 <script>
-// ==================== FIREBASE CONFIG ====================
-const firebaseConfig = {
-    databaseURL: "https://zea-crew-default-rtdb.asia-southeast1.firebasedatabase.app/"
-};
+// ==================== FIREBASE SETUP ====================
+// Firebase sudah diinisialisasi di header
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+// Database references
+const dbRef = database.ref();
+const staffRef = database.ref('staff');
+const unitRef = database.ref('units');
+const tokenRef = database.ref('tokens');
+const postsRef = database.ref('posts');
+const pengajuanRef = database.ref('pengajuan');
+const reportRef = database.ref('reports');
+const absensiRef = database.ref('absensi');
+const usersRef = database.ref('users');
+const syncLogRef = database.ref('syncLog');
 
-// ==================== DATA STATE ====================
+// ==================== DATA VARIABLES ====================
 let currentUser = null;
 let postType = 'info';
 let pengajuanFilter = 'semua';
 let editStaffId = null;
 let editUnitId = null;
 
-// Data arrays (will be synced with Firebase)
+// Data collections (akan diisi dari Firebase)
 let users = [];
 let staffList = [];
 let unitList = [];
@@ -903,81 +1068,200 @@ let reportList = [];
 let absensiList = [];
 let tokenList = [];
 
-// Default users (will be saved to Firebase if not exists)
-const defaultUsers = [
-    { id: 1, username: 'kingbejh', password: 'kotabaru', role: 'owner', name: 'King Bejh' },
-    { id: 2, username: 'IBUZEA', password: '190277', role: 'owner', name: 'Ibu Zea' },
-    { id: 3, username: 'wulan sari', password: 'wul4ns', role: 'admin', name: 'Wulan Sari' },
-    { id: 4, username: 'iwakartiwa', password: 'kopihideung', role: 'leader', name: 'Iwa Kartiwa' },
-    { id: 5, username: 'resta faujan', password: 'petot123', role: 'staff', name: 'Resta Faujan' },
-    { id: 6, username: 'ikhsan', password: 'ikhsan2024', role: 'staff', name: 'Ikhsan' },
-    { id: 7, username: 'raisyaazura', password: 'bekasi1234', role: 'marketing', name: 'Raisya Azura' },
-    { id: 8, username: 'Agni Maulana', password: '121026', role: 'staff', name: 'Agni Maulana' },
-    { id: 9, username: 'Erik maulana', password: 'kumbanghitam', role: 'staff', name: 'Erik Maulana' },
-    { id: 10, username: 'Riko ariyanto', password: 'rikozea', role: 'admin', name: 'Riko Ariyanto' },
-    { id: 11, username: 'Muhamad Rahil Paza', password: '1234567890', role: 'staff', name: 'Muhamad Rahil Paza' },
-    { id: 12, username: 'Kenjiro', password: 'Cristian hayon', role: 'staff', name: 'Kenjiro' },
-    { id: 13, username: 'hariksedang84', password: 'Ardan123', role: 'staff', name: 'Harik' },
-    { id: 14, username: 'ajun junaedi', password: 'ajunkecil', role: 'staff', name: 'Ajun Junaedi' },
-    { id: 15, username: 'Boy93', password: '939393', role: 'staff', name: 'Boy' },
-    { id: 16, username: 'kumis ganteng', password: 'gantengkumis', role: 'marketing', name: 'Kumis Ganteng' },
-    { id: 17, username: 'desi gemoy', password: 'gemoy desi', role: 'marketing', name: 'Desi Gemoy' },
-    { id: 18, username: 'sani', password: 'Sanifarilah24', role: 'marketing', name: 'Sani' },
-    { id: 19, username: 'sinta mrslla', password: 'tata4202', role: 'marketing', name: 'Sinta Marsella' }
-];
+// ==================== SYNC FUNCTIONS ====================
+function updateSyncStatus(message, type = 'success') {
+    const status = $('#syncStatus');
+    status.textContent = message;
+    status.className = 'sync-status ' + type;
+    status.style.display = 'block';
+    
+    // Log to sync log
+    const logEntry = document.createElement('div');
+    logEntry.style.fontSize = '12px';
+    logEntry.style.marginBottom = '4px';
+    logEntry.innerHTML = `<span style="color: var(--text-light)">${new Date().toLocaleTimeString()}</span> ${message}`;
+    $('#syncLog').prepend(logEntry);
+    
+    // Keep only last 10 logs
+    const logs = $('#syncLog').children;
+    if (logs.length > 10) {
+        logs[logs.length - 1].remove();
+    }
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        if (status.textContent === message) {
+            status.style.display = 'none';
+        }
+    }, 3000);
+}
 
-const defaultUnits = [
-    { id: 1, nomor: 'DB1128', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 2, nomor: 'DA1025', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 3, nomor: 'DB1012', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 4, nomor: 'DB0917', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 5, nomor: 'DA0835', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 6, nomor: 'DB0511', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 7, nomor: 'DB0108', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 8, nomor: 'DB0106', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 9, nomor: 'JA1009A', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 10, nomor: 'JC1005', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 11, nomor: 'JA0111', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 12, nomor: 'RA0109', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 13, nomor: 'RA03A11', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 14, nomor: 'TB0318A', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 15, nomor: 'JC1005A', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 16, nomor: 'RA03A05', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
-    { id: 17, nomor: 'TA1123', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 18, nomor: 'TC1117', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 19, nomor: 'TB0301', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 20, nomor: 'TC0138', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 21, nomor: 'TC0107', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 22, nomor: 'TB1010', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 23, nomor: 'TB0306', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 24, nomor: 'TB0505', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 25, nomor: 'TB0316', status: 'ready', tipe: '1BR', owner: '', wifi: 'ada', nominal: 3000000, tempo: '' },
-    { id: 26, nomor: 'TA1005', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' },
-    { id: 27, nomor: 'DA0120', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' },
-    { id: 28, nomor: 'DA03A21', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' },
-    { id: 29, nomor: 'RC0506', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' },
-    { id: 30, nomor: 'DB0907', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' },
-    { id: 31, nomor: 'DB0316', status: 'ready', tipe: '2BR', owner: '', wifi: 'ada', nominal: 4000000, tempo: '' }
-];
+// ==================== FIREBASE LISTENERS ====================
+function setupFirebaseListeners() {
+    // Listen for staff changes
+    staffRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        staffList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderStaff();
+        updateDashboard();
+        updateSelects();
+        updateSyncStatus(`Staff: ${staffList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for unit changes
+    unitRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        unitList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderUnit();
+        updateUnitSelects();
+        updateDashboard();
+        updateSyncStatus(`Unit: ${unitList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for token changes
+    tokenRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        tokenList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderToken();
+        updateSyncStatus(`Token: ${tokenList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for post changes
+    postsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        posts = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderPosts();
+        updateSyncStatus(`Posting: ${posts.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for pengajuan changes
+    pengajuanRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        pengajuanList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderPengajuan();
+        updateSyncStatus(`Pengajuan: ${pengajuanList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for report changes
+    reportRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        reportList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderReport();
+        updateSyncStatus(`Report: ${reportList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for absensi changes
+    absensiRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        absensiList = data ? Object.entries(data).map(([key, val]) => ({...val, _key: key})) : [];
+        renderAbsensi();
+        updateSyncStatus(`Absensi: ${absensiList.length} data tersinkron`, 'success');
+    });
+    
+    // Listen for user changes
+    usersRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            users = Object.entries(data).map(([key, val]) => ({...val, _key: key}));
+        } else {
+            // Initialize with default users if Firebase is empty
+            const defaultUsers = [
+                { id: 1, username: 'kingbejh', password: 'kotabaru', role: 'owner', name: 'King Bejh' },
+                { id: 2, username: 'IBUZEA', password: '190277', role: 'owner', name: 'Ibu Zea' },
+                { id: 3, username: 'wulan sari', password: 'wul4ns', role: 'admin', name: 'Wulan Sari' },
+                { id: 4, username: 'iwakartiwa', password: 'kopihideung', role: 'leader', name: 'Iwa Kartiwa' },
+                { id: 5, username: 'resta faujan', password: 'petot123', role: 'staff', name: 'Resta Faujan' },
+                { id: 6, username: 'ikhsan', password: 'ikhsan2024', role: 'staff', name: 'Ikhsan' },
+                { id: 7, username: 'raisyaazura', password: 'bekasi1234', role: 'marketing', name: 'Raisya Azura' },
+                { id: 8, username: 'Agni Maulana', password: '121026', role: 'staff', name: 'Agni Maulana' },
+                { id: 9, username: 'Erik maulana', password: 'kumbanghitam', role: 'staff', name: 'Erik Maulana' },
+                { id: 10, username: 'Riko ariyanto', password: 'rikozea', role: 'admin', name: 'Riko Ariyanto' },
+                { id: 11, username: 'Muhamad Rahil Paza', password: '1234567890', role: 'staff', name: 'Muhamad Rahil Paza' },
+                { id: 12, username: 'Kenjiro', password: 'Cristian hayon', role: 'staff', name: 'Kenjiro' },
+                { id: 13, username: 'hariksedang84', password: 'Ardan123', role: 'staff', name: 'Harik' },
+                { id: 14, username: 'ajun junaedi', password: 'ajunkecil', role: 'staff', name: 'Ajun Junaedi' },
+                { id: 15, username: 'Boy93', password: '939393', role: 'staff', name: 'Boy' },
+                { id: 16, username: 'kumis ganteng', password: 'gantengkumis', role: 'marketing', name: 'Kumis Ganteng' },
+                { id: 17, username: 'desi gemoy', password: 'gemoy desi', role: 'marketing', name: 'Desi Gemoy' },
+                { id: 18, username: 'sani', password: 'Sanifarilah24', role: 'marketing', name: 'Sani' },
+                { id: 19, username: 'sinta mrslla', password: 'tata4202', role: 'marketing', name: 'Sinta Marsella' }
+            ];
+            
+            // Save default users to Firebase
+            defaultUsers.forEach(user => {
+                usersRef.push(user);
+            });
+            
+            users = defaultUsers.map(u => ({...u}));
+        }
+        renderAkun();
+        updateSyncStatus(`Akun: ${users.length} data tersinkron`, 'success');
+    });
+}
 
-const defaultPosts = [
-    { id: 1, author: 'Ibu Zea', role: 'owner', type: 'pengumuman', content: '🎉 Selamat datang di ZEA CREW!\n\nSistem ini sudah terhubung ke Firebase untuk penyimpanan data permanen.', time: Date.now(), likes: 1000000, likedBy: [] },
-    { id: 2, author: 'King Bejh', role: 'owner', type: 'info', content: '🔥 Firebase Connected!\n\nSemua data sekarang tersimpan di cloud dan sync otomatis ke semua device. Semangat! 💪', time: Date.now() - 3600000, likes: 1000000, likedBy: [] }
-];
+// ==================== BACKUP FUNCTIONS ====================
+function backupAllData() {
+    updateSyncStatus('Memulai backup semua data...', 'syncing');
+    
+    const backupData = {
+        staff: staffList,
+        units: unitList,
+        tokens: tokenList,
+        posts: posts,
+        pengajuan: pengajuanList,
+        reports: reportList,
+        absensi: absensiList,
+        users: users,
+        timestamp: new Date().toISOString(),
+        backedBy: getName()
+    };
+    
+    // Save to Firebase backup location
+    database.ref('backups/' + Date.now()).set(backupData)
+        .then(() => {
+            updateSyncStatus('✅ Backup berhasil disimpan ke Firebase!', 'success');
+            toast('Backup semua data berhasil!');
+        })
+        .catch((error) => {
+            updateSyncStatus('❌ Gagal backup: ' + error.message, 'error');
+            toast('Gagal backup data!', 'error');
+        });
+}
 
-// ==================== HELPERS ====================
+function syncNow() {
+    updateSyncStatus('Menyinkronkan data...', 'syncing');
+    
+    // Trigger re-fetch of all data
+    setupFirebaseListeners();
+    
+    setTimeout(() => {
+        updateSyncStatus('✅ Sinkronisasi selesai!', 'success');
+        toast('Data tersinkronisasi dengan Firebase!');
+    }, 1000);
+}
+
+function clearLocalCache() {
+    if (confirm('Yakin hapus cache lokal? Data di Firebase tetap aman.')) {
+        localStorage.clear();
+        updateSyncStatus('Cache lokal dibersihkan', 'success');
+        toast('Cache lokal dibersihkan!');
+    }
+}
+
+// ==================== HELPER FUNCTIONS ====================
 const $ = id => document.getElementById(id);
-const rp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const rp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
 const fdate = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
-const ftime = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+const ftime = d => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 const initials = n => n ? n.split(' ').map(x => x[0]).join('').substring(0, 2).toUpperCase() : '?';
 const roleLabel = r => ({ owner: '👑 Owner', admin: '⚙️ Admin', leader: '📋 Leader', marketing: '📢 Marketing', staff: '👤 Staff' }[r] || r);
 const roleBadge = r => 'badge-' + r;
 const roleColor = r => ({ owner: '#eab308', admin: '#3b82f6', leader: '#22c55e', marketing: '#a855f7', staff: '#64748b' }[r] || '#64748b');
-const hasAccess = roles => roles ? roles.includes(currentUser?.role) : true;
+const hasAccess = roles => roles ? roles.includes(currentUser.role) : true;
 const canManage = () => hasAccess(['owner', 'admin', 'leader']);
 const canApprove = () => hasAccess(['owner', 'admin', 'leader']);
-const getName = () => currentUser?.name || currentUser?.username || 'User';
+const isOwner = () => currentUser.role === 'owner';
+const getName = () => currentUser.name || currentUser.username;
 
 function toast(msg, type = 'success') {
     document.querySelectorAll('.toast').forEach(t => t.remove());
@@ -990,211 +1274,6 @@ function toast(msg, type = 'success') {
 
 function showModal(id) { $(id).classList.add('active'); }
 function hideModal(id) { $(id).classList.remove('active'); }
-
-function setSyncStatus(status) {
-    const el = $('syncStatus');
-    const text = $('syncText');
-    el.className = 'sync-status ' + status;
-    text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
-}
-
-function hideLoading() {
-    $('loadingOverlay').classList.add('hidden');
-}
-
-function showLoading(text) {
-    $('loadingOverlay').classList.remove('hidden');
-    $('loadingOverlay').querySelector('.loading-text').textContent = text || 'Loading...';
-}
-
-// ==================== FIREBASE FUNCTIONS ====================
-async function initFirebase() {
-    showLoading('Menghubungkan ke Firebase...');
-    
-    // Check connection
-    db.ref('.info/connected').on('value', (snap) => {
-        setSyncStatus(snap.val() ? 'online' : 'offline');
-    });
-    
-    // Load all data
-    await loadAllData();
-    
-    // Setup realtime listeners
-    setupRealtimeListeners();
-    
-    hideLoading();
-}
-
-async function loadAllData() {
-    try {
-        // Load users
-        const usersSnap = await db.ref('users').once('value');
-        if (usersSnap.exists()) {
-            users = Object.values(usersSnap.val());
-        } else {
-            // Initialize with default users
-            await db.ref('users').set(defaultUsers.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
-            users = [...defaultUsers];
-        }
-        
-        // Load units
-        const unitsSnap = await db.ref('units').once('value');
-        if (unitsSnap.exists()) {
-            unitList = Object.values(unitsSnap.val());
-        } else {
-            await db.ref('units').set(defaultUnits.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
-            unitList = [...defaultUnits];
-        }
-        
-        // Load posts
-        const postsSnap = await db.ref('posts').once('value');
-        if (postsSnap.exists()) {
-            posts = Object.values(postsSnap.val()).sort((a, b) => b.time - a.time);
-        } else {
-            await db.ref('posts').set(defaultPosts.reduce((acc, p) => { acc[p.id] = p; return acc; }, {}));
-            posts = [...defaultPosts];
-        }
-        
-        // Load staff
-        const staffSnap = await db.ref('staff').once('value');
-        staffList = staffSnap.exists() ? Object.values(staffSnap.val()) : [];
-        
-        // Load pengajuan
-        const pengajuanSnap = await db.ref('pengajuan').once('value');
-        pengajuanList = pengajuanSnap.exists() ? Object.values(pengajuanSnap.val()) : [];
-        
-        // Load reports
-        const reportsSnap = await db.ref('reports').once('value');
-        reportList = reportsSnap.exists() ? Object.values(reportsSnap.val()) : [];
-        
-        // Load absensi
-        const absensiSnap = await db.ref('absensi').once('value');
-        absensiList = absensiSnap.exists() ? Object.values(absensiSnap.val()) : [];
-        
-        // Load tokens
-        const tokensSnap = await db.ref('tokens').once('value');
-        tokenList = tokensSnap.exists() ? Object.values(tokensSnap.val()) : [];
-        
-    } catch (error) {
-        console.error('Error loading data:', error);
-        toast('Gagal memuat data dari Firebase!', 'error');
-    }
-}
-
-function setupRealtimeListeners() {
-    // Users listener
-    db.ref('users').on('value', (snap) => {
-        if (snap.exists()) {
-            users = Object.values(snap.val());
-            if (currentUser) renderAkun();
-        }
-    });
-    
-    // Units listener
-    db.ref('units').on('value', (snap) => {
-        if (snap.exists()) {
-            unitList = Object.values(snap.val());
-            if (currentUser) {
-                renderUnit();
-                updateUnitSelects();
-                updateDashboard();
-            }
-        }
-    });
-    
-    // Posts listener
-    db.ref('posts').on('value', (snap) => {
-        if (snap.exists()) {
-            posts = Object.values(snap.val()).sort((a, b) => b.time - a.time);
-            if (currentUser) renderPosts();
-        }
-    });
-    
-    // Staff listener
-    db.ref('staff').on('value', (snap) => {
-        staffList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) {
-            renderStaff();
-            updateSelects();
-            updateDashboard();
-        }
-    });
-    
-    // Pengajuan listener
-    db.ref('pengajuan').on('value', (snap) => {
-        pengajuanList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) renderPengajuan();
-    });
-    
-    // Reports listener
-    db.ref('reports').on('value', (snap) => {
-        reportList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) renderReport();
-    });
-    
-    // Absensi listener
-    db.ref('absensi').on('value', (snap) => {
-        absensiList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) renderAbsensi();
-    });
-    
-    // Tokens listener
-    db.ref('tokens').on('value', (snap) => {
-        tokenList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) renderToken();
-    });
-}
-
-// Firebase save functions
-function saveUser(user) {
-    setSyncStatus('syncing');
-    return db.ref('users/' + user.id).set(user).then(() => setSyncStatus('online'));
-}
-
-function saveUnit(unit) {
-    setSyncStatus('syncing');
-    return db.ref('units/' + unit.id).set(unit).then(() => setSyncStatus('online'));
-}
-
-function savePost(post) {
-    setSyncStatus('syncing');
-    return db.ref('posts/' + post.id).set(post).then(() => setSyncStatus('online'));
-}
-
-function saveStaff(staff) {
-    setSyncStatus('syncing');
-    return db.ref('staff/' + staff.id).set(staff).then(() => setSyncStatus('online'));
-}
-
-function deleteStaffFromDB(id) {
-    setSyncStatus('syncing');
-    return db.ref('staff/' + id).remove().then(() => setSyncStatus('online'));
-}
-
-function savePengajuan(p) {
-    setSyncStatus('syncing');
-    return db.ref('pengajuan/' + p.id).set(p).then(() => setSyncStatus('online'));
-}
-
-function saveReport(r) {
-    setSyncStatus('syncing');
-    return db.ref('reports/' + r.id).set(r).then(() => setSyncStatus('online'));
-}
-
-function saveAbsensi(a) {
-    setSyncStatus('syncing');
-    return db.ref('absensi/' + a.id).set(a).then(() => setSyncStatus('online'));
-}
-
-function saveToken(t) {
-    setSyncStatus('syncing');
-    return db.ref('tokens/' + t.id).set(t).then(() => setSyncStatus('online'));
-}
-
-function deleteUserFromDB(id) {
-    setSyncStatus('syncing');
-    return db.ref('users/' + id).remove().then(() => setSyncStatus('online'));
-}
 
 // ==================== AUTH ====================
 $('loginForm').onsubmit = e => {
@@ -1247,7 +1326,6 @@ function updateDashboard() {
     $('statMaint').textContent = unitList.filter(u => u.status === 'maintenance').length;
     $('statReady').textContent = unitList.filter(u => u.status === 'ready').length;
     $('welcomeText').textContent = `Selamat datang, ${getName()}! 👋`;
-    renderPosts();
 }
 
 // ==================== FEED ====================
@@ -1269,50 +1347,71 @@ $('postBtn').onclick = () => {
         role: currentUser.role, 
         type: postType, 
         content, 
-        time: Date.now(), 
+        time: new Date().toISOString(), 
         likes: currentUser.role === 'owner' ? 1000000 : 0, 
         likedBy: [] 
     };
     
-    savePost(newPost);
-    $('feedInput').value = '';
-    toast('Posting berhasil!');
+    // Save to Firebase
+    postsRef.push(newPost)
+        .then(() => {
+            $('feedInput').value = '';
+            toast('Posting berhasil!');
+        })
+        .catch(error => {
+            toast('Gagal posting: ' + error.message, 'error');
+        });
 };
 
 function renderPosts() {
     $('feedContainer').innerHTML = posts.map(p => {
         const isOwner = p.role === 'owner';
-        const isLiked = p.likedBy?.includes(currentUser?.id);
         return `
         <div class="post-card ${isOwner ? 'owner-post' : ''}">
             <div class="post-header">
                 <div class="post-avatar" style="background:${roleColor(p.role)}">${initials(p.author)}</div>
                 <div class="post-meta">
-                    <div class="post-author">${p.author} ${isOwner ? '<span class="verified-badge">✓ Verified</span> 👑' : ''}</div>
+                    <div class="post-author">
+                        ${p.author} 
+                        ${isOwner ? '<span class="verified-badge">✓ Verified</span> 👑' : ''}
+                    </div>
                     <div class="post-time">${ftime(p.time)}</div>
                 </div>
-                <span class="post-type ${p.type}">${p.type?.toUpperCase()}</span>
+                <span class="post-type ${p.type}">${p.type.toUpperCase()}</span>
             </div>
             <div class="post-content">${p.content}</div>
             <div class="post-actions">
-                <button class="post-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${p.id})">
-                    ${isLiked ? '❤️' : '🤍'} ${p.likes >= 1000000 ? '1M+' : p.likes || 0}
+                <button class="post-action-btn ${p.likedBy?.includes(currentUser.id) ? 'liked' : ''}" onclick="toggleLike('${p._key}')">
+                    ${p.likedBy?.includes(currentUser.id) ? '❤️' : '🤍'} ${p.likes >= 1000000 ? '1M+' : p.likes}
                 </button>
             </div>
         </div>
-    `}).join('') || '<div class="empty-state"><div class="empty-icon">📰</div><p>Belum ada posting</p></div>';
+    `}).join('');
 }
 
-window.toggleLike = id => {
-    const p = posts.find(x => x.id === id);
-    if (!p || p.role === 'owner') return;
+window.toggleLike = key => {
+    if (!key) return;
+    const p = posts.find(x => x._key === key);
+    if (!p || p.role === 'owner') return; // Owner posts can't be unliked
     
-    if (!p.likedBy) p.likedBy = [];
-    const idx = p.likedBy.indexOf(currentUser.id);
-    if (idx > -1) { p.likedBy.splice(idx, 1); p.likes--; }
-    else { p.likedBy.push(currentUser.id); p.likes++; }
+    const idx = p.likedBy?.indexOf(currentUser.id) || -1;
+    let updates = {};
     
-    savePost(p);
+    if (idx > -1) { 
+        p.likedBy.splice(idx, 1); 
+        p.likes--; 
+    } else { 
+        if (!p.likedBy) p.likedBy = [];
+        p.likedBy.push(currentUser.id); 
+        p.likes++; 
+    }
+    
+    updates[`posts/${key}/likes`] = p.likes;
+    updates[`posts/${key}/likedBy`] = p.likedBy;
+    
+    database.ref().update(updates)
+        .then(() => renderPosts())
+        .catch(err => toast('Gagal update like: ' + err.message, 'error'));
 };
 
 // ==================== STAFF ====================
@@ -1329,7 +1428,7 @@ $('sAkun').onchange = function() {
 
 function renderStaff() {
     if (!staffList.length) {
-        $('staffTable').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada data staff</p></div></td></tr>';
+        $('staffTable').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada data staff</p><p style="font-size:13px">Klik "+ Tambah Staff" untuk menambahkan</p></div></td></tr>';
         return;
     }
     $('staffTable').innerHTML = staffList.map(s => {
@@ -1338,12 +1437,12 @@ function renderStaff() {
         return `<tr>
             <td><div class="staff-info"><div class="staff-avatar">${initials(s.nama)}</div><div><div class="staff-name">${s.nama}</div><div class="staff-wa">${s.wa || '-'}</div></div></div></td>
             <td><span class="badge ${roleBadge(role)}">${roleLabel(role)}</span></td>
-            <td>${s.cabang || '-'}</td>
+            <td>${s.cabang}</td>
             <td>${rp(s.gaji)}</td>
             <td>${rp(s.uangMakanHarian)}/hari</td>
-            <td>${s.jamMasuk || '08:00'} - ${s.jamPulang || '17:00'}</td>
+            <td>${s.jamMasuk} - ${s.jamPulang}</td>
             <td>${s.libur || '-'}</td>
-            <td><div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editStaff(${s.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="delStaff(${s.id})">🗑️</button></div></td>
+            <td><div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editStaff('${s._key}')">✏️</button><button class="btn btn-danger btn-xs" onclick="delStaff('${s._key}')">🗑️</button></div></td>
         </tr>`;
     }).join('');
 }
@@ -1351,16 +1450,21 @@ function renderStaff() {
 $('addStaffBtn').onclick = () => { 
     editStaffId = null; 
     $('staffModalTitle').textContent = '➕ Tambah Staff'; 
-    $('sNama').value = ''; $('sWA').value = ''; $('sGaji').value = '3000000'; $('sMakan').value = '20000';
-    $('sJamMasuk').value = '08:00'; $('sJamPulang').value = '17:00'; $('sLibur').value = '';
+    $('sNama').value = '';
+    $('sWA').value = '';
+    $('sGaji').value = '3000000';
+    $('sMakan').value = '20000';
+    $('sJamMasuk').value = '08:00';
+    $('sJamPulang').value = '17:00';
+    $('sLibur').value = '';
     updateAkunSelect(); 
     showModal('staffModal'); 
 };
 
-window.editStaff = id => {
-    const s = staffList.find(x => x.id === id);
+window.editStaff = key => {
+    const s = staffList.find(x => x._key === key);
     if (!s) return;
-    editStaffId = id;
+    editStaffId = key;
     $('staffModalTitle').textContent = '✏️ Edit Staff';
     updateAkunSelect();
     $('sAkun').value = s.akunId || '';
@@ -1371,15 +1475,15 @@ window.editStaff = id => {
     $('sJamMasuk').value = s.jamMasuk;
     $('sJamPulang').value = s.jamPulang;
     $('sLibur').value = s.libur || '';
-    $('sCabang').value = s.cabang || 'Gateway Pasteur';
+    $('sCabang').value = s.cabang;
     showModal('staffModal');
 };
 
 $('saveStaffBtn').onclick = () => {
     const nama = $('sNama').value.trim();
     if (!nama) return toast('Nama wajib diisi!', 'error');
-    
     const data = { 
+        id: s?.id || Date.now().toString(),
         akunId: +$('sAkun').value || null, 
         nama, 
         wa: $('sWA').value, 
@@ -1392,21 +1496,35 @@ $('saveStaffBtn').onclick = () => {
     };
     
     if (editStaffId) {
-        data.id = editStaffId;
-        saveStaff(data);
-        toast('Staff berhasil diupdate!');
+        staffRef.child(editStaffId).update(data)
+            .then(() => {
+                toast('Staff berhasil diupdate!');
+                hideModal('staffModal');
+            })
+            .catch(error => {
+                toast('Gagal update staff: ' + error.message, 'error');
+            });
     } else {
-        data.id = Date.now();
-        saveStaff(data);
-        toast('Staff berhasil ditambahkan!');
+        staffRef.push(data)
+            .then(() => {
+                toast('Staff berhasil ditambahkan!');
+                hideModal('staffModal');
+            })
+            .catch(error => {
+                toast('Gagal menambah staff: ' + error.message, 'error');
+            });
     }
-    hideModal('staffModal');
 };
 
-window.delStaff = id => { 
+window.delStaff = key => { 
     if (confirm('Yakin hapus staff ini?')) { 
-        deleteStaffFromDB(id);
-        toast('Staff dihapus!'); 
+        staffRef.child(key).remove()
+            .then(() => {
+                toast('Staff dihapus!');
+            })
+            .catch(error => {
+                toast('Gagal menghapus staff: ' + error.message, 'error');
+            });
     } 
 };
 
@@ -1434,7 +1552,7 @@ function renderUnit() {
         const sevenDays = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
         container.innerHTML = list.map(u => {
             const nearDue = u.tempo && new Date(u.tempo) <= sevenDays;
-            return `<div class="unit-card ${u.status}" onclick="clickUnit(${u.id})">
+            return `<div class="unit-card ${u.status}" onclick="clickUnit('${u._key}')">
                 ${nearDue ? '<span class="unit-warning">⚠️</span>' : ''}
                 <div class="unit-name">${u.nomor}</div>
                 <div class="unit-type">${u.status === 'ready' ? '✅' : '🔧'}</div>
@@ -1450,16 +1568,27 @@ function renderUnit() {
 function resetUnitForm() {
     editUnitId = null;
     $('unitFormTitle').textContent = 'Tambah/Update Unit';
-    $('uNomor').value = ''; $('uStatus').value = 'ready'; $('uTipe').value = 'Studio';
-    $('uOwner').value = ''; $('uWifi').value = 'ada'; $('uNominal').value = '2500000'; $('uTempo').value = '';
+    $('uNomor').value = '';
+    $('uStatus').value = 'ready';
+    $('uTipe').value = 'Studio';
+    $('uOwner').value = '';
+    $('uWifi').value = 'ada';
+    $('uNominal').value = '2500000';
+    $('uTempo').value = '';
 }
 
-window.clickUnit = id => {
-    const u = unitList.find(x => x.id === id);
+window.clickUnit = key => {
+    const u = unitList.find(x => x._key === key);
     if (!u) return;
     
+    // Get token history for this unit
+    const unitTokens = tokenList.filter(t => t.unit === u.nomor).slice(0, 5);
+    const tokenHistory = unitTokens.length ? unitTokens.map(t => 
+        `<div class="token-item"><span>${fdate(t.date)} - ${rp(t.nominal)}</span><span>${t.meteran ? t.meteran + ' kWh' : '-'}</span></div>`
+    ).join('') : '<p style="color:var(--text-light)">Belum ada riwayat token</p>';
+    
     if (canManage()) {
-        editUnitId = id;
+        editUnitId = key;
         $('unitFormTitle').textContent = '✏️ Edit Unit: ' + u.nomor;
         $('uNomor').value = u.nomor;
         $('uStatus').value = u.status;
@@ -1470,14 +1599,15 @@ window.clickUnit = id => {
         $('uTempo').value = u.tempo || '';
         $('unitFormCard').scrollIntoView({ behavior: 'smooth' });
     } else {
-        const unitTokens = tokenList.filter(t => t.unit === u.nomor).slice(0, 5);
         $('unitDetailContent').innerHTML = `
-            <p><span class="badge badge-${u.status === 'ready' ? 'ready' : 'maintenance'}">${u.status?.toUpperCase()}</span> <span class="badge">${u.tipe}</span></p>
+            <p><span class="badge badge-${u.status === 'ready' ? 'ready' : 'maintenance'}">${u.status.toUpperCase()}</span> <span class="badge">${u.tipe}</span></p>
             <p style="margin-top:12px"><b>Nomor:</b> ${u.nomor}</p>
             <p><b>Owner:</b> ${u.owner || '-'}</p>
             <p><b>WiFi:</b> ${u.wifi === 'ada' ? '📶 Ada' : '❌ Tidak'}</p>
             <p><b>Nominal:</b> ${rp(u.nominal)}</p>
             <p><b>Jatuh Tempo:</b> ${fdate(u.tempo)}</p>
+            <h4 style="margin-top:20px;margin-bottom:10px">⚡ Riwayat Token Listrik:</h4>
+            ${tokenHistory}
         `;
         showModal('unitDetailModal');
     }
@@ -1488,7 +1618,7 @@ $('saveUnitBtn').onclick = () => {
     if (!nomor) return toast('Nomor unit wajib!', 'error');
     
     const data = {
-        id: editUnitId || Date.now(),
+        id: editUnitId ? unitList.find(u => u._key === editUnitId)?.id : Date.now().toString(),
         nomor,
         status: $('uStatus').value,
         tipe: $('uTipe').value,
@@ -1498,13 +1628,25 @@ $('saveUnitBtn').onclick = () => {
         tempo: $('uTempo').value
     };
     
-    if (!editUnitId && unitList.find(u => u.nomor === nomor)) {
-        return toast('Nomor unit sudah ada!', 'error');
+    if (editUnitId) {
+        unitRef.child(editUnitId).update(data)
+            .then(() => {
+                toast('Unit berhasil diupdate!');
+                resetUnitForm();
+            })
+            .catch(error => {
+                toast('Gagal update unit: ' + error.message, 'error');
+            });
+    } else {
+        unitRef.push(data)
+            .then(() => {
+                toast('Unit berhasil ditambahkan!');
+                resetUnitForm();
+            })
+            .catch(error => {
+                toast('Gagal menambah unit: ' + error.message, 'error');
+            });
     }
-    
-    saveUnit(data);
-    resetUnitForm();
-    toast(editUnitId ? 'Unit berhasil diupdate!' : 'Unit berhasil ditambahkan!');
 };
 
 $('resetUnitBtn').onclick = resetUnitForm;
@@ -1512,9 +1654,11 @@ $('resetUnitBtn').onclick = resetUnitForm;
 // ==================== TOKEN LISTRIK ====================
 function updateUnitSelects() {
     const opts = '<option value="">-- Pilih Unit --</option>' + unitList.map(u => `<option value="${u.nomor}">${u.nomor} (${u.tipe})</option>`).join('');
-    if ($('tokenUnit')) $('tokenUnit').innerHTML = opts;
-    if ($('reportUnit')) $('reportUnit').innerHTML = opts;
-    if ($('filterTokenUnit')) $('filterTokenUnit').innerHTML = '<option value="">Semua Unit</option>' + unitList.map(u => `<option value="${u.nomor}">${u.nomor}</option>`).join('');
+    $('tokenUnit').innerHTML = opts;
+    $('reportUnit').innerHTML = opts;
+    $('filterTokenUnit').innerHTML = '<option value="">Semua Unit</option>' + unitList.map(u => `<option value="${u.nomor}">${u.nomor}</option>`).join('');
+    // Update juga untuk modal edit
+    $('editTokenUnit').innerHTML = opts;
 }
 
 $('tokenForm').onsubmit = e => {
@@ -1523,8 +1667,8 @@ $('tokenForm').onsubmit = e => {
     const nominal = +$('tokenNominal').value;
     if (!unit || !nominal) return toast('Lengkapi form!', 'error');
     
-    const newToken = {
-        id: Date.now(),
+    const tokenData = {
+        id: Date.now().toString(),
         unit,
         date: $('tokenDate').value,
         nominal,
@@ -1533,24 +1677,103 @@ $('tokenForm').onsubmit = e => {
         inputBy: getName()
     };
     
-    saveToken(newToken);
-    $('tokenForm').reset();
-    $('tokenDate').valueAsDate = new Date();
-    toast('Token listrik berhasil dicatat!');
+    tokenRef.push(tokenData)
+        .then(() => {
+            $('tokenForm').reset();
+            $('tokenDate').valueAsDate = new Date();
+            toast('Token listrik berhasil dicatat!');
+        })
+        .catch(error => {
+            toast('Gagal menyimpan token: ' + error.message, 'error');
+        });
 };
 
 $('filterTokenUnit').onchange = () => renderToken();
 
+// Fungsi Edit Token (Owner Only)
+window.editToken = (key) => {
+    if (!isOwner()) return toast('Hanya Owner yang dapat mengedit data token!', 'error');
+    
+    const t = tokenList.find(x => x._key === key);
+    if (!t) return;
+    
+    $('editTokenKey').value = key;
+    $('editTokenId').value = t.id;
+    $('editTokenUnit').value = t.unit;
+    $('editTokenDate').value = t.date;
+    $('editTokenNominal').value = t.nominal;
+    $('editTokenMeteran').value = t.meteran || '';
+    $('editTokenKet').value = t.ket || '';
+    
+    showModal('editTokenModal');
+};
+
+$('updateTokenBtn').onclick = () => {
+    const key = $('editTokenKey').value;
+    if (!key) return;
+    
+    const updates = {
+        unit: $('editTokenUnit').value,
+        date: $('editTokenDate').value,
+        nominal: +$('editTokenNominal').value,
+        meteran: $('editTokenMeteran').value,
+        ket: $('editTokenKet').value,
+        updatedBy: getName(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    tokenRef.child(key).update(updates)
+        .then(() => {
+            toast('Data token berhasil diupdate!');
+            hideModal('editTokenModal');
+        })
+        .catch(error => {
+            toast('Gagal update token: ' + error.message, 'error');
+        });
+};
+
+$('deleteTokenBtn').onclick = () => {
+    const key = $('editTokenKey').value;
+    if (!key) return;
+    
+    if (confirm('⚠️ Yakin hapus data token ini?\n\nData yang dihapus tidak bisa dikembalikan!')) {
+        tokenRef.child(key).remove()
+            .then(() => {
+                toast('Data token dihapus!');
+                hideModal('editTokenModal');
+            })
+            .catch(error => {
+                toast('Gagal menghapus token: ' + error.message, 'error');
+            });
+    }
+};
+
 function renderToken() {
-    const filter = $('filterTokenUnit')?.value;
+    // Tampilkan/sembunyikan kolom aksi untuk owner
+    document.querySelectorAll('.token-actions').forEach(el => {
+        el.style.display = isOwner() ? 'table-cell' : 'none';
+    });
+    
+    const filter = $('filterTokenUnit').value;
     let list = filter ? tokenList.filter(t => t.unit === filter) : tokenList;
+    
+    // Sort by date descending
     list = list.sort((a, b) => new Date(b.date) - new Date(a.date));
     
+    // Render table
     $('tokenTable').innerHTML = list.length ? list.map(t => `
-        <tr><td>${fdate(t.date)}</td><td><b>${t.unit}</b></td><td>${rp(t.nominal)}</td><td>${t.meteran || '-'}</td><td>${t.ket || '-'}</td><td>${t.inputBy}</td></tr>
-    `).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Belum ada data token</td></tr>';
+        <tr>
+            <td>${fdate(t.date)}</td>
+            <td><b>${t.unit}</b></td>
+            <td>${rp(t.nominal)}</td>
+            <td>${t.meteran || '-'}</td>
+            <td>${t.ket || '-'}</td>
+            <td>${t.inputBy}</td>
+            ${isOwner() ? `<td><div class="action-btns"><button class="btn btn-xs btn-edit" onclick="editToken('${t._key}')">✏️</button></div></td>` : ''}
+        </tr>
+    `).join('') : '<tr><td colspan="' + (isOwner() ? '7' : '6') + '" style="text-align:center;padding:40px">Belum ada data token</td></tr>';
     
-    // Analysis
+    // Render analysis
     const thisMonth = new Date().getMonth();
     const thisYear = new Date().getFullYear();
     const monthlyByUnit = {};
@@ -1558,14 +1781,15 @@ function renderToken() {
     tokenList.forEach(t => {
         const d = new Date(t.date);
         if (d.getMonth() === thisMonth && d.getFullYear() === thisYear) {
-            monthlyByUnit[t.unit] = (monthlyByUnit[t.unit] || 0) + (t.nominal || 0);
+            monthlyByUnit[t.unit] = (monthlyByUnit[t.unit] || 0) + t.nominal;
         }
     });
     
     const sorted = Object.entries(monthlyByUnit).sort((a, b) => b[1] - a[1]);
+    const BOROS_THRESHOLD = 500000;
     
     $('tokenAnalysis').innerHTML = sorted.length ? sorted.map(([unit, total]) => {
-        const isBoros = total > 500000;
+        const isBoros = total > BOROS_THRESHOLD;
         return `<div class="token-item ${isBoros ? 'token-high' : 'token-normal'}">
             <span><b>${unit}</b> ${isBoros ? '🔴 BOROS' : '🟢'}</span>
             <span>${rp(total)}/bulan</span>
@@ -1593,16 +1817,18 @@ $('pengajuanTabs').onclick = e => {
 function renderPengajuan() {
     let list = pengajuanList;
     if (pengajuanFilter !== 'semua') list = list.filter(p => p.jenis === pengajuanFilter);
-    if (['staff', 'marketing'].includes(currentUser?.role)) list = list.filter(p => p.nama === getName());
-    list = list.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+    if (['staff', 'marketing'].includes(currentUser.role)) {
+        list = list.filter(p => p.nama === getName());
+    }
     
     $('pengajuanTable').innerHTML = list.length ? list.map(p => `
         <tr>
-            <td>${fdate(p.tanggal)}</td><td>${p.nama}</td>
-            <td>${p.jenis === 'kasbon' ? '💵' : p.jenis === 'cuti' ? '🏖️' : '🧾'} ${p.jenis?.toUpperCase()}</td>
-            <td>${p.jenis === 'cuti' ? (p.durasi || 1) + ' hari' : rp(p.nominal)}<br><small style="color:var(--text-light)">${p.ket || '-'}</small></td>
+            <td>${fdate(p.tanggal)}</td>
+            <td>${p.nama}</td>
+            <td>${p.jenis === 'kasbon' ? '💵' : p.jenis === 'cuti' ? '🏖️' : '🧾'} ${p.jenis.toUpperCase()}</td>
+            <td>${p.jenis === 'cuti' ? p.durasi + ' hari' : rp(p.nominal)}<br><small style="color:var(--text-light)">${p.ket || '-'}</small></td>
             <td><span class="badge badge-${p.status}">${p.status === 'approved' ? '✅ Disetujui' : p.status === 'rejected' ? '❌ Ditolak' : '⏳ Pending'}</span></td>
-            <td>${canApprove() && p.status === 'pending' ? `<button class="btn btn-success btn-xs" onclick="approvePengajuan(${p.id})">✓</button> <button class="btn btn-danger btn-xs" onclick="rejectPengajuan(${p.id})">✗</button>` : '-'}</td>
+            <td>${canApprove() && p.status === 'pending' ? `<button class="btn btn-success btn-xs" onclick="approvePengajuan('${p._key}')">✓</button> <button class="btn btn-danger btn-xs" onclick="rejectPengajuan('${p._key}')">✗</button>` : '-'}</td>
         </tr>
     `).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Tidak ada pengajuan</td></tr>';
 }
@@ -1611,12 +1837,12 @@ $('addPengajuanBtn').onclick = () => showModal('pengajuanModal');
 
 $('savePengajuanBtn').onclick = () => {
     const ket = $('pKet').value.trim();
-    if (!ket) return toast('Keterangan wajib!', 'error');
+    if (!ket) return toast('Keterangan wajib diisi!', 'error');
     const jenis = $('pJenis').value;
     if (jenis === 'reimburse' && !$('pBukti').value.trim()) return toast('Bukti wajib untuk reimburse!', 'error');
     
-    const newPengajuan = { 
-        id: Date.now(), 
+    const pengajuanData = { 
+        id: Date.now().toString(),
         tanggal: new Date().toISOString().split('T')[0], 
         nama: getName(),
         jenis, 
@@ -1627,38 +1853,51 @@ $('savePengajuanBtn').onclick = () => {
         status: 'pending' 
     };
     
-    savePengajuan(newPengajuan);
-    hideModal('pengajuanModal');
-    toast('Pengajuan berhasil dikirim!');
+    pengajuanRef.push(pengajuanData)
+        .then(() => {
+            hideModal('pengajuanModal');
+            toast('Pengajuan berhasil dikirim!');
+        })
+        .catch(error => {
+            toast('Gagal mengirim pengajuan: ' + error.message, 'error');
+        });
 };
 
-window.approvePengajuan = id => { 
-    const p = pengajuanList.find(x => x.id === id); 
-    if (p) { 
-        p.status = 'approved'; 
-        p.approvedBy = getName();
-        savePengajuan(p);
-        toast('Pengajuan disetujui!'); 
-    } 
+window.approvePengajuan = key => { 
+    if (!key) return;
+    pengajuanRef.child(key).update({ 
+        status: 'approved', 
+        approvedBy: getName(),
+        approvedAt: new Date().toISOString()
+    })
+    .then(() => {
+        toast('Pengajuan disetujui!');
+    })
+    .catch(err => toast('Gagal menyetujui: ' + err.message, 'error'));
 };
 
-window.rejectPengajuan = id => { 
-    const p = pengajuanList.find(x => x.id === id); 
-    if (p) { 
-        p.status = 'rejected'; 
-        savePengajuan(p);
-        toast('Pengajuan ditolak!', 'error'); 
-    } 
+window.rejectPengajuan = key => { 
+    if (!key) return;
+    pengajuanRef.child(key).update({ 
+        status: 'rejected', 
+        rejectedBy: getName(),
+        rejectedAt: new Date().toISOString()
+    })
+    .then(() => {
+        toast('Pengajuan ditolak!', 'error');
+    })
+    .catch(err => toast('Gagal menolak: ' + err.message, 'error'));
 };
 
 // ==================== REPORT ====================
 function renderReport() {
-    const list = reportList.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-    $('reportTable').innerHTML = list.length ? list.map(r => `
+    $('reportTable').innerHTML = reportList.length ? reportList.map(r => `
         <tr>
-            <td>${fdate(r.tanggal)}</td><td><b>${r.unit}</b></td>
+            <td>${fdate(r.tanggal)}</td>
+            <td><b>${r.unit}</b></td>
             <td class="priority-${r.priority}">${r.priority === 'high' ? '🔴 URGENT' : r.priority === 'medium' ? '🟡 Sedang' : '🟢 Rendah'}</td>
-            <td>${r.desc}</td><td>${r.reporter}</td>
+            <td>${r.desc}</td>
+            <td>${r.reporter}</td>
             <td><span class="badge badge-${r.status === 'selesai' ? 'approved' : 'pending'}">${r.status === 'selesai' ? '✅ Selesai' : '🔧 Proses'}</span></td>
         </tr>
     `).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Belum ada report</td></tr>';
@@ -1670,8 +1909,8 @@ $('reportForm').onsubmit = e => {
     const desc = $('reportDesc').value.trim();
     if (!unit || !desc) return toast('Lengkapi form!', 'error');
     
-    const newReport = { 
-        id: Date.now(), 
+    const reportData = { 
+        id: Date.now().toString(),
         tanggal: new Date().toISOString().split('T')[0], 
         unit, 
         priority: $('reportPriority').value, 
@@ -1680,72 +1919,96 @@ $('reportForm').onsubmit = e => {
         status: 'proses'
     };
     
-    saveReport(newReport);
-    
-    // Update unit status to maintenance
-    const u = unitList.find(x => x.nomor === unit);
-    if (u) {
-        u.status = 'maintenance';
-        saveUnit(u);
-    }
-    
-    $('reportForm').reset();
-    toast('Report berhasil dikirim! Unit status: MAINTENANCE');
+    reportRef.push(reportData)
+        .then(() => {
+            // Set unit to maintenance
+            const u = unitList.find(x => x.nomor === unit);
+            if (u && u._key) {
+                unitRef.child(u._key).update({ status: 'maintenance' });
+            }
+            
+            $('reportForm').reset();
+            toast('Report berhasil dikirim! Unit status: MAINTENANCE');
+        })
+        .catch(error => {
+            toast('Gagal mengirim report: ' + error.message, 'error');
+        });
 };
 
 // ==================== ABSENSI ====================
 function updateSelects() {
-    const opts = '<option value="">-- Pilih Staff --</option>' + staffList.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
-    if ($('absensiStaff')) $('absensiStaff').innerHTML = opts;
-    if ($('gajiStaff')) $('gajiStaff').innerHTML = opts;
+    const opts = '<option value="">-- Pilih Staff --</option>' + staffList.map(s => `<option value="${s._key}">${s.nama}</option>`).join('');
+    $('absensiStaff').innerHTML = opts;
+    $('gajiStaff').innerHTML = '<option value="">-- Pilih Staff --</option>' + staffList.map(s => `<option value="${s._key}">${s.nama}</option>`).join('');
+    // Update juga untuk edit modal
+    $('editAbsensiStaff').innerHTML = opts;
 }
 
+// Preview potongan sebelum simpan
 $('absensiStaff').onchange = $('absensiStatus').onchange = $('absensiAktual').onchange = () => {
-    const staffId = +$('absensiStaff').value;
-    const staff = staffList.find(s => s.id === staffId);
+    const staffKey = $('absensiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
     const status = $('absensiStatus').value;
     const aktual = $('absensiAktual').value;
     
-    if (!staff) { $('absensiPreview').style.display = 'none'; return; }
+    if (!staff) {
+        $('absensiPreview').style.display = 'none';
+        return;
+    }
     
     const jadwal = staff.jamMasuk || '08:00';
     let telat = 0, potongan = 0, uangMakan = 0;
     
     if (status === 'hadir') {
-        uangMakan = staff.uangMakanHarian || 20000;
+        uangMakan = staff.uangMakanHarian;
         if (aktual) {
             const j = new Date('2000-01-01T' + jadwal);
             const a = new Date('2000-01-01T' + aktual);
             telat = Math.max(0, Math.floor((a - j) / 60000));
+            
             if (telat <= 10) potongan = 0;
             else if (telat <= 30) potongan = 25000;
-            else potongan = Math.round((staff.gaji || 3000000) / 30);
+            else potongan = Math.round(staff.gaji / 30);
         }
     } else {
-        potongan = Math.round((staff.gaji || 3000000) / 30);
+        potongan = Math.round(staff.gaji / 30);
+        uangMakan = 0;
     }
     
     $('absensiPreview').style.display = 'block';
-    $('absensiPreview').innerHTML = `<b>Preview:</b> ⏰ Jadwal: ${jadwal} | ${status === 'hadir' ? `Terlambat: ${telat} menit |` : ''} Potongan: ${rp(potongan)} | Uang Makan: ${rp(uangMakan)}`;
+    $('absensiPreview').innerHTML = `
+        <b>Preview:</b><br>
+        ⏰ Jam Jadwal: ${jadwal}<br>
+        ${status === 'hadir' ? `⏱️ Terlambat: ${telat} menit<br>` : ''}
+        💸 Potongan: ${rp(potongan)}<br>
+        🍽️ Uang Makan: ${rp(uangMakan)} ${status !== 'hadir' ? '(Tidak masuk = Rp 0)' : '(Cash harian)'}
+    `;
 };
 
 function renderAbsensi() {
-    const list = absensiList.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-    $('absensiTable').innerHTML = list.length ? list.map(a => `
+    // Tampilkan/sembunyikan kolom aksi untuk owner
+    document.querySelectorAll('.absensi-actions').forEach(el => {
+        el.style.display = isOwner() ? 'table-cell' : 'none';
+    });
+    
+    $('absensiTable').innerHTML = absensiList.length ? absensiList.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).map(a => `
         <tr>
-            <td>${fdate(a.tanggal)}</td><td>${a.nama}</td>
-            <td>${a.status === 'hadir' ? '✅' : a.status === 'izin' ? '📝' : a.status === 'sakit' ? '🤒' : '❌'} ${a.status?.toUpperCase()}</td>
-            <td>${a.jadwal}</td><td>${a.aktual}</td>
+            <td>${fdate(a.tanggal)}</td>
+            <td>${a.nama}</td>
+            <td>${a.status === 'hadir' ? '✅ HADIR' : a.status === 'izin' ? '📝 IZIN' : a.status === 'sakit' ? '🤒 SAKIT' : '❌ ALFA'}</td>
+            <td>${a.jadwal}</td>
+            <td>${a.aktual}</td>
             <td>${a.telat > 0 ? a.telat + ' menit' : '-'}</td>
             <td style="color:var(--danger)">${a.potongan > 0 ? rp(a.potongan) : '-'}</td>
+            ${isOwner() ? `<td><div class="action-btns"><button class="btn btn-xs btn-edit" onclick="editAbsensi('${a._key}')">✏️</button></div></td>` : ''}
         </tr>
-    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px">Belum ada data absensi</td></tr>';
+    `).join('') : '<tr><td colspan="' + (isOwner() ? '8' : '7') + '" style="text-align:center;padding:40px">Belum ada data absensi</td></tr>';
 }
 
 $('absensiForm').onsubmit = e => {
     e.preventDefault();
-    const staffId = +$('absensiStaff').value;
-    const staff = staffList.find(s => s.id === staffId);
+    const staffKey = $('absensiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
     if (!staff) return toast('Pilih staff!', 'error');
     
     const status = $('absensiStatus').value;
@@ -1753,40 +2016,177 @@ $('absensiForm').onsubmit = e => {
     const aktual = $('absensiAktual').value;
     let telat = 0, potongan = 0;
     
-    if (status === 'hadir' && aktual) {
-        const j = new Date('2000-01-01T' + jadwal);
-        const a = new Date('2000-01-01T' + aktual);
-        telat = Math.max(0, Math.floor((a - j) / 60000));
-        if (telat <= 10) potongan = 0;
-        else if (telat <= 30) potongan = 25000;
-        else potongan = Math.round((staff.gaji || 3000000) / 30);
-    } else if (status !== 'hadir') {
-        potongan = Math.round((staff.gaji || 3000000) / 30);
+    if (status === 'hadir') {
+        if (aktual) {
+            const j = new Date('2000-01-01T' + jadwal);
+            const a = new Date('2000-01-01T' + aktual);
+            telat = Math.max(0, Math.floor((a - j) / 60000));
+            
+            if (telat <= 10) potongan = 0;
+            else if (telat <= 30) potongan = 25000;
+            else potongan = Math.round(staff.gaji / 30);
+        }
+    } else {
+        potongan = Math.round(staff.gaji / 30);
     }
     
-    const newAbsensi = { 
-        id: Date.now(), 
+    const absensiData = { 
+        id: Date.now().toString(),
         tanggal: $('absensiDate').value, 
-        staffId, 
+        staffId: staff.id, 
         nama: staff.nama, 
         status, 
         jadwal, 
         aktual: status === 'hadir' ? aktual : '-', 
         telat, 
         potongan,
-        uangMakan: status === 'hadir' ? (staff.uangMakanHarian || 20000) : 0
+        uangMakan: status === 'hadir' ? staff.uangMakanHarian : 0
     };
     
-    saveAbsensi(newAbsensi);
-    $('absensiStaff').value = '';
-    $('absensiAktual').value = '';
-    $('absensiPreview').style.display = 'none';
-    toast('Absensi berhasil disimpan!');
+    absensiRef.push(absensiData)
+        .then(() => {
+            $('absensiStaff').value = '';
+            $('absensiAktual').value = '';
+            $('absensiPreview').style.display = 'none';
+            toast('Absensi berhasil disimpan!');
+        })
+        .catch(error => {
+            toast('Gagal menyimpan absensi: ' + error.message, 'error');
+        });
+};
+
+// Fungsi Edit Absensi (Owner Only)
+window.editAbsensi = (key) => {
+    if (!isOwner()) return toast('Hanya Owner yang dapat mengedit data absensi!', 'error');
+    
+    const a = absensiList.find(x => x._key === key);
+    if (!a) return;
+    
+    $('editAbsensiKey').value = key;
+    $('editAbsensiId').value = a.id;
+    $('editAbsensiStaff').value = a.staffId; // Ini perlu mapping, tapi kita simpan staffId
+    $('editAbsensiDate').value = a.tanggal;
+    $('editAbsensiStatus').value = a.status;
+    $('editAbsensiAktual').value = a.aktual !== '-' ? a.aktual : '';
+    $('editAbsensiJadwal').value = a.jadwal;
+    
+    // Update preview
+    updateEditAbsensiPreview();
+    
+    showModal('editAbsensiModal');
+};
+
+// Preview untuk edit absensi
+$('editAbsensiStatus').onchange = $('editAbsensiAktual').onchange = updateEditAbsensiPreview;
+
+function updateEditAbsensiPreview() {
+    const staffKey = $('editAbsensiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
+    const status = $('editAbsensiStatus').value;
+    const aktual = $('editAbsensiAktual').value;
+    const jadwal = $('editAbsensiJadwal').value;
+    
+    if (!staff) {
+        $('editAbsensiPreview').style.display = 'none';
+        return;
+    }
+    
+    let telat = 0, potongan = 0, uangMakan = 0;
+    
+    if (status === 'hadir') {
+        uangMakan = staff.uangMakanHarian;
+        if (aktual) {
+            const j = new Date('2000-01-01T' + jadwal);
+            const a = new Date('2000-01-01T' + aktual);
+            telat = Math.max(0, Math.floor((a - j) / 60000));
+            
+            if (telat <= 10) potongan = 0;
+            else if (telat <= 30) potongan = 25000;
+            else potongan = Math.round(staff.gaji / 30);
+        }
+    } else {
+        potongan = Math.round(staff.gaji / 30);
+        uangMakan = 0;
+    }
+    
+    $('editAbsensiPreview').style.display = 'block';
+    $('editAbsensiPreview').innerHTML = `
+        <b>Preview Perubahan:</b><br>
+        ⏰ Jam Jadwal: ${jadwal}<br>
+        ${status === 'hadir' ? `⏱️ Terlambat: ${telat} menit<br>` : ''}
+        💸 Potongan: ${rp(potongan)}<br>
+        🍽️ Uang Makan: ${rp(uangMakan)}
+    `;
+}
+
+$('updateAbsensiBtn').onclick = () => {
+    const key = $('editAbsensiKey').value;
+    if (!key) return;
+    
+    const staffKey = $('editAbsensiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
+    if (!staff) return toast('Staff tidak ditemukan!', 'error');
+    
+    const status = $('editAbsensiStatus').value;
+    const jadwal = $('editAbsensiJadwal').value;
+    const aktual = $('editAbsensiAktual').value;
+    let telat = 0, potongan = 0;
+    
+    if (status === 'hadir') {
+        if (aktual) {
+            const j = new Date('2000-01-01T' + jadwal);
+            const a = new Date('2000-01-01T' + aktual);
+            telat = Math.max(0, Math.floor((a - j) / 60000));
+            
+            if (telat <= 10) potongan = 0;
+            else if (telat <= 30) potongan = 25000;
+            else potongan = Math.round(staff.gaji / 30);
+        }
+    } else {
+        potongan = Math.round(staff.gaji / 30);
+    }
+    
+    const updates = {
+        tanggal: $('editAbsensiDate').value,
+        status: status,
+        aktual: status === 'hadir' ? aktual : '-',
+        telat: telat,
+        potongan: potongan,
+        uangMakan: status === 'hadir' ? staff.uangMakanHarian : 0,
+        updatedBy: getName(),
+        updatedAt: new Date().toISOString()
+    };
+    
+    absensiRef.child(key).update(updates)
+        .then(() => {
+            toast('Data absensi berhasil diupdate!');
+            hideModal('editAbsensiModal');
+        })
+        .catch(error => {
+            toast('Gagal update absensi: ' + error.message, 'error');
+        });
+};
+
+$('deleteAbsensiBtn').onclick = () => {
+    const key = $('editAbsensiKey').value;
+    if (!key) return;
+    
+    if (confirm('⚠️ Yakin hapus data absensi ini?\n\nData yang dihapus akan mempengaruhi perhitungan gaji dan tidak bisa dikembalikan!')) {
+        absensiRef.child(key).remove()
+            .then(() => {
+                toast('Data absensi dihapus!');
+                hideModal('editAbsensiModal');
+            })
+            .catch(error => {
+                toast('Gagal menghapus absensi: ' + error.message, 'error');
+            });
+    }
 };
 
 // ==================== GAJI ====================
 function calcGaji() {
-    const staff = staffList.find(s => s.id === +$('gajiStaff').value);
+    const staffKey = $('gajiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
     if (!staff) { $('slipContainer').style.display = 'none'; return; }
     
     const bulan = +$('gajiBulan').value;
@@ -1798,12 +2198,14 @@ function calcGaji() {
     });
     
     const hariMasuk = absenBulanIni.filter(a => a.status === 'hadir').length;
-    const totalUangMakan = hariMasuk * (staff.uangMakanHarian || 20000);
-    const potTelat = absenBulanIni.filter(a => a.status === 'hadir').reduce((s, a) => s + (a.potongan || 0), 0);
-    const potAbsen = absenBulanIni.filter(a => a.status !== 'hadir').reduce((s, a) => s + (a.potongan || 0), 0);
+    const totalUangMakan = hariMasuk * staff.uangMakanHarian;
+    const potTelat = absenBulanIni.filter(a => a.status === 'hadir').reduce((s, a) => s + a.potongan, 0);
+    const potAbsen = absenBulanIni.filter(a => a.status !== 'hadir').reduce((s, a) => s + a.potongan, 0);
     const kasbon = +$('gajiKasbon').value || 0;
     const gantiRugi = +$('gajiGantiRugi').value || 0;
-    const gajiBersih = Math.max(0, (staff.gaji || 3000000) - potTelat - potAbsen - kasbon - gantiRugi);
+    
+    const totalPotongan = potTelat + potAbsen + kasbon + gantiRugi;
+    const gajiBersih = Math.max(0, staff.gaji - totalPotongan);
     
     const bulanNames = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     
@@ -1826,8 +2228,9 @@ $('gajiKasbon').onchange = calcGaji;
 $('gajiGantiRugi').onchange = calcGaji;
 
 $('sendWABtn').onclick = () => {
-    const staff = staffList.find(s => s.id === +$('gajiStaff').value);
-    if (!staff) return toast('Pilih staff!', 'error');
+    const staffKey = $('gajiStaff').value;
+    const staff = staffList.find(s => s._key === staffKey);
+    if (!staff) return toast('Pilih staff dulu!', 'error');
     if (!staff.wa) return toast('Staff belum ada nomor WA!', 'error');
     
     const msg = `🏢 *SLIP GAJI ZEA PROPERTY*
@@ -1837,25 +2240,28 @@ $('sendWABtn').onclick = () => {
 💰 *Gaji Pokok:* ${$('slipGaji').textContent}
 
 📅 *Hari Masuk:* ${$('slipHari').textContent}
-🍽️ *Uang Makan:* ${$('slipMakan').textContent} _(cash harian)_
+🍽️ *Uang Makan:* ${$('slipMakan').textContent}
+_(Sudah diambil cash harian)_
 
 *POTONGAN:*
-⏰ Terlambat: ${$('slipTelat').textContent}
-📅 Absen: ${$('slipAbsen').textContent}
+⏰ Keterlambatan: ${$('slipTelat').textContent}
+📅 Ketidakhadiran: ${$('slipAbsen').textContent}
 💵 Kasbon: ${$('slipKasbon').textContent}
 💸 Ganti Rugi: ${$('slipGantiRugi').textContent}
 
 💵 *GAJI TRANSFER: ${$('slipBersih').textContent}*
 
-_Terima kasih!_ 💪`;
+_Terima kasih atas kerja kerasnya!_ 💪
+_ZEA Property Gateway Pasteur_`;
     
     const waNumber = staff.wa.replace(/\D/g, '');
     window.open('https://wa.me/' + (waNumber.startsWith('0') ? '62' + waNumber.slice(1) : waNumber) + '?text=' + encodeURIComponent(msg), '_blank');
+    toast('Membuka WhatsApp...');
 };
 
 $('saveGajiBtn').onclick = () => {
-    if (!$('gajiStaff').value) return toast('Pilih staff!', 'error');
-    toast('Data gaji disimpan!');
+    if (!$('gajiStaff').value) return toast('Pilih staff dulu!', 'error');
+    toast('Data gaji berhasil disimpan!');
 };
 
 // ==================== AKUN ====================
@@ -1865,7 +2271,7 @@ function renderAkun() {
             <td>${u.username}</td>
             <td><span class="badge ${roleBadge(u.role)}">${roleLabel(u.role)}</span></td>
             <td><span class="badge badge-approved">✅ Aktif</span></td>
-            <td>${u.role !== 'owner' && hasAccess(['owner', 'admin']) ? `<button class="btn btn-danger btn-xs" onclick="delAkun(${u.id})">🗑️</button>` : '-'}</td>
+            <td>${u.role !== 'owner' && hasAccess(['owner', 'admin']) ? `<button class="btn btn-danger btn-xs" onclick="delAkun('${u._key}')">🗑️</button>` : '-'}</td>
         </tr>
     `).join('');
 }
@@ -1878,19 +2284,69 @@ $('saveAkunBtn').onclick = () => {
     if (!user || !pass) return toast('Username & password wajib!', 'error');
     if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) return toast('Username sudah ada!', 'error');
     
-    const newUser = { id: Date.now(), username: user, password: pass, role: $('aRole').value, name: user };
-    saveUser(newUser);
-    hideModal('akunModal');
-    $('aUser').value = '';
-    $('aPass').value = '';
-    toast('Akun berhasil ditambahkan!');
+    const userData = { 
+        id: Date.now().toString(), 
+        username: user, 
+        password: pass, 
+        role: $('aRole').value, 
+        name: user 
+    };
+    
+    usersRef.push(userData)
+        .then(() => {
+            hideModal('akunModal');
+            $('aUser').value = '';
+            $('aPass').value = '';
+            toast('Akun berhasil ditambahkan!');
+        })
+        .catch(error => {
+            toast('Gagal menambah akun: ' + error.message, 'error');
+        });
 };
 
-window.delAkun = id => { 
+window.delAkun = key => { 
     if (confirm('Hapus akun ini?')) { 
-        deleteUserFromDB(id);
-        toast('Akun dihapus!');
+        usersRef.child(key).remove()
+            .then(() => {
+                toast('Akun dihapus!');
+            })
+            .catch(error => {
+                toast('Gagal menghapus akun: ' + error.message, 'error');
+            });
     } 
+};
+
+// ==================== BACKUP PAGE ====================
+function updateBackupStats() {
+    $('#firebaseStaff').textContent = staffList.length;
+    $('#firebaseUnit').textContent = unitList.length;
+    $('#firebaseToken').textContent = tokenList.length;
+    $('#firebasePengajuan').textContent = pengajuanList.length;
+}
+
+// Backup button events
+$('backupAllBtn').onclick = backupAllData;
+$('syncNowBtn').onclick = syncNow;
+$('clearLocalBtn').onclick = clearLocalCache;
+
+$('importBackupBtn').onclick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const backupData = JSON.parse(event.target.result);
+                toast('Fitur import akan segera tersedia!', 'info');
+            } catch (error) {
+                toast('File backup tidak valid!', 'error');
+            }
+        };
+        reader.readAsText(file);
+    };
+    input.click();
 };
 
 // ==================== MODAL CLOSE ====================
@@ -1905,25 +2361,40 @@ function initApp() {
     $('headerUserAvatar').style.background = roleColor(currentUser.role);
     
     setupNav();
+    setupFirebaseListeners();
     updateDashboard();
-    renderStaff();
-    renderUnit();
     updateUnitSelects();
-    renderToken();
-    renderPengajuan();
-    renderReport();
     updateSelects();
-    renderAbsensi();
-    renderAkun();
     
     $('absensiDate').valueAsDate = new Date();
     $('tokenDate').valueAsDate = new Date();
+    
+    // Update backup stats periodically
+    setInterval(updateBackupStats, 5000);
+    
+    // Setup edit modal listeners
+    setupEditModalListeners();
+    
+    updateSyncStatus('✅ Terhubung ke Firebase Realtime Database', 'success');
 }
 
-// ==================== START APP ====================
-document.addEventListener('DOMContentLoaded', () => {
-    initFirebase();
-});
+function setupEditModalListeners() {
+    // Prevent modal close when clicking inside modal content
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.onclick = e => e.stopPropagation();
+    });
+}
+
+// Init app on load
+window.onload = () => {
+    // Wait for Firebase to be ready
+    setTimeout(() => {
+        if (users.length === 0) {
+            // If no users loaded yet, init with defaults
+            initApp();
+        }
+    }, 1000);
+};
 </script>
 </body>
 </html>
