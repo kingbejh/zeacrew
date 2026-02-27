@@ -288,6 +288,7 @@
         .badge-pending { background: #fef3c7; color: #d97706; }
         .badge-approved { background: #dcfce7; color: #16a34a; }
         .badge-rejected { background: #fee2e2; color: #dc2626; }
+        .badge-libur { background: #e0f2fe; color: #0284c7; }
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5);
@@ -719,7 +720,7 @@
                 <div class="page" id="page-absensi">
                     <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
                     <div class="warning-box">
-                        <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja
+                        <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja | LIBUR = Tidak ada potongan
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
@@ -729,7 +730,13 @@
                                 <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group"><label>📊 Status</label><select id="absensiStatus"><option value="hadir">✅ HADIR</option><option value="izin">📝 IZIN</option><option value="sakit">🤒 SAKIT</option><option value="alfa">❌ ALFA</option></select></div>
+                                <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
+                                    <option value="hadir">✅ HADIR</option>
+                                    <option value="izin">📝 IZIN</option>
+                                    <option value="sakit">🤒 SAKIT</option>
+                                    <option value="alfa">❌ ALFA</option>
+                                    <option value="libur">🏖️ LIBUR</option>
+                                </select></div>
                                 <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
                             </div>
                             <div id="absensiPreview" class="info-box" style="display:none"></div>
@@ -748,7 +755,8 @@
                     <div class="info-box">
                         <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
                         <b>Periode Gaji:</b> Tanggal 27 bulan lalu s/d 26 bulan ini<br>
-                        <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)
+                        <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
+                        <b>Catatan:</b> Status LIBUR tidak dikenakan potongan
                     </div>
                     <div class="card">
                         <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
@@ -770,7 +778,7 @@
                             <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
                             <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
                             <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
-                            <div class="slip-row" style="color:var(--danger)"><span>📅 Absen</span><span id="slipAbsen">- Rp 0</span></div>
+                            <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
                             <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
                             <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
                             <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
@@ -806,7 +814,7 @@
                         <div class="section-title">🔐 Role & Akses</div>
                         <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
                         <div class="section-title">💰 Formula Gaji</div>
-                        <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)</p>
+                        <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
                         <div class="section-title">⏰ Potongan Terlambat</div>
                         <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
                         <div class="section-title">📞 Bantuan</div>
@@ -1798,12 +1806,22 @@
                 else if (telat <= 30) potongan = 25000;
                 else potongan = Math.round((staff.gaji || 3000000) / 30);
             }
+        } else if (status === 'libur') {
+            // LIBUR: Tidak ada potongan, tidak ada uang makan
+            potongan = 0;
+            uangMakan = 0;
         } else {
+            // IZIN, SAKIT, ALFA: Potongan 1 hari kerja
             potongan = Math.round((staff.gaji || 3000000) / 30);
         }
         
         $('absensiPreview').style.display = 'block';
-        $('absensiPreview').innerHTML = `<b>Preview:</b> ⏰ Jadwal: ${jadwal} | ${status === 'hadir' ? `Terlambat: ${telat} menit |` : ''} Potongan: ${rp(potongan)} | Uang Makan: ${rp(uangMakan)}`;
+        
+        if (status === 'libur') {
+            $('absensiPreview').innerHTML = `<b>Preview:</b> 🏖️ Status LIBUR - Tidak ada potongan gaji & tidak ada uang makan`;
+        } else {
+            $('absensiPreview').innerHTML = `<b>Preview:</b> ⏰ Jadwal: ${jadwal} | ${status === 'hadir' ? `Terlambat: ${telat} menit |` : ''} Potongan: ${rp(potongan)} | Uang Makan: ${rp(uangMakan)}`;
+        }
     };
 
     function renderAbsensi() {
@@ -1811,7 +1829,9 @@
         $('absensiTable').innerHTML = list.length ? list.map(a => `
             <tr>
                 <td>${fdate(a.tanggal)}</td><td>${a.nama}</td>
-                <td>${a.status === 'hadir' ? '✅' : a.status === 'izin' ? '📝' : a.status === 'sakit' ? '🤒' : '❌'} ${a.status?.toUpperCase()}</td>
+                <td>${a.status === 'hadir' ? '✅' : a.status === 'izin' ? '📝' : a.status === 'sakit' ? '🤒' : a.status === 'libur' ? '🏖️' : '❌'} 
+                    <span class="badge badge-${a.status === 'libur' ? 'libur' : a.status}">${a.status?.toUpperCase()}</span>
+                </td>
                 <td>${a.jadwal}</td><td>${a.aktual}</td>
                 <td>${a.telat > 0 ? a.telat + ' menit' : '-'}</td>
                 <td style="color:var(--danger)">${a.potongan > 0 ? rp(a.potongan) : '-'}</td>
@@ -1828,16 +1848,24 @@
         const status = $('absensiStatus').value;
         const jadwal = staff.jamMasuk || '08:00';
         const aktual = $('absensiAktual').value;
-        let telat = 0, potongan = 0;
+        let telat = 0, potongan = 0, uangMakan = 0;
         
-        if (status === 'hadir' && aktual) {
-            const j = new Date('2000-01-01T' + jadwal);
-            const a = new Date('2000-01-01T' + aktual);
-            telat = Math.max(0, Math.floor((a - j) / 60000));
-            if (telat <= 10) potongan = 0;
-            else if (telat <= 30) potongan = 25000;
-            else potongan = Math.round((staff.gaji || 3000000) / 30);
-        } else if (status !== 'hadir') {
+        if (status === 'hadir') {
+            uangMakan = staff.uangMakanHarian || 20000;
+            if (aktual) {
+                const j = new Date('2000-01-01T' + jadwal);
+                const a = new Date('2000-01-01T' + aktual);
+                telat = Math.max(0, Math.floor((a - j) / 60000));
+                if (telat <= 10) potongan = 0;
+                else if (telat <= 30) potongan = 25000;
+                else potongan = Math.round((staff.gaji || 3000000) / 30);
+            }
+        } else if (status === 'libur') {
+            // LIBUR: Tidak ada potongan
+            potongan = 0;
+            uangMakan = 0;
+        } else {
+            // IZIN, SAKIT, ALFA
             potongan = Math.round((staff.gaji || 3000000) / 30);
         }
         
@@ -1851,7 +1879,7 @@
             aktual: status === 'hadir' ? aktual : '-', 
             telat, 
             potongan,
-            uangMakan: status === 'hadir' ? (staff.uangMakanHarian || 20000) : 0
+            uangMakan
         };
         
         saveAbsensi(newAbsensi);
@@ -1861,7 +1889,7 @@
         toast('Absensi berhasil disimpan!');
     };
 
-    // ==================== GAJI (PERBAIKAN PERIODE 27-26) ====================
+    // ==================== GAJI (PERIODE 27-26) ====================
     function calcGaji() {
         const staff = staffList.find(s => s.id === +$('gajiStaff').value);
         if (!staff) { $('slipContainer').style.display = 'none'; return; }
@@ -1869,7 +1897,7 @@
         const bulan = +$('gajiBulan').value;
         const tahun = 2026;
         
-        // PERBAIKAN: Periode gaji 27 - 26 (bukan 1-31 kalender)
+        // Periode gaji 27 - 26
         let startMonth, startYear, endMonth, endYear;
         
         if (bulan === 1) {
@@ -1896,10 +1924,16 @@
             return a.staffId === staff.id && d >= startDate && d <= endDate;
         });
         
+        // Hitung hanya yang hadir (tidak termasuk libur untuk perhitungan hari masuk)
         const hariMasuk = absenPeriodeIni.filter(a => a.status === 'hadir').length;
         const totalUangMakan = hariMasuk * (staff.uangMakanHarian || 20000);
+        
+        // Potongan terlambat hanya dari yang hadir
         const potTelat = absenPeriodeIni.filter(a => a.status === 'hadir').reduce((s, a) => s + (a.potongan || 0), 0);
-        const potAbsen = absenPeriodeIni.filter(a => a.status !== 'hadir').reduce((s, a) => s + (a.potongan || 0), 0);
+        
+        // Potongan absen: IZIN, SAKIT, ALFA (tidak termasuk LIBUR)
+        const potAbsen = absenPeriodeIni.filter(a => ['izin', 'sakit', 'alfa'].includes(a.status)).reduce((s, a) => s + (a.potongan || 0), 0);
+        
         const kasbon = +$('gajiKasbon').value || 0;
         const gantiRugi = +$('gajiGantiRugi').value || 0;
         const gajiBersih = Math.max(0, (staff.gaji || 3000000) - potTelat - potAbsen - kasbon - gantiRugi);
