@@ -1058,25 +1058,37 @@ async function initFirebase() {
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
-    hideLoading();
+
+    // FALLBACK: Kalau 3 detik masih loading, paksa hide overlay
+    const loadingTimeout = setTimeout(() => {
+        hideLoading();
+        setSyncStatus('offline');
+    }, 3000);
 
     // Konek Firebase di background
     db.ref('.info/connected').on('value', (snap) => {
         setSyncStatus(snap.val() ? 'online' : 'offline');
     });
 
-    loadAllData().then(() => {
+    try {
+        await Promise.race([
+            loadAllData(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+        ]);
         setupRealtimeListeners();
+    } catch(e) {
+        console.warn('Firebase gagal/timeout:', e);
+        setSyncStatus('offline');
+    } finally {
+        clearTimeout(loadingTimeout);
+        hideLoading();
         if (currentUser) {
             renderStaff(); renderUnit(); updateUnitSelects();
             renderToken(); renderPengajuan(); renderReport();
             updateSelects(); renderAbsensi(); renderAkun();
             updateDashboard();
         }
-    }).catch(e => {
-        console.warn('Firebase gagal:', e);
-        setSyncStatus('offline');
-    });
+    }
 }
 
 async function loadAllData() {
