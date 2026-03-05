@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEA CREW - Sistem Manajemen ZEA Property</title>
 
-```
 <!-- Firebase SDK -->
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <style>
@@ -491,7 +492,6 @@
         margin-left: 10px;
     }
 </style>
-```
 
 </head>
 <body>
@@ -501,8 +501,8 @@
         <div class="loading-text">Menghubungkan ke Firebase...</div>
     </div>
 
-```
 <!-- Sync Status -->
+
 <div class="sync-status online" id="syncStatus">
     <div class="sync-dot"></div>
     <span id="syncText">Online</span>
@@ -547,292 +547,296 @@
         </div>
     </header>
 
-    <div class="main-layout">
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-        <nav class="sidebar" id="sidebar">
-            <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></div>
-            <div class="nav-item" data-page="staff" data-roles="owner,admin,leader"><span class="nav-icon">👥</span><span>Staff</span></div>
-            <div class="nav-item" data-page="unit"><span class="nav-icon">🏠</span><span>Unit Apartemen</span></div>
-            <div class="nav-item" data-page="token"><span class="nav-icon">⚡</span><span>Token Listrik</span></div>
-            <div class="nav-item" data-page="pengajuan"><span class="nav-icon">📝</span><span>Pengajuan</span></div>
-            <div class="nav-item" data-page="report"><span class="nav-icon">🔧</span><span>Report Kerusakan</span></div>
-            <div class="nav-item" data-page="absensi" data-roles="owner,admin,leader"><span class="nav-icon">📋</span><span>Absensi</span></div>
-            <div class="nav-item" data-page="gaji" data-roles="owner,admin,leader"><span class="nav-icon">💰</span><span>Penggajian</span></div>
-            <div class="nav-item" data-page="akun" data-roles="owner,admin"><span class="nav-icon">⚙️</span><span>Kelola Akun</span></div>
-            <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
-        </nav>
+```
+<div class="main-layout">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+        <div class="nav-item" data-page="staff" data-roles="owner,admin,leader"><span class="nav-icon">👥</span><span>Staff</span></div>
+        <div class="nav-item" data-page="unit"><span class="nav-icon">🏠</span><span>Unit Apartemen</span></div>
+        <div class="nav-item" data-page="token"><span class="nav-icon">⚡</span><span>Token Listrik</span></div>
+        <div class="nav-item" data-page="pengajuan"><span class="nav-icon">📝</span><span>Pengajuan</span></div>
+        <div class="nav-item" data-page="report"><span class="nav-icon">🔧</span><span>Report Kerusakan</span></div>
+        <div class="nav-item" data-page="absensi" data-roles="owner,admin,leader"><span class="nav-icon">📋</span><span>Absensi</span></div>
+        <div class="nav-item" data-page="gaji" data-roles="owner,admin,leader"><span class="nav-icon">💰</span><span>Penggajian</span></div>
+        <div class="nav-item" data-page="akun" data-roles="owner,admin"><span class="nav-icon">⚙️</span><span>Kelola Akun</span></div>
+        <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
+    </nav>
 
-        <main class="content">
-            <!-- Dashboard -->
-            <div class="page active" id="page-dashboard">
-                <div class="page-header">
-                    <h1 class="page-title">📊 Dashboard</h1>
-                    <p class="page-subtitle" id="welcomeText">Selamat datang di Sistem ZEA CREW</p>
+    <main class="content">
+        <!-- Dashboard -->
+        <div class="page active" id="page-dashboard">
+            <div class="page-header">
+                <h1 class="page-title">📊 Dashboard</h1>
+                <p class="page-subtitle" id="welcomeText">Selamat datang di Sistem ZEA CREW</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statStaff">0</div><div class="stat-label">Total Staff</div></div>
+                <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-value" id="statUnit">0</div><div class="stat-label">Total Unit</div></div>
+                <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-value" id="statMaint">0</div><div class="stat-label">Maintenance</div></div>
+                <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statReady">0</div><div class="stat-label">Ready</div></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3 class="card-title">📰 Feed Posting</h3></div>
+                <textarea class="feed-input" id="feedInput" placeholder="Tulis sesuatu untuk tim..."></textarea>
+                <div class="feed-actions">
+                    <button class="feed-type-btn active" data-type="info">ℹ️ Info</button>
+                    <button class="feed-type-btn" data-type="pengumuman">📢 Pengumuman</button>
+                    <button class="feed-type-btn" data-type="keluhan">😟 Keluhan</button>
+                    <button class="feed-type-btn" data-type="lainnya">💬 Lainnya</button>
+                    <button class="btn btn-primary btn-sm" id="postBtn">Posting</button>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statStaff">0</div><div class="stat-label">Total Staff</div></div>
-                    <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-value" id="statUnit">0</div><div class="stat-label">Total Unit</div></div>
-                    <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-value" id="statMaint">0</div><div class="stat-label">Maintenance</div></div>
-                    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statReady">0</div><div class="stat-label">Ready</div></div>
+                <div id="feedContainer" style="margin-top:20px"></div>
+            </div>
+        </div>
+
+        <!-- Staff -->
+        <div class="page" id="page-staff">
+            <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
+            <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Staff</h3>
+                    <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
                 </div>
-                <div class="card">
-                    <div class="card-header"><h3 class="card-title">📰 Feed Posting</h3></div>
-                    <textarea class="feed-input" id="feedInput" placeholder="Tulis sesuatu untuk tim..."></textarea>
-                    <div class="feed-actions">
-                        <button class="feed-type-btn active" data-type="info">ℹ️ Info</button>
-                        <button class="feed-type-btn" data-type="pengumuman">📢 Pengumuman</button>
-                        <button class="feed-type-btn" data-type="keluhan">😟 Keluhan</button>
-                        <button class="feed-type-btn" data-type="lainnya">💬 Lainnya</button>
-                        <button class="btn btn-primary btn-sm" id="postBtn">Posting</button>
-                    </div>
-                    <div id="feedContainer" style="margin-top:20px"></div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Aksi</th></tr></thead>
+                        <tbody id="staffTable"></tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Staff -->
-            <div class="page" id="page-staff">
-                <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
-                <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Daftar Staff</h3>
-                        <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Aksi</th></tr></thead>
-                            <tbody id="staffTable"></tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- Unit -->
+        <div class="page" id="page-unit">
+            <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
+                <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
             </div>
-
-            <!-- Unit -->
-            <div class="page" id="page-unit">
-                <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
-                    <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
+            <div class="card" id="unitFormCard">
+                <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
+                <input type="hidden" id="unitEditId">
+                <div class="form-row-3" style="margin-top:16px">
+                    <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
+                    <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
+                    <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
                 </div>
-                <div class="card" id="unitFormCard">
-                    <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
-                    <input type="hidden" id="unitEditId">
-                    <div class="form-row-3" style="margin-top:16px">
-                        <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
-                        <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
-                        <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
+                    <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
+                    <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
+                </div>
+                <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
+                <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
+            </div>
+            <div class="card">
+                <h3 class="card-title">Daftar Unit</h3>
+                <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
+                <div class="unit-grid" id="unitGridStudio"></div>
+                <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
+                <div class="unit-grid" id="unitGrid1BR"></div>
+                <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
+                <div class="unit-grid" id="unitGrid2BR"></div>
+                <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
+                <div class="unit-grid" id="unitGridKios"></div>
+            </div>
+        </div>
+
+        <!-- Token Listrik -->
+        <div class="page" id="page-token">
+            <div class="page-header">
+                <h1 class="page-title">⚡ Token Listrik</h1>
+                <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
+            </div>
+            <div class="card">
+                <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
+                <form id="tokenForm" style="margin-top:16px">
+                    <div class="form-row">
+                        <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
+                        <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
-                        <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
+                        <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
+                        <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
+                    </div>
+                    <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
+                    <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
+                    <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
+                </form>
+            </div>
+            <div class="card">
+                <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
+                <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
+                <div id="tokenAnalysis"></div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📜 Riwayat Token Listrik</h3>
+                    <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
+                        <tbody id="tokenTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengajuan -->
+        <div class="page" id="page-pengajuan">
+            <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
+            <div class="tabs" id="pengajuanTabs">
+                <button class="tab-btn active" data-filter="semua">Semua</button>
+                <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
+                <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
+                <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Pengajuan</h3>
+                    <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
+                </div>
+                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Report -->
+        <div class="page" id="page-report">
+            <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
+                <form id="reportForm">
+                    <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
+                    <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
+                    <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
+                    <button type="submit" class="btn btn-primary">Kirim Report</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
+                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
+            </div>
+        </div>
+
+        <!-- Absensi -->
+        <div class="page" id="page-absensi">
+            <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
+            <div class="warning-box">
+                <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja | LIBUR = Tidak ada potongan
+            </div>
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
+                <form id="absensiForm">
+                    <div class="form-row">
+                        <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
+                        <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
-                        <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
+                        <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
+                            <option value="hadir">✅ HADIR</option>
+                            <option value="izin">📝 IZIN</option>
+                            <option value="sakit">🤒 SAKIT</option>
+                            <option value="alfa">❌ ALFA</option>
+                            <option value="libur">🏖️ LIBUR</option>
+                        </select></div>
+                        <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
                     </div>
-                    <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
-                    <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
-                </div>
-                <div class="card">
-                    <h3 class="card-title">Daftar Unit</h3>
-                    <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
-                    <div class="unit-grid" id="unitGridStudio"></div>
-                    <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
-                    <div class="unit-grid" id="unitGrid1BR"></div>
-                    <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
-                    <div class="unit-grid" id="unitGrid2BR"></div>
-                    <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
-                    <div class="unit-grid" id="unitGridKios"></div>
-                </div>
+                    <div id="absensiPreview" class="info-box" style="display:none"></div>
+                    <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
+                </form>
             </div>
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
+                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
+            </div>
+        </div>
 
-            <!-- Token Listrik -->
-            <div class="page" id="page-token">
-                <div class="page-header">
-                    <h1 class="page-title">⚡ Token Listrik</h1>
-                    <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
+        <!-- Gaji -->
+        <div class="page" id="page-gaji">
+            <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
+            <div class="info-box">
+                <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
+                <b>Periode Gaji:</b> Tanggal 27 bulan lalu s/d 26 bulan ini<br>
+                <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
+                <b>Catatan:</b> Status LIBUR tidak dikenakan potongan
+            </div>
+            <div class="card">
+                <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
+                    <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
                 </div>
-                <div class="card">
-                    <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
-                    <form id="tokenForm" style="margin-top:16px">
-                        <div class="form-row">
-                            <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
-                            <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
-                            <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
-                        </div>
-                        <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
-                        <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
-                        <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
-                    </form>
+                <div class="form-row">
+                    <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
+                    <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
                 </div>
-                <div class="card">
-                    <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
-                    <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
-                    <div id="tokenAnalysis"></div>
+                <div class="slip-container" id="slipContainer" style="display:none">
+                    <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
+                    <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
+                    <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
+                    <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                    <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
+                    <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
+                    <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                    <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
+                    <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
+                    <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
+                    <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
+                    <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
+                    <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">📜 Riwayat Token Listrik</h3>
-                        <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
-                            <tbody id="tokenTable"></tbody>
-                        </table>
-                    </div>
+                <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+                    <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
+                    <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
+                    <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Pengajuan -->
-            <div class="page" id="page-pengajuan">
-                <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
-                <div class="tabs" id="pengajuanTabs">
-                    <button class="tab-btn active" data-filter="semua">Semua</button>
-                    <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
-                    <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
-                    <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
+        <!-- Akun -->
+        <div class="page" id="page-akun">
+            <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
+            <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Daftar Akun</h3>
+                    <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Daftar Pengajuan</h3>
-                        <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
-                    </div>
-                    <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
-                </div>
+                <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
             </div>
+        </div>
 
-            <!-- Report -->
-            <div class="page" id="page-report">
-                <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
-                <div class="card">
-                    <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
-                    <form id="reportForm">
-                        <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
-                        <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
-                        <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
-                        <button type="submit" class="btn btn-primary">Kirim Report</button>
-                    </form>
+        <!-- Panduan -->
+        <div class="page" id="page-panduan">
+            <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
+            <div class="card">
+                <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
+                    🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
                 </div>
-                <div class="card">
-                    <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
-                    <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
-                </div>
+                <div class="section-title">🔐 Role & Akses</div>
+                <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
+                <div class="section-title">💰 Formula Gaji</div>
+                <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
+                <div class="section-title">⏰ Potongan Terlambat</div>
+                <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
+                <div class="section-title">📞 Bantuan</div>
+                <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
             </div>
+        </div>
+    </main>
+</div>
+```
 
-            <!-- Absensi -->
-            <div class="page" id="page-absensi">
-                <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
-                <div class="warning-box">
-                    <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja | LIBUR = Tidak ada potongan
-                </div>
-                <div class="card">
-                    <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
-                    <form id="absensiForm">
-                        <div class="form-row">
-                            <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
-                            <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
-                                <option value="hadir">✅ HADIR</option>
-                                <option value="izin">📝 IZIN</option>
-                                <option value="sakit">🤒 SAKIT</option>
-                                <option value="alfa">❌ ALFA</option>
-                                <option value="libur">🏖️ LIBUR</option>
-                            </select></div>
-                            <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
-                        </div>
-                        <div id="absensiPreview" class="info-box" style="display:none"></div>
-                        <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
-                    </form>
-                </div>
-                <div class="card">
-                    <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
-                    <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
-                </div>
-            </div>
-
-            <!-- Gaji -->
-            <div class="page" id="page-gaji">
-                <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
-                <div class="info-box">
-                    <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
-                    <b>Periode Gaji:</b> Tanggal 27 bulan lalu s/d 26 bulan ini<br>
-                    <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
-                    <b>Catatan:</b> Status LIBUR tidak dikenakan potongan
-                </div>
-                <div class="card">
-                    <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
-                    <div class="form-row">
-                        <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
-                        <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
-                        <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
-                    </div>
-                    <div class="slip-container" id="slipContainer" style="display:none">
-                        <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
-                        <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
-                        <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
-                        <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-                        <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
-                        <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
-                        <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-                        <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
-                        <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
-                        <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
-                        <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
-                        <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
-                        <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
-                    </div>
-                    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-                        <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
-                        <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
-                        <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Akun -->
-            <div class="page" id="page-akun">
-                <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
-                <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Daftar Akun</h3>
-                        <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
-                    </div>
-                    <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
-                </div>
-            </div>
-
-            <!-- Panduan -->
-            <div class="page" id="page-panduan">
-                <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
-                <div class="card">
-                    <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
-                        🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
-                    </div>
-                    <div class="section-title">🔐 Role & Akses</div>
-                    <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
-                    <div class="section-title">💰 Formula Gaji</div>
-                    <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
-                    <div class="section-title">⏰ Potongan Terlambat</div>
-                    <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
-                    <div class="section-title">📞 Bantuan</div>
-                    <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
-                </div>
-            </div>
-        </main>
-    </div>
 </div>
 
 <!-- Modal Staff -->
+
 <div class="modal-overlay" id="staffModal">
     <div class="modal">
         <div class="modal-header"><h3 class="modal-title" id="staffModalTitle">➕ Tambah Staff</h3><button class="modal-close" data-close="staffModal">×</button></div>
@@ -859,6 +863,7 @@
 </div>
 
 <!-- Modal Pengajuan -->
+
 <div class="modal-overlay" id="pengajuanModal">
     <div class="modal">
         <div class="modal-header"><h3 class="modal-title">➕ Buat Pengajuan</h3><button class="modal-close" data-close="pengajuanModal">×</button></div>
@@ -874,6 +879,7 @@
 </div>
 
 <!-- Modal Akun -->
+
 <div class="modal-overlay" id="akunModal">
     <div class="modal">
         <div class="modal-header"><h3 class="modal-title">➕ Tambah Akun</h3><button class="modal-close" data-close="akunModal">×</button></div>
@@ -887,6 +893,7 @@
 </div>
 
 <!-- Modal Unit Detail -->
+
 <div class="modal-overlay" id="unitDetailModal">
     <div class="modal">
         <div class="modal-header"><h3 class="modal-title">🏠 Detail Unit</h3><button class="modal-close" data-close="unitDetailModal">×</button></div>
@@ -895,6 +902,7 @@
 </div>
 
 <!-- Modal Edit Gaji (Owner Only) -->
+
 <div class="modal-overlay" id="editGajiModal">
     <div class="modal">
         <div class="modal-header"><h3 class="modal-title">✏️ Edit Gaji Pokok Staff</h3><button class="modal-close" data-close="editGajiModal">×</button></div>
@@ -1996,7 +2004,6 @@ $('sendWABtn').onclick = () => {
     const periodeText = $('slipContainer').dataset.periodeText || $('slipPeriode').textContent.replace('Periode: ', '');
     
     const msg = `🏢 *SLIP GAJI ZEA PROPERTY*
-```
 
 📅 *Periode:* ${periodeText}
 
@@ -2016,7 +2023,6 @@ $('sendWABtn').onclick = () => {
 
 *Terima kasih!* 💪`;
 
-```
     const waNumber = staff.wa.replace(/\D/g, '');
     window.open('https://wa.me/' + (waNumber.startsWith('0') ? '62' + waNumber.slice(1) : waNumber) + '?text=' + encodeURIComponent(msg), '_blank');
 };
@@ -2125,7 +2131,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initFirebase();
 });
 </script>
-```
 
 </body>
 </html>
