@@ -932,9 +932,22 @@ const firebaseConfig = {
     appId: "1:1043212202064:web:8bd9e3e0e9f1c5eb0ee155"
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+// HARD FAILSAFE: paksa hide loading setelah 5 detik apapun yang terjadi
+setTimeout(() => {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}, 5000);
+
+// Initialize Firebase dengan try-catch
+let db = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+} catch(e) {
+    console.error('Firebase init error:', e);
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}
 
 // ==================== DATA STATE ====================
 let currentUser = null;
@@ -1065,10 +1078,17 @@ function showLoading(text) {
 async function initFirebase() {
     showLoading('Menghubungkan ke Firebase...');
 
-    // Load data lokal dulu supaya login tidak loading terus
+    // Load data lokal dulu supaya login bisa jalan offline
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
+
+    // Kalau db null (Firebase gagal init), langsung offline mode
+    if (!db) {
+        hideLoading();
+        setSyncStatus('offline');
+        return;
+    }
 
     // FALLBACK: Kalau 3 detik masih loading, paksa hide overlay
     const loadingTimeout = setTimeout(() => {
@@ -1077,9 +1097,11 @@ async function initFirebase() {
     }, 3000);
 
     // Konek Firebase di background
-    db.ref('.info/connected').on('value', (snap) => {
-        setSyncStatus(snap.val() ? 'online' : 'offline');
-    });
+    try {
+        db.ref('.info/connected').on('value', (snap) => {
+            setSyncStatus(snap.val() ? 'online' : 'offline');
+        });
+    } catch(e) {}
 
     try {
         await Promise.race([
