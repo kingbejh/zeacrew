@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEA CREW - Sistem Manajemen ZEA Property</title>
 
-```
 <!-- Firebase SDK -->
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-```
 
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,11 +34,16 @@
         min-height: 100vh;
         line-height: 1.5;
     }
+    
+    /* Loading Overlay */
     .loading-overlay {
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
         background: rgba(255,255,255,0.95);
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         z-index: 9999;
     }
     .loading-overlay.hidden { display: none; }
@@ -51,28 +56,53 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { margin-top: 16px; color: var(--text-light); }
+    
+    /* Sync Status */
     .sync-status {
-        position: fixed; bottom: 20px; left: 20px;
-        padding: 8px 16px; border-radius: 20px;
-        font-size: 12px; font-weight: 600;
-        z-index: 1000; display: flex; align-items: center; gap: 8px;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
     .sync-status.online { background: #dcfce7; color: #16a34a; }
     .sync-status.offline { background: #fee2e2; color: #dc2626; }
     .sync-status.syncing { background: #dbeafe; color: #2563eb; }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-    .sync-status.syncing .sync-dot { animation: pulse 1s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .sync-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+    .sync-status.syncing .sync-dot {
+        animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
     .login-container {
-        min-height: 100vh; display: flex;
-        align-items: center; justify-content: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 20px;
         background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     }
     .login-box {
-        background: var(--card); padding: 40px;
-        border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-        width: 100%; max-width: 400px; text-align: center;
+        background: var(--card);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
     }
     .login-logo { font-size: 48px; margin-bottom: 10px; }
     .login-title { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 5px; }
@@ -80,20 +110,33 @@
     .form-group { margin-bottom: 16px; text-align: left; }
     .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: var(--text-light); }
     .form-group input, .form-group select, .form-group textarea {
-        width: 100%; padding: 12px 14px;
-        border: 2px solid var(--border); border-radius: 10px;
-        font-size: 15px; transition: all 0.3s;
-        font-family: inherit; background: var(--card);
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        font-size: 15px;
+        transition: all 0.3s;
+        font-family: inherit;
+        background: var(--card);
     }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-        outline: none; border-color: var(--primary);
+        outline: none;
+        border-color: var(--primary);
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
     .btn {
-        padding: 12px 24px; border: none; border-radius: 10px;
-        font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s;
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
     }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-primary { background: var(--primary); color: white; }
@@ -106,17 +149,26 @@
     .btn-sm { padding: 8px 16px; font-size: 13px; }
     .btn-xs { padding: 6px 12px; font-size: 12px; }
     .login-error {
-        background: #fef2f2; color: var(--danger);
-        padding: 12px; border-radius: 10px;
-        margin-bottom: 20px; font-size: 14px; display: none;
+        background: #fef2f2;
+        color: var(--danger);
+        padding: 12px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: none;
     }
     .app-container { display: none; min-height: 100vh; }
     .app-container.active { display: block; }
     .header {
-        background: var(--card); padding: 15px 20px;
+        background: var(--card);
+        padding: 15px 20px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        position: sticky; top: 0; z-index: 100;
-        display: flex; align-items: center; justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
     .header-left { display: flex; align-items: center; gap: 15px; }
     .menu-toggle { background: none; border: none; font-size: 24px; cursor: pointer; display: none; }
@@ -137,22 +189,32 @@
     }
     .main-layout { display: flex; }
     .sidebar {
-        width: 250px; background: var(--card);
-        min-height: calc(100vh - 70px); padding: 20px 0;
+        width: 250px;
+        background: var(--card);
+        min-height: calc(100vh - 70px);
+        padding: 20px 0;
         border-right: 1px solid var(--border);
-        position: sticky; top: 70px;
-        height: calc(100vh - 70px); overflow-y: auto;
+        position: sticky;
+        top: 70px;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
     }
     .nav-item {
-        padding: 12px 24px; display: flex; align-items: center; gap: 12px;
-        cursor: pointer; transition: all 0.3s;
-        border-left: 3px solid transparent; font-size: 14px;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+        font-size: 14px;
     }
     .nav-item:hover { background: var(--bg); }
     .nav-item.active {
         background: rgba(37, 99, 235, 0.1);
         border-left-color: var(--primary);
-        color: var(--primary); font-weight: 600;
+        color: var(--primary);
+        font-weight: 600;
     }
     .nav-icon { font-size: 18px; }
     .content { flex: 1; padding: 20px; overflow-x: hidden; }
@@ -162,30 +224,49 @@
     .page-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
     .page-subtitle { color: var(--text-light); font-size: 14px; }
     .card {
-        background: var(--card); border-radius: 16px;
-        padding: 24px; margin-bottom: 20px;
+        background: var(--card);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     .card-header {
-        display: flex; align-items: center; justify-content: space-between;
-        margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
     }
     .card-title { font-size: 18px; font-weight: 600; }
     .stats-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 16px; margin-bottom: 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
     }
     .stat-card {
-        background: var(--card); padding: 20px;
-        border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center;
+        background: var(--card);
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        text-align: center;
     }
     .stat-icon { font-size: 28px; margin-bottom: 8px; }
     .stat-value { font-size: 26px; font-weight: 700; color: var(--primary); }
     .stat-label { color: var(--text-light); font-size: 13px; }
-    .unit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; }
+    .unit-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+        gap: 10px;
+    }
     .unit-card {
-        padding: 14px 8px; border-radius: 12px; text-align: center;
-        cursor: pointer; transition: all 0.3s; position: relative;
+        padding: 14px 8px;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
     }
     .unit-card.ready { background: #dcfce7; border: 2px solid #22c55e; }
     .unit-card.maintenance { background: #fee2e2; border: 2px solid #ef4444; }
@@ -213,33 +294,52 @@
     .badge-libur { background: #e0f2fe; color: #0284c7; }
     .modal-overlay {
         position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5); display: none;
-        align-items: center; justify-content: center;
-        z-index: 1000; padding: 20px; overflow-y: auto;
+        background: rgba(0,0,0,0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+        overflow-y: auto;
     }
     .modal-overlay.active { display: flex; }
     .modal {
-        background: var(--card); border-radius: 20px;
-        width: 100%; max-width: 600px;
-        max-height: 90vh; overflow-y: auto; margin: auto;
+        background: var(--card);
+        border-radius: 20px;
+        width: 100%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        margin: auto;
     }
     .modal-header {
-        padding: 20px 24px; border-bottom: 1px solid var(--border);
-        display: flex; align-items: center; justify-content: space-between;
-        position: sticky; top: 0; background: var(--card); z-index: 10;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        background: var(--card);
+        z-index: 10;
     }
     .modal-title { font-size: 18px; font-weight: 700; }
     .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light); }
     .modal-body { padding: 24px; }
     .modal-footer {
-        padding: 16px 24px; border-top: 1px solid var(--border);
-        display: flex; gap: 12px; justify-content: flex-end;
+        padding: 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
     }
     .toast {
         position: fixed; bottom: 70px; right: 20px;
         padding: 14px 20px; border-radius: 12px;
         color: white; font-weight: 600; z-index: 2000;
-        animation: slideIn 0.3s ease; font-size: 14px; max-width: 300px;
+        animation: slideIn 0.3s ease;
+        font-size: 14px;
+        max-width: 300px;
     }
     .toast.success { background: var(--success); }
     .toast.error { background: var(--danger); }
@@ -247,7 +347,11 @@
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
     }
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); }
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-light);
+    }
     .empty-icon { font-size: 48px; margin-bottom: 16px; }
     .staff-info { display: flex; align-items: center; gap: 12px; }
     .staff-avatar {
@@ -260,24 +364,36 @@
     .staff-wa { font-size: 12px; color: var(--text-light); }
     .action-btns { display: flex; gap: 6px; }
     .feed-input {
-        width: 100%; padding: 14px; border: 2px solid var(--border);
-        border-radius: 12px; font-size: 15px;
-        resize: none; min-height: 80px;
-        margin-bottom: 12px; font-family: inherit;
+        width: 100%;
+        padding: 14px;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        font-size: 15px;
+        resize: none;
+        min-height: 80px;
+        margin-bottom: 12px;
+        font-family: inherit;
     }
     .feed-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     .feed-type-btn {
-        padding: 8px 14px; border: 2px solid var(--border);
-        border-radius: 20px; background: white;
-        cursor: pointer; font-size: 13px; transition: all 0.3s;
+        padding: 8px 14px;
+        border: 2px solid var(--border);
+        border-radius: 20px;
+        background: white;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.3s;
     }
     .feed-type-btn:hover, .feed-type-btn.active {
         border-color: var(--primary);
-        background: rgba(37, 99, 235, 0.1); color: var(--primary);
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary);
     }
     .post-card {
-        background: var(--card); border-radius: 16px;
-        padding: 20px; margin-bottom: 16px;
+        background: var(--card);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     .post-card.owner-post {
@@ -310,38 +426,35 @@
     .post-action-btn.liked { color: var(--danger); }
     .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
     .tab-btn {
-        padding: 10px 18px; border: 2px solid var(--border);
-        border-radius: 10px; background: white;
-        cursor: pointer; font-size: 13px; font-weight: 500;
+        padding: 10px 18px;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        background: white;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
     }
     .tab-btn:hover, .tab-btn.active {
-        border-color: var(--primary); background: var(--primary); color: white;
+        border-color: var(--primary);
+        background: var(--primary);
+        color: white;
     }
     .slip-container {
-        background: #f8fafc; border: 2px dashed var(--border);
-        border-radius: 12px; padding: 24px; margin-top: 20px;
+        background: #f8fafc;
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        margin-top: 20px;
     }
     .slip-header { text-align: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid var(--border); }
     .slip-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
     .slip-total { font-weight: 700; font-size: 16px; border-top: 2px solid var(--border); margin-top: 12px; padding-top: 12px; }
-    .section-title {
-        font-size: 14px; font-weight: 600; color: var(--text-light);
-        margin: 20px 0 10px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border);
-    }
+    .section-title { font-size: 14px; font-weight: 600; color: var(--text-light); margin: 20px 0 10px 0; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
     .info-box { background: #dbeafe; border-left: 4px solid #2563eb; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 13px; }
     .warning-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-size: 13px; }
     .token-item { background: var(--bg); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .token-high { border-left: 3px solid var(--danger); }
     .token-normal { border-left: 3px solid var(--success); }
-    .priority-low { color: #22c55e; }
-    .priority-medium { color: #f59e0b; }
-    .priority-high { color: #ef4444; }
-    .firebase-badge {
-        display: inline-flex; align-items: center; gap: 6px;
-        background: #fff3e0; color: #f57c00;
-        padding: 4px 10px; border-radius: 20px;
-        font-size: 11px; font-weight: 600; margin-left: 10px;
-    }
     @media (max-width: 768px) {
         .menu-toggle { display: block; }
         .sidebar {
@@ -362,17 +475,31 @@
         .unit-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
         .sync-status { bottom: 10px; left: 10px; font-size: 11px; padding: 6px 12px; }
     }
+    .priority-low { color: #22c55e; }
+    .priority-medium { color: #f59e0b; }
+    .priority-high { color: #ef4444; }
+    
+    .firebase-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff3e0;
+        color: #f57c00;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 10px;
+    }
 </style>
 
 </head>
 <body>
-
-<!-- Loading Overlay -->
-
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="spinner"></div>
-    <div class="loading-text">Menghubungkan ke Firebase...</div>
-</div>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Menghubungkan ke Firebase...</div>
+    </div>
 
 <!-- Sync Status -->
 
@@ -380,8 +507,6 @@
     <div class="sync-dot"></div>
     <span id="syncText">Online</span>
 </div>
-
-<!-- Login Page -->
 
 <div class="login-container" id="loginPage">
     <div class="login-box">
@@ -405,8 +530,6 @@
     </div>
 </div>
 
-<!-- App Container -->
-
 <div class="app-container" id="appContainer">
     <header class="header">
         <div class="header-left">
@@ -424,7 +547,6 @@
         </div>
     </header>
 
-```
 <div class="main-layout">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
@@ -440,281 +562,275 @@
         <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
     </nav>
 
-    <main class="content">
-        <!-- Dashboard -->
-        <div class="page active" id="page-dashboard">
-            <div class="page-header">
-                <h1 class="page-title">📊 Dashboard</h1>
-                <p class="page-subtitle" id="welcomeText">Selamat datang di Sistem ZEA CREW</p>
+```
+<main class="content">
+    <!-- Dashboard -->
+    <div class="page active" id="page-dashboard">
+        <div class="page-header">
+            <h1 class="page-title">📊 Dashboard</h1>
+            <p class="page-subtitle" id="welcomeText">Selamat datang di Sistem ZEA CREW</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statStaff">0</div><div class="stat-label">Total Staff</div></div>
+            <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-value" id="statUnit">0</div><div class="stat-label">Total Unit</div></div>
+            <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-value" id="statMaint">0</div><div class="stat-label">Maintenance</div></div>
+            <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statReady">0</div><div class="stat-label">Ready</div></div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">📰 Feed Posting</h3></div>
+            <textarea class="feed-input" id="feedInput" placeholder="Tulis sesuatu untuk tim..."></textarea>
+            <div class="feed-actions">
+                <button class="feed-type-btn active" data-type="info">ℹ️ Info</button>
+                <button class="feed-type-btn" data-type="pengumuman">📢 Pengumuman</button>
+                <button class="feed-type-btn" data-type="keluhan">😟 Keluhan</button>
+                <button class="feed-type-btn" data-type="lainnya">💬 Lainnya</button>
+                <button class="btn btn-primary btn-sm" id="postBtn">Posting</button>
             </div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statStaff">0</div><div class="stat-label">Total Staff</div></div>
-                <div class="stat-card"><div class="stat-icon">🏠</div><div class="stat-value" id="statUnit">0</div><div class="stat-label">Total Unit</div></div>
-                <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-value" id="statMaint">0</div><div class="stat-label">Maintenance</div></div>
-                <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statReady">0</div><div class="stat-label">Ready</div></div>
+            <div id="feedContainer" style="margin-top:20px"></div>
+        </div>
+    </div>
+
+    <!-- Staff -->
+    <div class="page" id="page-staff">
+        <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
+        <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Staff</h3>
+                <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
             </div>
-            <div class="card">
-                <div class="card-header"><h3 class="card-title">📰 Feed Posting</h3></div>
-                <textarea class="feed-input" id="feedInput" placeholder="Tulis sesuatu untuk tim..."></textarea>
-                <div class="feed-actions">
-                    <button class="feed-type-btn active" data-type="info">ℹ️ Info</button>
-                    <button class="feed-type-btn" data-type="pengumuman">📢 Pengumuman</button>
-                    <button class="feed-type-btn" data-type="keluhan">😟 Keluhan</button>
-                    <button class="feed-type-btn" data-type="lainnya">💬 Lainnya</button>
-                    <button class="btn btn-primary btn-sm" id="postBtn">Posting</button>
-                </div>
-                <div id="feedContainer" style="margin-top:20px"></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Tgl Gajian</th><th>Aksi</th></tr></thead>
+                    <tbody id="staffTable"></tbody>
+                </table>
             </div>
         </div>
+    </div>
 
-        <!-- Staff -->
-        <div class="page" id="page-staff">
-            <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
-            <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Daftar Staff</h3>
-                    <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Aksi</th></tr></thead>
-                        <tbody id="staffTable"></tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- Unit -->
+    <div class="page" id="page-unit">
+        <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
+            <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
         </div>
-
-        <!-- Unit -->
-        <div class="page" id="page-unit">
-            <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
-                <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
+        <div class="card" id="unitFormCard">
+            <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
+            <input type="hidden" id="unitEditId">
+            <div class="form-row-3" style="margin-top:16px">
+                <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
+                <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
+                <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
             </div>
-            <div class="card" id="unitFormCard">
-                <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
-                <input type="hidden" id="unitEditId">
-                <div class="form-row-3" style="margin-top:16px">
-                    <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
-                    <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
-                    <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
+            <div class="form-row">
+                <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
+                <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
+                <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
+            </div>
+            <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
+            <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Daftar Unit</h3>
+            <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
+            <div class="unit-grid" id="unitGridStudio"></div>
+            <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
+            <div class="unit-grid" id="unitGrid1BR"></div>
+            <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
+            <div class="unit-grid" id="unitGrid2BR"></div>
+            <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
+            <div class="unit-grid" id="unitGridKios"></div>
+        </div>
+    </div>
+
+    <!-- Token Listrik -->
+    <div class="page" id="page-token">
+        <div class="page-header">
+            <h1 class="page-title">⚡ Token Listrik</h1>
+            <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
+        </div>
+        <div class="card">
+            <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
+            <form id="tokenForm" style="margin-top:16px">
+                <div class="form-row">
+                    <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
+                    <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
-                    <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
+                    <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
+                    <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
+                </div>
+                <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
+                <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
+                <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
+            <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
+            <div id="tokenAnalysis"></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📜 Riwayat Token Listrik</h3>
+                <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
+                    <tbody id="tokenTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pengajuan -->
+    <div class="page" id="page-pengajuan">
+        <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
+        <div class="tabs" id="pengajuanTabs">
+            <button class="tab-btn active" data-filter="semua">Semua</button>
+            <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
+            <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
+            <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Pengajuan</h3>
+                <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Report -->
+    <div class="page" id="page-report">
+        <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
+            <form id="reportForm">
+                <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
+                <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
+                <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
+                <button type="submit" class="btn btn-primary">Kirim Report</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Absensi -->
+    <div class="page" id="page-absensi">
+        <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
+        <div class="warning-box">
+            <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja (Gaji÷30)<br>
+            <b>🏖️ Aturan LIBUR:</b> Status LIBUR hanya bisa diinput Owner/Admin. Tidak ada potongan hanya jika hari tersebut = hari libur tetap staff. Di luar hari libur tetap = potongan 1 hari kerja.
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
+            <form id="absensiForm">
+                <div class="form-row">
+                    <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
+                    <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
-                    <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
-                </div>
-                <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
-                <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
-            </div>
-            <div class="card">
-                <h3 class="card-title">Daftar Unit</h3>
-                <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
-                <div class="unit-grid" id="unitGridStudio"></div>
-                <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
-                <div class="unit-grid" id="unitGrid1BR"></div>
-                <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
-                <div class="unit-grid" id="unitGrid2BR"></div>
-                <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
-                <div class="unit-grid" id="unitGridKios"></div>
-            </div>
-        </div>
-
-        <!-- Token Listrik -->
-        <div class="page" id="page-token">
-            <div class="page-header">
-                <h1 class="page-title">⚡ Token Listrik</h1>
-                <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
-            </div>
-            <div class="card">
-                <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
-                <form id="tokenForm" style="margin-top:16px">
-                    <div class="form-row">
-                        <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
-                        <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
-                        <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
-                    </div>
-                    <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
-                    <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
-                    <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
-                <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>&gt; Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
-                <div id="tokenAnalysis"></div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">📜 Riwayat Token Listrik</h3>
-                    <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
-                        <tbody id="tokenTable"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pengajuan -->
-        <div class="page" id="page-pengajuan">
-            <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
-            <div class="tabs" id="pengajuanTabs">
-                <button class="tab-btn active" data-filter="semua">Semua</button>
-                <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
-                <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
-                <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Daftar Pengajuan</h3>
-                    <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
-                </div>
-                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
-            </div>
-        </div>
-
-        <!-- Report -->
-        <div class="page" id="page-report">
-            <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
-            <div class="card">
-                <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
-                <form id="reportForm">
-                    <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
-                    <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
-                    <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
-                    <button type="submit" class="btn btn-primary">Kirim Report</button>
-                </form>
-            </div>
-            <div class="card">
-                <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
-                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
-            </div>
-        </div>
-
-        <!-- Absensi -->
-        <div class="page" id="page-absensi">
-            <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
-            <div class="warning-box">
-                <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | &gt;30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja | LIBUR = Tidak ada potongan
-            </div>
-            <div class="card">
-                <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
-                <form id="absensiForm">
-                    <div class="form-row">
-                        <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
-                        <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
-                            <option value="hadir">✅ HADIR</option>
-                            <option value="izin">📝 IZIN</option>
-                            <option value="sakit">🤒 SAKIT</option>
-                            <option value="alfa">❌ ALFA</option>
-                            <option value="libur">🏖️ LIBUR</option>
-                        </select></div>
-                        <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
-                    </div>
-                    <div id="absensiPreview" class="info-box" style="display:none"></div>
-                    <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
-                </form>
-            </div>
-            <div class="card">
-                <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
-                <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
-            </div>
-        </div>
-
-        <!-- Gaji -->
-        <div class="page" id="page-gaji">
-            <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
-            <div class="info-box">
-                <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
-                <b>Periode Gaji:</b> Tanggal 27 bulan lalu s/d 26 bulan ini<br>
-                <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
-                <b>Catatan:</b> Status LIBUR tidak dikenakan potongan
-            </div>
-            <div class="card">
-                <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
-                <div class="form-row">
-                    <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
-                    <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan">
-                        <option value="1">Januari</option><option value="2" selected>Februari</option>
-                        <option value="3">Maret</option><option value="4">April</option>
-                        <option value="5">Mei</option><option value="6">Juni</option>
-                        <option value="7">Juli</option><option value="8">Agustus</option>
-                        <option value="9">September</option><option value="10">Oktober</option>
-                        <option value="11">November</option><option value="12">Desember</option>
+                    <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
+                        <option value="hadir">✅ HADIR</option>
+                        <option value="izin">📝 IZIN</option>
+                        <option value="sakit">🤒 SAKIT</option>
+                        <option value="alfa">❌ ALFA</option>
+                        <option value="libur" id="liburOption">🏖️ LIBUR</option>
                     </select></div>
+                    <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
-                    <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
-                </div>
-                <div class="slip-container" id="slipContainer" style="display:none">
-                    <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
-                    <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
-                    <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
-                    <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-                    <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
-                    <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
-                    <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-                    <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
-                    <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
-                    <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
-                    <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
-                    <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
-                    <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
-                </div>
-                <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-                    <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
-                    <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
-                    <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
-                </div>
-            </div>
+                <div id="absensiPreview" class="info-box" style="display:none"></div>
+                <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
+            </form>
         </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
+        </div>
+    </div>
 
-        <!-- Akun -->
-        <div class="page" id="page-akun">
-            <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
-            <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Daftar Akun</h3>
-                    <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
-                </div>
-                <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
+    <!-- Gaji -->
+    <div class="page" id="page-gaji">
+        <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
+        <div class="info-box">
+            <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
+            <b>Periode Gaji:</b> Setiap staff berbeda sesuai tanggal gajian. Contoh: gajian tgl 2 → periode 3 bln lalu s/d 2 bln ini<br>
+            <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
+            <b>Catatan:</b> Status LIBUR di hari libur tetap staff tidak dikenakan potongan
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
+            <div class="form-row">
+                <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
+                <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
+                <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
+            </div>
+            <div class="slip-container" id="slipContainer" style="display:none">
+                <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
+                <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
+                <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
+                <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
+                <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
+                <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
+                <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
+                <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+                <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
+                <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
+                <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
             </div>
         </div>
+    </div>
 
-        <!-- Panduan -->
-        <div class="page" id="page-panduan">
-            <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
-            <div class="card">
-                <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
-                    🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
-                </div>
-                <div class="section-title">🔐 Role &amp; Akses</div>
-                <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff &amp; Unit | 📢 Marketing: View &amp; Posting | 👤 Staff: Data sendiri</p>
-                <div class="section-title">💰 Formula Gaji</div>
-                <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
-                <div class="section-title">⏰ Potongan Terlambat</div>
-                <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | &gt;30 menit: 1 hari kerja</p>
-                <div class="section-title">📞 Bantuan</div>
-                <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
+    <!-- Akun -->
+    <div class="page" id="page-akun">
+        <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
+        <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Akun</h3>
+                <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
             </div>
+            <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
         </div>
-    </main>
-</div>
+    </div>
+
+    <!-- Panduan -->
+    <div class="page" id="page-panduan">
+        <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
+        <div class="card">
+            <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
+                🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
+            </div>
+            <div class="section-title">🔐 Role & Akses</div>
+            <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
+            <div class="section-title">💰 Formula Gaji</div>
+            <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
+            <div class="section-title">⏰ Potongan Terlambat</div>
+            <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
+            <div class="section-title">📞 Bantuan</div>
+            <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
+        </div>
+    </div>
+</main>
 ```
 
 </div>
@@ -740,7 +856,10 @@
                 <div class="form-group"><label>Jam Masuk</label><input type="time" id="sJamMasuk" value="08:00"></div>
                 <div class="form-group"><label>Jam Pulang</label><input type="time" id="sJamPulang" value="17:00"></div>
             </div>
-            <div class="form-group"><label>Libur Tetap</label><select id="sLibur"><option value="">Tidak ada</option><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option></select></div>
+            <div class="form-row">
+                <div class="form-group"><label>Libur Tetap</label><select id="sLibur"><option value="">Tidak ada</option><option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option><option>Minggu</option></select></div>
+                <div class="form-group"><label>📅 Tanggal Gajian</label><input type="number" id="sTglGajian" min="1" max="31" value="27" placeholder="cth: 2, 27, 1"></div>
+            </div>
         </div>
         <div class="modal-footer"><button class="btn btn-secondary btn-sm" data-close="staffModal">Batal</button><button class="btn btn-primary btn-sm" id="saveStaffBtn">💾 Simpan</button></div>
     </div>
@@ -817,40 +936,42 @@ const firebaseConfig = {
 };
 
 // HARD FAILSAFE: paksa hide loading setelah 5 detik apapun yang terjadi
-setTimeout(function() {
-    var overlay = document.getElementById('loadingOverlay');
+setTimeout(() => {
+    const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.add('hidden');
 }, 5000);
 
 // Initialize Firebase dengan try-catch
-var db = null;
+let db = null;
 try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
 } catch(e) {
     console.error('Firebase init error:', e);
-    var overlayEl = document.getElementById('loadingOverlay');
-    if (overlayEl) overlayEl.classList.add('hidden');
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
 }
 
 // ==================== DATA STATE ====================
-var currentUser = null;
-var postType = 'info';
-var pengajuanFilter = 'semua';
-var editStaffId = null;
-var editUnitId = null;
-var editTokenId = null;
+let currentUser = null;
+let postType = 'info';
+let pengajuanFilter = 'semua';
+let editStaffId = null;
+let editUnitId = null;
+let editTokenId = null;
 
-var users = [];
-var staffList = [];
-var unitList = [];
-var posts = [];
-var pengajuanList = [];
-var reportList = [];
-var absensiList = [];
-var tokenList = [];
+// Data arrays (will be synced with Firebase)
+let users = [];
+let staffList = [];
+let unitList = [];
+let posts = [];
+let pengajuanList = [];
+let reportList = [];
+let absensiList = [];
+let tokenList = [];
 
-var defaultUsers = [
+// Default users (will be saved to Firebase if not exists)
+const defaultUsers = [
     { id: 1, username: 'kingbejh', password: 'kotabaru', role: 'owner', name: 'King Bejh' },
     { id: 2, username: 'IBUZEA', password: '190277', role: 'owner', name: 'Ibu Zea' },
     { id: 3, username: 'wulan sari', password: 'wul4ns', role: 'admin', name: 'Wulan Sari' },
@@ -872,7 +993,7 @@ var defaultUsers = [
     { id: 19, username: 'sinta mrslla', password: 'tata4202', role: 'marketing', name: 'Sinta Marsella' }
 ];
 
-var defaultUnits = [
+const defaultUnits = [
     { id: 1, nomor: 'DB1128', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
     { id: 2, nomor: 'DA1025', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
     { id: 3, nomor: 'DB1012', status: 'ready', tipe: 'Studio', owner: '', wifi: 'ada', nominal: 2500000, tempo: '' },
@@ -909,46 +1030,48 @@ var defaultUnits = [
     { id: 34, nomor: 'DBBS08', status: 'ready', tipe: 'Kios', owner: 'Zea Property', wifi: 'tidak', nominal: 0, tempo: '' }
 ];
 
-var defaultPosts = [
+const defaultPosts = [
     { id: 1, author: 'Ibu Zea', role: 'owner', type: 'pengumuman', content: '🎉 Selamat datang di ZEA CREW!\n\nSistem ini sudah terhubung ke Firebase untuk penyimpanan data permanen.', time: Date.now(), likes: 1000000, likedBy: [] },
     { id: 2, author: 'King Bejh', role: 'owner', type: 'info', content: '🔥 Firebase Connected!\n\nSemua data sekarang tersimpan di cloud dan sync otomatis ke semua device. Semangat! 💪', time: Date.now() - 3600000, likes: 1000000, likedBy: [] }
 ];
 
 // ==================== HELPERS ====================
-var $ = function(id) { return document.getElementById(id); };
-var rp = function(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); };
-var fdate = function(d) { return d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-'; };
-var ftime = function(d) { return d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-'; };
-var initials = function(n) { return n ? n.split(' ').map(function(x) { return x[0]; }).join('').substring(0, 2).toUpperCase() : '?'; };
-var roleLabel = function(r) { return ({ owner: '👑 Owner', admin: '⚙️ Admin', leader: '📋 Leader', marketing: '📢 Marketing', staff: '👤 Staff' }[r] || r); };
-var roleBadge = function(r) { return 'badge-' + r; };
-var roleColor = function(r) { return ({ owner: '#eab308', admin: '#3b82f6', leader: '#22c55e', marketing: '#a855f7', staff: '#64748b' }[r] || '#64748b'); };
-var hasAccess = function(roles) { return roles ? roles.includes(currentUser && currentUser.role) : true; };
-var canManage = function() { return hasAccess(['owner', 'admin', 'leader']); };
-var canApprove = function() { return hasAccess(['owner', 'admin', 'leader']); };
-var getName = function() { return (currentUser && (currentUser.name || currentUser.username)) || 'User'; };
+const $ = id => document.getElementById(id);
+const rp = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+const fdate = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+const ftime = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+const initials = n => n ? n.split(' ').map(x => x[0]).join('').substring(0, 2).toUpperCase() : '?';
+const roleLabel = r => ({ owner: '👑 Owner', admin: '⚙️ Admin', leader: '📋 Leader', marketing: '📢 Marketing', staff: '👤 Staff' }[r] || r);
+const roleBadge = r => 'badge-' + r;
+const roleColor = r => ({ owner: '#eab308', admin: '#3b82f6', leader: '#22c55e', marketing: '#a855f7', staff: '#64748b' }[r] || '#64748b');
+const hasAccess = roles => roles ? roles.includes(currentUser?.role) : true;
+const canManage = () => hasAccess(['owner', 'admin', 'leader']);
+const canApprove = () => hasAccess(['owner', 'admin', 'leader']);
+const getName = () => currentUser?.name || currentUser?.username || 'User';
 
-function toast(msg, type) {
-    type = type || 'success';
-    document.querySelectorAll('.toast').forEach(function(t) { t.remove(); });
-    var t = document.createElement('div');
+function toast(msg, type = 'success') {
+    document.querySelectorAll('.toast').forEach(t => t.remove());
+    const t = document.createElement('div');
     t.className = 'toast ' + type;
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(function() { t.remove(); }, 3000);
+    setTimeout(() => t.remove(), 3000);
 }
 
 function showModal(id) { $(id).classList.add('active'); }
 function hideModal(id) { $(id).classList.remove('active'); }
 
 function setSyncStatus(status) {
-    var el = $('syncStatus');
-    var text = $('syncText');
+    const el = $('syncStatus');
+    const text = $('syncText');
     el.className = 'sync-status ' + status;
     text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
 }
 
-function hideLoading() { $('loadingOverlay').classList.add('hidden'); }
+function hideLoading() {
+    $('loadingOverlay').classList.add('hidden');
+}
+
 function showLoading(text) {
     $('loadingOverlay').classList.remove('hidden');
     $('loadingOverlay').querySelector('.loading-text').textContent = text || 'Loading...';
@@ -957,23 +1080,28 @@ function showLoading(text) {
 // ==================== FIREBASE FUNCTIONS ====================
 async function initFirebase() {
     showLoading('Menghubungkan ke Firebase...');
-    users = defaultUsers.slice();
-    unitList = defaultUnits.slice();
-    posts = defaultPosts.slice();
 
+    // Load data lokal dulu supaya login bisa jalan offline
+    users = [...defaultUsers];
+    unitList = [...defaultUnits];
+    posts = [...defaultPosts];
+
+    // Kalau db null (Firebase gagal init), langsung offline mode
     if (!db) {
         hideLoading();
         setSyncStatus('offline');
         return;
     }
 
-    var loadingTimeout = setTimeout(function() {
+    // FALLBACK: Kalau 3 detik masih loading, paksa hide overlay
+    const loadingTimeout = setTimeout(() => {
         hideLoading();
         setSyncStatus('offline');
     }, 3000);
 
+    // Konek Firebase di background
     try {
-        db.ref('.info/connected').on('value', function(snap) {
+        db.ref('.info/connected').on('value', (snap) => {
             setSyncStatus(snap.val() ? 'online' : 'offline');
         });
     } catch(e) {}
@@ -981,7 +1109,7 @@ async function initFirebase() {
     try {
         await Promise.race([
             loadAllData(),
-            new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 5000); })
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
         ]);
         setupRealtimeListeners();
     } catch(e) {
@@ -1001,442 +1129,216 @@ async function initFirebase() {
 
 async function loadAllData() {
     try {
-        var usersSnap = await db.ref('users').once('value');
+        // Load users
+        const usersSnap = await db.ref('users').once('value');
         if (usersSnap.exists()) {
             users = Object.values(usersSnap.val());
         } else {
-            var usersObj = defaultUsers.reduce(function(acc, u) { acc[u.id] = u; return acc; }, {});
-            await db.ref('users').set(usersObj);
-            users = defaultUsers.slice();
+            // Initialize with default users
+            await db.ref('users').set(defaultUsers.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
+            users = [...defaultUsers];
         }
-        var unitsSnap = await db.ref('units').once('value');
+        
+        // Load units
+        const unitsSnap = await db.ref('units').once('value');
         if (unitsSnap.exists()) {
             unitList = Object.values(unitsSnap.val());
         } else {
-            var unitsObj = defaultUnits.reduce(function(acc, u) { acc[u.id] = u; return acc; }, {});
-            await db.ref('units').set(unitsObj);
-            unitList = defaultUnits.slice();
+            await db.ref('units').set(defaultUnits.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
+            unitList = [...defaultUnits];
         }
-        var postsSnap = await db.ref('posts').once('value');
+        
+        // Load posts
+        const postsSnap = await db.ref('posts').once('value');
         if (postsSnap.exists()) {
-            posts = Object.values(postsSnap.val()).sort(function(a, b) { return b.time - a.time; });
+            posts = Object.values(postsSnap.val()).sort((a, b) => b.time - a.time);
         } else {
-            var postsObj = defaultPosts.reduce(function(acc, p) { acc[p.id] = p; return acc; }, {});
-            await db.ref('posts').set(postsObj);
-            posts = defaultPosts.slice();
+            await db.ref('posts').set(defaultPosts.reduce((acc, p) => { acc[p.id] = p; return acc; }, {}));
+            posts = [...defaultPosts];
         }
-        var staffSnap = await db.ref('staff').once('value');
+        
+        // Load staff
+        const staffSnap = await db.ref('staff').once('value');
         staffList = staffSnap.exists() ? Object.values(staffSnap.val()) : [];
-        var pengajuanSnap = await db.ref('pengajuan').once('value');
+        
+        // Load pengajuan
+        const pengajuanSnap = await db.ref('pengajuan').once('value');
         pengajuanList = pengajuanSnap.exists() ? Object.values(pengajuanSnap.val()) : [];
-        var reportsSnap = await db.ref('reports').once('value');
+        
+        // Load reports
+        const reportsSnap = await db.ref('reports').once('value');
         reportList = reportsSnap.exists() ? Object.values(reportsSnap.val()) : [];
-        var absensiSnap = await db.ref('absensi').once('value');
+        
+        // Load absensi
+        const absensiSnap = await db.ref('absensi').once('value');
         absensiList = absensiSnap.exists() ? Object.values(absensiSnap.val()) : [];
-        var tokensSnap = await db.ref('tokens').once('value');
+        
+        // Load tokens
+        const tokensSnap = await db.ref('tokens').once('value');
         tokenList = tokensSnap.exists() ? Object.values(tokensSnap.val()) : [];
-    } catch(error) {
+        
+    } catch (error) {
         console.error('Error loading data:', error);
-        if (!users.length) users = defaultUsers.slice();
-        if (!unitList.length) unitList = defaultUnits.slice();
-        if (!posts.length) posts = defaultPosts.slice();
+        if (!users.length) users = [...defaultUsers];
+        if (!unitList.length) unitList = [...defaultUnits];
+        if (!posts.length) posts = [...defaultPosts];
     }
 }
 
 function setupRealtimeListeners() {
-    db.ref('users').on('value', function(snap) {
-        if (snap.exists()) { users = Object.values(snap.val()); if (currentUser) renderAkun(); }
+    // Users listener
+    db.ref('users').on('value', (snap) => {
+        if (snap.exists()) {
+            users = Object.values(snap.val());
+            if (currentUser) renderAkun();
+        }
     });
-    db.ref('units').on('value', function(snap) {
-        if (snap.exists()) { unitList = Object.values(snap.val()); if (currentUser) { renderUnit(); updateUnitSelects(); updateDashboard(); } }
+    
+    // Units listener
+    db.ref('units').on('value', (snap) => {
+        if (snap.exists()) {
+            unitList = Object.values(snap.val());
+            if (currentUser) {
+                renderUnit();
+                updateUnitSelects();
+                updateDashboard();
+            }
+        }
     });
-    db.ref('posts').on('value', function(snap) {
-        if (snap.exists()) { posts = Object.values(snap.val()).sort(function(a,b){ return b.time-a.time; }); if (currentUser) renderPosts(); }
+    
+    // Posts listener
+    db.ref('posts').on('value', (snap) => {
+        if (snap.exists()) {
+            posts = Object.values(snap.val()).sort((a, b) => b.time - a.time);
+            if (currentUser) renderPosts();
+        }
     });
-    db.ref('staff').on('value', function(snap) {
+    
+    // Staff listener
+    db.ref('staff').on('value', (snap) => {
         staffList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) { renderStaff(); updateSelects(); updateDashboard(); }
+        if (currentUser) {
+            renderStaff();
+            updateSelects();
+            updateDashboard();
+        }
     });
-    db.ref('pengajuan').on('value', function(snap) {
+    
+    // Pengajuan listener
+    db.ref('pengajuan').on('value', (snap) => {
         pengajuanList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderPengajuan();
     });
-    db.ref('reports').on('value', function(snap) {
+    
+    // Reports listener
+    db.ref('reports').on('value', (snap) => {
         reportList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderReport();
     });
-    db.ref('absensi').on('value', function(snap) {
+    
+    // Absensi listener
+    db.ref('absensi').on('value', (snap) => {
         absensiList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderAbsensi();
     });
-    db.ref('tokens').on('value', function(snap) {
+    
+    // Tokens listener
+    db.ref('tokens').on('value', (snap) => {
         tokenList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderToken();
     });
 }
 
+// Firebase save functions
 function saveUser(user) {
     setSyncStatus('syncing');
-    return db.ref('users/' + user.id).set(user).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('users/' + user.id).set(user).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function saveUnit(unit) {
     setSyncStatus('syncing');
-    return db.ref('units/' + unit.id).set(unit).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('units/' + unit.id).set(unit).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function savePost(post) {
     setSyncStatus('syncing');
-    return db.ref('posts/' + post.id).set(post).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('posts/' + post.id).set(post).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function saveStaff(staff) {
     setSyncStatus('syncing');
-    return db.ref('staff/' + staff.id).set(staff).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('staff/' + staff.id).set(staff).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function deleteStaffFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('staff/' + id).remove().then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('staff/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function savePengajuan(p) {
     setSyncStatus('syncing');
-    return db.ref('pengajuan/' + p.id).set(p).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('pengajuan/' + p.id).set(p).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function saveReport(r) {
     setSyncStatus('syncing');
-    return db.ref('reports/' + r.id).set(r).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('reports/' + r.id).set(r).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function saveAbsensi(a) {
     setSyncStatus('syncing');
-    return db.ref('absensi/' + a.id).set(a).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('absensi/' + a.id).set(a).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function saveToken(t) {
     setSyncStatus('syncing');
-    return db.ref('tokens/' + t.id).set(t).then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('tokens/' + t.id).set(t).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function deleteTokenFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('tokens/' + id).remove().then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('tokens/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
+
 function deleteUserFromDB(id) {
     setSyncStatus('syncing');
-    return db.ref('users/' + id).remove().then(function() { setSyncStatus('online'); }).catch(function() { setSyncStatus('offline'); });
+    return db.ref('users/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 // ==================== AUTH ====================
-document.addEventListener('DOMContentLoaded', function() {
-    $('loginForm').onsubmit = function(e) {
-        e.preventDefault();
-        var u = $('loginUsername').value.trim();
-        var p = $('loginPassword').value;
-        var user = users.find(function(x) { return x.username.toLowerCase() === u.toLowerCase() && x.password === p; });
-        if (user) {
-            currentUser = user;
-            $('loginError').style.display = 'none';
-            $('loginPage').style.display = 'none';
-            $('appContainer').classList.add('active');
-            initApp();
-        } else {
-            $('loginError').style.display = 'block';
-        }
-    };
-
-    $('logoutBtn').onclick = function() {
-        currentUser = null;
-        $('loginPage').style.display = 'flex';
-        $('appContainer').classList.remove('active');
-        $('loginUsername').value = '';
-        $('loginPassword').value = '';
-    };
-
-    $('menuToggle').onclick = function() { $('sidebar').classList.toggle('open'); $('sidebarOverlay').classList.toggle('open'); };
-    $('sidebarOverlay').onclick = function() { $('sidebar').classList.remove('open'); $('sidebarOverlay').classList.remove('open'); };
-
-    // Feed type buttons
-    document.querySelectorAll('.feed-type-btn').forEach(function(btn) {
-        btn.onclick = function() {
-            document.querySelectorAll('.feed-type-btn').forEach(function(b) { b.classList.remove('active'); });
-            btn.classList.add('active');
-            postType = btn.dataset.type;
-        };
-    });
-
-    $('postBtn').onclick = function() {
-        var content = $('feedInput').value.trim();
-        if (!content) return toast('Tulis sesuatu!', 'error');
-        var newPost = {
-            id: Date.now(), author: getName(), role: currentUser.role,
-            type: postType, content: content, time: Date.now(),
-            likes: currentUser.role === 'owner' ? 1000000 : 0, likedBy: []
-        };
-        savePost(newPost);
-        $('feedInput').value = '';
-        toast('Posting berhasil!');
-    };
-
-    $('addStaffBtn').onclick = function() {
-        editStaffId = null;
-        $('staffModalTitle').textContent = '➕ Tambah Staff';
-        $('sNama').value = ''; $('sWA').value = ''; $('sGaji').value = '3000000'; $('sMakan').value = '20000';
-        $('sJamMasuk').value = '08:00'; $('sJamPulang').value = '17:00'; $('sLibur').value = '';
-        updateAkunSelect();
-        showModal('staffModal');
-    };
-
-    $('sAkun').onchange = function() {
-        var opt = this.options[this.selectedIndex];
-        if (opt.value) $('sNama').value = opt.dataset.name || '';
-    };
-
-    $('saveStaffBtn').onclick = function() {
-        var nama = $('sNama').value.trim();
-        if (!nama) return toast('Nama wajib diisi!', 'error');
-        var data = {
-            akunId: +$('sAkun').value || null, nama: nama, wa: $('sWA').value,
-            cabang: $('sCabang').value, gaji: +$('sGaji').value || 3000000,
-            uangMakanHarian: +$('sMakan').value || 20000,
-            jamMasuk: $('sJamMasuk').value || '08:00', jamPulang: $('sJamPulang').value || '17:00',
-            libur: $('sLibur').value
-        };
-        if (editStaffId) { data.id = editStaffId; saveStaff(data); toast('Staff berhasil diupdate!'); }
-        else { data.id = Date.now(); saveStaff(data); toast('Staff berhasil ditambahkan!'); }
-        hideModal('staffModal');
-    };
-
-    $('saveUnitBtn').onclick = function() {
-        var nomor = $('uNomor').value.trim().toUpperCase();
-        if (!nomor) return toast('Nomor unit wajib!', 'error');
-        var data = {
-            id: editUnitId || Date.now(), nomor: nomor,
-            status: $('uStatus').value, tipe: $('uTipe').value,
-            owner: $('uOwner').value.trim(), wifi: $('uWifi').value,
-            nominal: +$('uNominal').value || 2500000, tempo: $('uTempo').value
-        };
-        if (!editUnitId && unitList.find(function(u) { return u.nomor === nomor; })) return toast('Nomor unit sudah ada!', 'error');
-        saveUnit(data); resetUnitForm();
-        toast(editUnitId ? 'Unit berhasil diupdate!' : 'Unit berhasil ditambahkan!');
-    };
-
-    $('resetUnitBtn').onclick = resetUnitForm;
-
-    $('tokenForm').onsubmit = function(e) {
-        e.preventDefault();
-        var unit = $('tokenUnit').value;
-        var nominal = +$('tokenNominal').value;
-        if (!unit || !nominal) return toast('Lengkapi form!', 'error');
-        var newToken = {
-            id: editTokenId || Date.now(), unit: unit,
-            date: $('tokenDate').value, nominal: nominal,
-            meteran: $('tokenMeteran').value, ket: $('tokenKet').value,
-            inputBy: getName()
-        };
-        saveToken(newToken); resetTokenForm();
-        toast(editTokenId ? 'Token berhasil diupdate!' : 'Token listrik berhasil dicatat!');
-    };
-
-    $('filterTokenUnit').onchange = function() { renderToken(); };
-
-    $('pJenis').onchange = function() {
-        var j = $('pJenis').value;
-        $('pNominalG').style.display = j !== 'cuti' ? 'block' : 'none';
-        $('pDurasiG').style.display = j === 'cuti' ? 'block' : 'none';
-        $('pBuktiG').style.display = j === 'reimburse' ? 'block' : 'none';
-    };
-
-    $('pengajuanTabs').onclick = function(e) {
-        if (e.target.classList.contains('tab-btn')) {
-            document.querySelectorAll('#pengajuanTabs .tab-btn').forEach(function(b) { b.classList.remove('active'); });
-            e.target.classList.add('active');
-            pengajuanFilter = e.target.dataset.filter;
-            renderPengajuan();
-        }
-    };
-
-    $('addPengajuanBtn').onclick = function() { showModal('pengajuanModal'); };
-
-    $('savePengajuanBtn').onclick = function() {
-        var ket = $('pKet').value.trim();
-        if (!ket) return toast('Keterangan wajib!', 'error');
-        var jenis = $('pJenis').value;
-        if (jenis === 'reimburse' && !$('pBukti').value.trim()) return toast('Bukti wajib untuk reimburse!', 'error');
-        var newPengajuan = {
-            id: Date.now(), tanggal: new Date().toISOString().split('T')[0],
-            nama: getName(), jenis: jenis, nominal: +$('pNominal').value || 0,
-            durasi: +$('pDurasi').value || 1, ket: ket,
-            bukti: $('pBukti').value, status: 'pending'
-        };
-        savePengajuan(newPengajuan); hideModal('pengajuanModal');
-        toast('Pengajuan berhasil dikirim!');
-    };
-
-    $('reportForm').onsubmit = function(e) {
-        e.preventDefault();
-        var unit = $('reportUnit').value;
-        var desc = $('reportDesc').value.trim();
-        if (!unit || !desc) return toast('Lengkapi form!', 'error');
-        var newReport = {
-            id: Date.now(), tanggal: new Date().toISOString().split('T')[0],
-            unit: unit, priority: $('reportPriority').value,
-            desc: desc, reporter: getName(), status: 'proses'
-        };
-        saveReport(newReport);
-        var u = unitList.find(function(x) { return x.nomor === unit; });
-        if (u) { u.status = 'maintenance'; saveUnit(u); }
-        $('reportForm').reset();
-        toast('Report berhasil dikirim! Unit status: MAINTENANCE');
-    };
-
-    var absensiChange = function() {
-        var staffId = +$('absensiStaff').value;
-        var staff = staffList.find(function(s) { return s.id === staffId; });
-        var status = $('absensiStatus').value;
-        var aktual = $('absensiAktual').value;
-        if (!staff) { $('absensiPreview').style.display = 'none'; return; }
-        var jadwal = staff.jamMasuk || '08:00';
-        var telat = 0, potongan = 0, uangMakan = 0;
-        if (status === 'hadir') {
-            uangMakan = staff.uangMakanHarian || 20000;
-            if (aktual) {
-                var j = new Date('2000-01-01T' + jadwal);
-                var a = new Date('2000-01-01T' + aktual);
-                telat = Math.max(0, Math.floor((a - j) / 60000));
-                if (telat <= 10) potongan = 0;
-                else if (telat <= 30) potongan = 25000;
-                else potongan = Math.round((staff.gaji || 3000000) / 30);
-            }
-        } else if (status === 'libur') {
-            potongan = 0; uangMakan = 0;
-        } else {
-            potongan = Math.round((staff.gaji || 3000000) / 30);
-        }
-        $('absensiPreview').style.display = 'block';
-        if (status === 'libur') {
-            $('absensiPreview').innerHTML = '<b>Preview:</b> 🏖️ Status LIBUR - Tidak ada potongan gaji & tidak ada uang makan';
-        } else {
-            $('absensiPreview').innerHTML = '<b>Preview:</b> ⏰ Jadwal: ' + jadwal + ' | ' + (status === 'hadir' ? 'Terlambat: ' + telat + ' menit | ' : '') + 'Potongan: ' + rp(potongan) + ' | Uang Makan: ' + rp(uangMakan);
-        }
-    };
-    $('absensiStaff').onchange = absensiChange;
-    $('absensiStatus').onchange = absensiChange;
-    $('absensiAktual').onchange = absensiChange;
-
-    $('absensiForm').onsubmit = function(e) {
-        e.preventDefault();
-        var staffId = +$('absensiStaff').value;
-        var staff = staffList.find(function(s) { return s.id === staffId; });
-        if (!staff) return toast('Pilih staff!', 'error');
-        var status = $('absensiStatus').value;
-        var jadwal = staff.jamMasuk || '08:00';
-        var aktual = $('absensiAktual').value;
-        var telat = 0, potongan = 0, uangMakan = 0;
-        if (status === 'hadir') {
-            uangMakan = staff.uangMakanHarian || 20000;
-            if (aktual) {
-                var j = new Date('2000-01-01T' + jadwal);
-                var a = new Date('2000-01-01T' + aktual);
-                telat = Math.max(0, Math.floor((a - j) / 60000));
-                if (telat <= 10) potongan = 0;
-                else if (telat <= 30) potongan = 25000;
-                else potongan = Math.round((staff.gaji || 3000000) / 30);
-            }
-        } else if (status === 'libur') {
-            potongan = 0; uangMakan = 0;
-        } else {
-            potongan = Math.round((staff.gaji || 3000000) / 30);
-        }
-        var newAbsensi = {
-            id: Date.now(), tanggal: $('absensiDate').value, staffId: staffId,
-            nama: staff.nama, status: status, jadwal: jadwal,
-            aktual: status === 'hadir' ? aktual : '-', telat: telat,
-            potongan: potongan, uangMakan: uangMakan
-        };
-        saveAbsensi(newAbsensi);
-        $('absensiStaff').value = '';
-        $('absensiAktual').value = '';
-        $('absensiPreview').style.display = 'none';
-        toast('Absensi berhasil disimpan!');
-    };
-
-    $('gajiStaff').onchange = function() {
-        calcGaji();
-        if ($('editGajiBtn')) $('editGajiBtn').style.display = currentUser && currentUser.role === 'owner' ? 'inline-flex' : 'none';
-    };
-    $('gajiBulan').onchange = calcGaji;
-    $('gajiKasbon').onchange = calcGaji;
-    $('gajiGantiRugi').onchange = calcGaji;
-
-    $('sendWABtn').onclick = function() {
-        var staff = staffList.find(function(s) { return s.id === +$('gajiStaff').value; });
-        if (!staff) return toast('Pilih staff!', 'error');
-        if (!staff.wa) return toast('Staff belum ada nomor WA!', 'error');
-        var periodeText = $('slipContainer').dataset.periodeText || $('slipPeriode').textContent.replace('Periode: ', '');
-        var msg = '🏢 *SLIP GAJI ZEA PROPERTY*\n\n📅 *Periode:* ' + periodeText + '\n\n👤 *Nama:* ' + staff.nama + '\n💰 *Gaji Pokok:* ' + $('slipGaji').textContent + '\n\n📅 *Hari Masuk:* ' + $('slipHari').textContent + '\n🍽️ *Uang Makan:* ' + $('slipMakan').textContent + ' *(cash harian)*\n\n*POTONGAN:*\n⏰ Terlambat: ' + $('slipTelat').textContent + '\n📅 Absen: ' + $('slipAbsen').textContent + '\n💵 Kasbon: ' + $('slipKasbon').textContent + '\n💸 Ganti Rugi: ' + $('slipGantiRugi').textContent + '\n\n💵 *GAJI TRANSFER: ' + $('slipBersih').textContent + '*\n\n*Terima kasih!* 💪';
-        var waNumber = staff.wa.replace(/\D/g, '');
-        window.open('https://wa.me/' + (waNumber.startsWith('0') ? '62' + waNumber.slice(1) : waNumber) + '?text=' + encodeURIComponent(msg), '_blank');
-    };
-
-    $('saveGajiBtn').onclick = function() {
-        if (!$('gajiStaff').value) return toast('Pilih staff!', 'error');
-        toast('Data gaji disimpan!');
-    };
-
-    $('addAkunBtn').onclick = function() { showModal('akunModal'); };
-
-    $('saveAkunBtn').onclick = function() {
-        var user = $('aUser').value.trim();
-        var pass = $('aPass').value;
-        if (!user || !pass) return toast('Username & password wajib!', 'error');
-        if (users.find(function(u) { return u.username.toLowerCase() === user.toLowerCase(); })) return toast('Username sudah ada!', 'error');
-        var newUser = { id: Date.now(), username: user, password: pass, role: $('aRole').value, name: user };
-        saveUser(newUser); hideModal('akunModal');
-        $('aUser').value = ''; $('aPass').value = '';
-        toast('Akun berhasil ditambahkan!');
-    };
-
-    var editGajiBtn = $('editGajiBtn');
-    var saveEditGajiBtn = $('saveEditGajiBtn');
-    if (editGajiBtn) {
-        editGajiBtn.onclick = function() {
-            if (!currentUser || currentUser.role !== 'owner') return toast('Akses ditolak!', 'error');
-            var staffId = +$('gajiStaff').value;
-            var staff = staffList.find(function(s) { return s.id === staffId; });
-            if (!staff) return toast('Pilih staff terlebih dahulu!', 'error');
-            $('editGajiStaffName').textContent = staff.nama;
-            $('editGajiPokok').value = staff.gaji || 3000000;
-            $('editGajiMakan').value = staff.uangMakanHarian || 20000;
-            $('editGajiStaffId').value = staff.id;
-            showModal('editGajiModal');
-        };
+$('loginForm').onsubmit = e => {
+    e.preventDefault();
+    const u = $('loginUsername').value.trim();
+    const p = $('loginPassword').value;
+    const user = users.find(x => x.username.toLowerCase() === u.toLowerCase() && x.password === p);
+    if (user) {
+        currentUser = user;
+        $('loginError').style.display = 'none';
+        $('loginPage').style.display = 'none';
+        $('appContainer').classList.add('active');
+        initApp();
+    } else {
+        $('loginError').style.display = 'block';
     }
-    if (saveEditGajiBtn) {
-        saveEditGajiBtn.onclick = function() {
-            var staffId = +$('editGajiStaffId').value;
-            var staff = staffList.find(function(s) { return s.id === staffId; });
-            if (!staff) return;
-            staff.gaji = +$('editGajiPokok').value || 3000000;
-            staff.uangMakanHarian = +$('editGajiMakan').value || 20000;
-            saveStaff(staff); hideModal('editGajiModal'); calcGaji();
-            toast('Gaji berhasil diupdate!');
-        };
-    }
+};
 
-    document.querySelectorAll('[data-close]').forEach(function(btn) {
-        btn.onclick = function() { hideModal(btn.dataset.close); };
-    });
-    document.querySelectorAll('.modal-overlay').forEach(function(m) {
-        m.onclick = function(e) { if (e.target === m) m.classList.remove('active'); };
-    });
-
-    // Start
-    initFirebase();
-});
+$('logoutBtn').onclick = () => {
+    currentUser = null;
+    $('loginPage').style.display = 'flex';
+    $('appContainer').classList.remove('active');
+    $('loginUsername').value = '';
+    $('loginPassword').value = '';
+};
 
 // ==================== NAVIGATION ====================
 function setupNav() {
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-        var roles = item.dataset.roles ? item.dataset.roles.split(',') : null;
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const roles = item.dataset.roles?.split(',');
         item.style.display = (roles && !hasAccess(roles)) ? 'none' : 'flex';
-        item.onclick = function() {
-            document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
+        item.onclick = () => {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             item.classList.add('active');
-            document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             $('page-' + item.dataset.page).classList.add('active');
             $('sidebar').classList.remove('open');
             $('sidebarOverlay').classList.remove('open');
@@ -1444,121 +1346,220 @@ function setupNav() {
     });
 }
 
+$('menuToggle').onclick = () => { $('sidebar').classList.toggle('open'); $('sidebarOverlay').classList.toggle('open'); };
+$('sidebarOverlay').onclick = () => { $('sidebar').classList.remove('open'); $('sidebarOverlay').classList.remove('open'); };
+
 // ==================== DASHBOARD ====================
 function updateDashboard() {
     $('statStaff').textContent = staffList.length;
     $('statUnit').textContent = unitList.length;
-    $('statMaint').textContent = unitList.filter(function(u) { return u.status === 'maintenance'; }).length;
-    $('statReady').textContent = unitList.filter(function(u) { return u.status === 'ready'; }).length;
-    $('welcomeText').textContent = 'Selamat datang, ' + getName() + '! 👋';
+    $('statMaint').textContent = unitList.filter(u => u.status === 'maintenance').length;
+    $('statReady').textContent = unitList.filter(u => u.status === 'ready').length;
+    $('welcomeText').textContent = `Selamat datang, ${getName()}! 👋`;
     renderPosts();
 }
 
+// ==================== FEED ====================
+document.querySelectorAll('.feed-type-btn').forEach(btn => {
+    btn.onclick = () => {
+        document.querySelectorAll('.feed-type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        postType = btn.dataset.type;
+    };
+});
+
+$('postBtn').onclick = () => {
+    const content = $('feedInput').value.trim();
+    if (!content) return toast('Tulis sesuatu!', 'error');
+    
+    const newPost = { 
+        id: Date.now(), 
+        author: getName(), 
+        role: currentUser.role, 
+        type: postType, 
+        content, 
+        time: Date.now(), 
+        likes: currentUser.role === 'owner' ? 1000000 : 0, 
+        likedBy: [] 
+    };
+    
+    savePost(newPost);
+    $('feedInput').value = '';
+    toast('Posting berhasil!');
+};
+
 function renderPosts() {
-    $('feedContainer').innerHTML = posts.map(function(p) {
-        var isOwner = p.role === 'owner';
-        var isLiked = p.likedBy && p.likedBy.includes(currentUser && currentUser.id);
-        return '<div class="post-card ' + (isOwner ? 'owner-post' : '') + '">' +
-            '<div class="post-header">' +
-            '<div class="post-avatar" style="background:' + roleColor(p.role) + '">' + initials(p.author) + '</div>' +
-            '<div class="post-meta">' +
-            '<div class="post-author">' + p.author + (isOwner ? ' <span class="verified-badge">✓ Verified</span> 👑' : '') + '</div>' +
-            '<div class="post-time">' + ftime(p.time) + '</div>' +
-            '</div>' +
-            '<span class="post-type ' + p.type + '">' + (p.type ? p.type.toUpperCase() : '') + '</span>' +
-            '</div>' +
-            '<div class="post-content">' + p.content + '</div>' +
-            '<div class="post-actions">' +
-            '<button class="post-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleLike(' + p.id + ')">' +
-            (isLiked ? '❤️' : '🤍') + ' ' + (p.likes >= 1000000 ? '1M+' : (p.likes || 0)) +
-            '</button></div></div>';
-    }).join('') || '<div class="empty-state"><div class="empty-icon">📰</div><p>Belum ada posting</p></div>';
+    $('feedContainer').innerHTML = posts.map(p => {
+        const isOwner = p.role === 'owner';
+        const isLiked = p.likedBy?.includes(currentUser?.id);
+        return `
+        <div class="post-card ${isOwner ? 'owner-post' : ''}">
+            <div class="post-header">
+                <div class="post-avatar" style="background:${roleColor(p.role)}">${initials(p.author)}</div>
+                <div class="post-meta">
+                    <div class="post-author">${p.author} ${isOwner ? '<span class="verified-badge">✓ Verified</span> 👑' : ''}</div>
+                    <div class="post-time">${ftime(p.time)}</div>
+                </div>
+                <span class="post-type ${p.type}">${p.type?.toUpperCase()}</span>
+            </div>
+            <div class="post-content">${p.content}</div>
+            <div class="post-actions">
+                <button class="post-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${p.id})">
+                    ${isLiked ? '❤️' : '🤍'} ${p.likes >= 1000000 ? '1M+' : p.likes || 0}
+                </button>
+            </div>
+        </div>
+    `}).join('') || '<div class="empty-state"><div class="empty-icon">📰</div><p>Belum ada posting</p></div>';
 }
 
-window.toggleLike = function(id) {
-    var p = posts.find(function(x) { return x.id === id; });
+window.toggleLike = id => {
+    const p = posts.find(x => x.id === id);
     if (!p || p.role === 'owner') return;
+    
     if (!p.likedBy) p.likedBy = [];
-    var idx = p.likedBy.indexOf(currentUser.id);
+    const idx = p.likedBy.indexOf(currentUser.id);
     if (idx > -1) { p.likedBy.splice(idx, 1); p.likes--; }
     else { p.likedBy.push(currentUser.id); p.likes++; }
+    
     savePost(p);
 };
 
 // ==================== STAFF ====================
 function updateAkunSelect() {
-    $('sAkun').innerHTML = '<option value="">-- Pilih akun --</option>' + users.filter(function(u) { return u.role !== 'owner'; }).map(function(u) {
-        return '<option value="' + u.id + '" data-name="' + (u.name || '') + '">' + u.username + ' (' + roleLabel(u.role) + ')</option>';
-    }).join('');
+    $('sAkun').innerHTML = '<option value="">-- Pilih akun --</option>' + users.filter(u => u.role !== 'owner').map(u => 
+        `<option value="${u.id}" data-name="${u.name}">${u.username} (${roleLabel(u.role)})</option>`
+    ).join('');
 }
+
+$('sAkun').onchange = function() {
+    const opt = this.options[this.selectedIndex];
+    if (opt.value) $('sNama').value = opt.dataset.name || '';
+};
 
 function renderStaff() {
     if (!staffList.length) {
         $('staffTable').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">👥</div><p>Belum ada data staff</p></div></td></tr>';
         return;
     }
-    $('staffTable').innerHTML = staffList.map(function(s) {
-        var user = users.find(function(u) { return u.id === s.akunId; });
-        var role = (user && user.role) || 'staff';
-        return '<tr>' +
-            '<td><div class="staff-info"><div class="staff-avatar">' + initials(s.nama) + '</div><div><div class="staff-name">' + s.nama + '</div><div class="staff-wa">' + (s.wa || '-') + '</div></div></div></td>' +
-            '<td><span class="badge ' + roleBadge(role) + '">' + roleLabel(role) + '</span></td>' +
-            '<td>' + (s.cabang || '-') + '</td>' +
-            '<td>' + rp(s.gaji) + '</td>' +
-            '<td>' + rp(s.uangMakanHarian) + '/hari</td>' +
-            '<td>' + (s.jamMasuk || '08:00') + ' - ' + (s.jamPulang || '17:00') + '</td>' +
-            '<td>' + (s.libur || '-') + '</td>' +
-            '<td><div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editStaff(' + s.id + ')">✏️</button><button class="btn btn-danger btn-xs" onclick="delStaff(' + s.id + ')">🗑️</button></div></td>' +
-            '</tr>';
+    $('staffTable').innerHTML = staffList.map(s => {
+        const user = users.find(u => u.id === s.akunId);
+        const role = user?.role || 'staff';
+        return `<tr>
+            <td><div class="staff-info"><div class="staff-avatar">${initials(s.nama)}</div><div><div class="staff-name">${s.nama}</div><div class="staff-wa">${s.wa || '-'}</div></div></div></td>
+            <td><span class="badge ${roleBadge(role)}">${roleLabel(role)}</span></td>
+            <td>${s.cabang || '-'}</td>
+            <td>${rp(s.gaji)}</td>
+            <td>${rp(s.uangMakanHarian)}/hari</td>
+            <td>${s.jamMasuk || '08:00'} - ${s.jamPulang || '17:00'}</td>
+            <td>${s.libur || '-'}</td>
+            <td style="text-align:center"><b>Tgl ${s.tanggalGajian || 27}</b></td>
+            <td><div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editStaff(${s.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="delStaff(${s.id})">🗑️</button></div></td>
+        </tr>`;
     }).join('');
 }
 
-window.editStaff = function(id) {
-    var s = staffList.find(function(x) { return x.id === id; });
+$('addStaffBtn').onclick = () => { 
+    editStaffId = null; 
+    $('staffModalTitle').textContent = '➕ Tambah Staff'; 
+    $('sNama').value = ''; $('sWA').value = ''; $('sGaji').value = '3000000'; $('sMakan').value = '20000';
+    $('sJamMasuk').value = '08:00'; $('sJamPulang').value = '17:00'; $('sLibur').value = '';
+    updateAkunSelect(); 
+    showModal('staffModal'); 
+};
+
+window.editStaff = id => {
+    const s = staffList.find(x => x.id === id);
     if (!s) return;
     editStaffId = id;
     $('staffModalTitle').textContent = '✏️ Edit Staff';
     updateAkunSelect();
     $('sAkun').value = s.akunId || '';
-    $('sNama').value = s.nama; $('sWA').value = s.wa || '';
-    $('sGaji').value = s.gaji; $('sMakan').value = s.uangMakanHarian;
-    $('sJamMasuk').value = s.jamMasuk; $('sJamPulang').value = s.jamPulang;
-    $('sLibur').value = s.libur || ''; $('sCabang').value = s.cabang || 'Gateway Pasteur';
+    $('sNama').value = s.nama;
+    $('sWA').value = s.wa || '';
+    $('sGaji').value = s.gaji;
+    $('sMakan').value = s.uangMakanHarian;
+    $('sJamMasuk').value = s.jamMasuk;
+    $('sJamPulang').value = s.jamPulang;
+    $('sLibur').value = s.libur || '';
+    $('sTglGajian').value = s.tanggalGajian || 27;
+    $('sCabang').value = s.cabang || 'Gateway Pasteur';
     showModal('staffModal');
 };
 
-window.delStaff = function(id) {
-    if (confirm('Yakin hapus staff ini?')) { deleteStaffFromDB(id); toast('Staff dihapus!'); }
+$('saveStaffBtn').onclick = () => {
+    const nama = $('sNama').value.trim();
+    if (!nama) return toast('Nama wajib diisi!', 'error');
+    
+    const data = { 
+        akunId: +$('sAkun').value || null, 
+        nama, 
+        wa: $('sWA').value, 
+        cabang: $('sCabang').value, 
+        gaji: +$('sGaji').value || 3000000, 
+        uangMakanHarian: +$('sMakan').value || 20000,
+        jamMasuk: $('sJamMasuk').value || '08:00', 
+        jamPulang: $('sJamPulang').value || '17:00', 
+        libur: $('sLibur').value,
+        tanggalGajian: +$('sTglGajian').value || 27
+    };
+    
+    if (editStaffId) {
+        data.id = editStaffId;
+        saveStaff(data);
+        toast('Staff berhasil diupdate!');
+    } else {
+        data.id = Date.now();
+        saveStaff(data);
+        toast('Staff berhasil ditambahkan!');
+    }
+    hideModal('staffModal');
+};
+
+window.delStaff = id => { 
+    if (confirm('Yakin hapus staff ini?')) { 
+        deleteStaffFromDB(id);
+        toast('Staff dihapus!'); 
+    } 
 };
 
 // ==================== UNIT ====================
 function renderUnit() {
-    var studios = unitList.filter(function(u) { return u.tipe === 'Studio'; });
-    var br1 = unitList.filter(function(u) { return u.tipe === '1BR'; });
-    var br2 = unitList.filter(function(u) { return u.tipe === '2BR'; });
-    var kios = unitList.filter(function(u) { return u.tipe === 'Kios'; });
-    $('unitReady').textContent = unitList.filter(function(u) { return u.status === 'ready'; }).length;
-    $('unitMaint').textContent = unitList.filter(function(u) { return u.status === 'maintenance'; }).length;
+    const studios = unitList.filter(u => u.tipe === 'Studio');
+    const br1 = unitList.filter(u => u.tipe === '1BR');
+    const br2 = unitList.filter(u => u.tipe === '2BR');
+    const kios = unitList.filter(u => u.tipe === 'Kios');
+    
+    $('unitReady').textContent = unitList.filter(u => u.status === 'ready').length;
+    $('unitMaint').textContent = unitList.filter(u => u.status === 'maintenance').length;
     $('countStudio').textContent = studios.length;
     $('count1BR').textContent = br1.length;
     $('count2BR').textContent = br2.length;
     $('countKios').textContent = kios.length;
+    
     $('unitFormCard').style.display = canManage() ? 'block' : 'none';
-    var today = new Date();
-    var sevenDays = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-    function renderGrid(list, containerId) {
-        var container = $(containerId);
-        if (!list.length) { container.innerHTML = '<p style="color:var(--text-light);padding:20px;text-align:center">Belum ada unit</p>'; return; }
-        container.innerHTML = list.map(function(u) {
-            var nearDue = u.tempo && new Date(u.tempo) <= sevenDays;
-            return '<div class="unit-card ' + u.status + '" onclick="clickUnit(' + u.id + ')">' +
-                (nearDue ? '<span class="unit-warning">⚠️</span>' : '') +
-                '<div class="unit-name">' + u.nomor + '</div>' +
-                '<div class="unit-type">' + (u.status === 'ready' ? '✅' : '🔧') + '</div></div>';
+    
+    const renderGrid = (list, containerId) => {
+        const container = $(containerId);
+        if (!list.length) {
+            container.innerHTML = '<p style="color:var(--text-light);padding:20px;text-align:center">Belum ada unit</p>';
+            return;
+        }
+        const today = new Date();
+        const sevenDays = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+        container.innerHTML = list.map(u => {
+            const nearDue = u.tempo && new Date(u.tempo) <= sevenDays;
+            return `<div class="unit-card ${u.status}" onclick="clickUnit(${u.id})">
+                ${nearDue ? '<span class="unit-warning">⚠️</span>' : ''}
+                <div class="unit-name">${u.nomor}</div>
+                <div class="unit-type">${u.status === 'ready' ? '✅' : '🔧'}</div>
+            </div>`;
         }).join('');
-    }
-    renderGrid(studios, 'unitGridStudio'); renderGrid(br1, 'unitGrid1BR');
-    renderGrid(br2, 'unitGrid2BR'); renderGrid(kios, 'unitGridKios');
+    };
+    
+    renderGrid(studios, 'unitGridStudio');
+    renderGrid(br1, 'unitGrid1BR');
+    renderGrid(br2, 'unitGrid2BR');
+    renderGrid(kios, 'unitGridKios');
 }
 
 function resetUnitForm() {
@@ -1568,37 +1569,93 @@ function resetUnitForm() {
     $('uOwner').value = ''; $('uWifi').value = 'ada'; $('uNominal').value = '2500000'; $('uTempo').value = '';
 }
 
-window.clickUnit = function(id) {
-    var u = unitList.find(function(x) { return x.id === id; });
+window.clickUnit = id => {
+    const u = unitList.find(x => x.id === id);
     if (!u) return;
+    
     if (canManage()) {
         editUnitId = id;
         $('unitFormTitle').textContent = '✏️ Edit Unit: ' + u.nomor;
-        $('uNomor').value = u.nomor; $('uStatus').value = u.status;
-        $('uTipe').value = u.tipe; $('uOwner').value = u.owner || '';
-        $('uWifi').value = u.wifi; $('uNominal').value = u.nominal;
+        $('uNomor').value = u.nomor;
+        $('uStatus').value = u.status;
+        $('uTipe').value = u.tipe;
+        $('uOwner').value = u.owner || '';
+        $('uWifi').value = u.wifi;
+        $('uNominal').value = u.nominal;
         $('uTempo').value = u.tempo || '';
         $('unitFormCard').scrollIntoView({ behavior: 'smooth' });
     } else {
-        $('unitDetailContent').innerHTML = '<p><span class="badge badge-' + (u.status === 'ready' ? 'ready' : 'maintenance') + '">' + (u.status ? u.status.toUpperCase() : '') + '</span> <span class="badge">' + u.tipe + '</span></p>' +
-            '<p style="margin-top:12px"><b>Nomor:</b> ' + u.nomor + '</p>' +
-            '<p><b>Owner:</b> ' + (u.owner || '-') + '</p>' +
-            '<p><b>WiFi:</b> ' + (u.wifi === 'ada' ? '📶 Ada' : '❌ Tidak') + '</p>' +
-            '<p><b>Nominal:</b> ' + rp(u.nominal) + '</p>' +
-            '<p><b>Jatuh Tempo:</b> ' + fdate(u.tempo) + '</p>';
+        const unitTokens = tokenList.filter(t => t.unit === u.nomor).slice(0, 5);
+        $('unitDetailContent').innerHTML = `
+            <p><span class="badge badge-${u.status === 'ready' ? 'ready' : 'maintenance'}">${u.status?.toUpperCase()}</span> <span class="badge">${u.tipe}</span></p>
+            <p style="margin-top:12px"><b>Nomor:</b> ${u.nomor}</p>
+            <p><b>Owner:</b> ${u.owner || '-'}</p>
+            <p><b>WiFi:</b> ${u.wifi === 'ada' ? '📶 Ada' : '❌ Tidak'}</p>
+            <p><b>Nominal:</b> ${rp(u.nominal)}</p>
+            <p><b>Jatuh Tempo:</b> ${fdate(u.tempo)}</p>
+        `;
         showModal('unitDetailModal');
     }
 };
 
+$('saveUnitBtn').onclick = () => {
+    const nomor = $('uNomor').value.trim().toUpperCase();
+    if (!nomor) return toast('Nomor unit wajib!', 'error');
+    
+    const data = {
+        id: editUnitId || Date.now(),
+        nomor,
+        status: $('uStatus').value,
+        tipe: $('uTipe').value,
+        owner: $('uOwner').value.trim(),
+        wifi: $('uWifi').value,
+        nominal: +$('uNominal').value || 2500000,
+        tempo: $('uTempo').value
+    };
+    
+    if (!editUnitId && unitList.find(u => u.nomor === nomor)) {
+        return toast('Nomor unit sudah ada!', 'error');
+    }
+    
+    saveUnit(data);
+    resetUnitForm();
+    toast(editUnitId ? 'Unit berhasil diupdate!' : 'Unit berhasil ditambahkan!');
+};
+
+$('resetUnitBtn').onclick = resetUnitForm;
+
 // ==================== TOKEN LISTRIK ====================
 function updateUnitSelects() {
-    var opts = '<option value="">-- Pilih Unit --</option>' + unitList.map(function(u) { return '<option value="' + u.nomor + '">' + u.nomor + ' (' + u.tipe + ')</option>'; }).join('');
+    const opts = '<option value="">-- Pilih Unit --</option>' + unitList.map(u => `<option value="${u.nomor}">${u.nomor} (${u.tipe})</option>`).join('');
     if ($('tokenUnit')) $('tokenUnit').innerHTML = opts;
     if ($('reportUnit')) $('reportUnit').innerHTML = opts;
-    if ($('filterTokenUnit')) $('filterTokenUnit').innerHTML = '<option value="">Semua Unit</option>' + unitList.map(function(u) { return '<option value="' + u.nomor + '">' + u.nomor + '</option>'; }).join('');
+    if ($('filterTokenUnit')) $('filterTokenUnit').innerHTML = '<option value="">Semua Unit</option>' + unitList.map(u => `<option value="${u.nomor}">${u.nomor}</option>`).join('');
 }
 
-window.resetTokenForm = function() {
+$('tokenForm').onsubmit = e => {
+    e.preventDefault();
+    const unit = $('tokenUnit').value;
+    const nominal = +$('tokenNominal').value;
+    if (!unit || !nominal) return toast('Lengkapi form!', 'error');
+    
+    const newToken = {
+        id: editTokenId || Date.now(),
+        unit,
+        date: $('tokenDate').value,
+        nominal,
+        meteran: $('tokenMeteran').value,
+        ket: $('tokenKet').value,
+        inputBy: getName()
+    };
+    
+    saveToken(newToken);
+    resetTokenForm();
+    toast(editTokenId ? 'Token berhasil diupdate!' : 'Token listrik berhasil dicatat!');
+};
+
+$('filterTokenUnit').onchange = () => renderToken();
+
+window.resetTokenForm = () => {
     editTokenId = null;
     $('tokenForm').reset();
     $('tokenDate').valueAsDate = new Date();
@@ -1606,13 +1663,15 @@ window.resetTokenForm = function() {
     if ($('cancelTokenEdit')) $('cancelTokenEdit').style.display = 'none';
 };
 
-window.editToken = function(id) {
-    if (!currentUser || currentUser.role !== 'owner') return;
-    var t = tokenList.find(function(x) { return x.id === id; });
+window.editToken = id => {
+    if (currentUser?.role !== 'owner') return;
+    const t = tokenList.find(x => x.id === id);
     if (!t) return;
     editTokenId = id;
-    $('tokenUnit').value = t.unit; $('tokenDate').value = t.date;
-    $('tokenNominal').value = t.nominal; $('tokenMeteran').value = t.meteran || '';
+    $('tokenUnit').value = t.unit;
+    $('tokenDate').value = t.date;
+    $('tokenNominal').value = t.nominal;
+    $('tokenMeteran').value = t.meteran || '';
     $('tokenKet').value = t.ket || '';
     if ($('tokenFormTitle')) $('tokenFormTitle').textContent = '✏️ Edit Data Token - ' + t.unit;
     if ($('cancelTokenEdit')) $('cancelTokenEdit').style.display = 'inline-flex';
@@ -1620,119 +1679,376 @@ window.editToken = function(id) {
     toast('Edit data token, lalu klik Simpan Token');
 };
 
-window.deleteToken = function(id) {
-    if (!currentUser || currentUser.role !== 'owner') return;
-    if (confirm('Yakin hapus data token ini?')) { deleteTokenFromDB(id); toast('Data token dihapus!'); }
+window.deleteToken = id => {
+    if (currentUser?.role !== 'owner') return;
+    if (confirm('Yakin hapus data token ini?')) {
+        deleteTokenFromDB(id);
+        toast('Data token dihapus!');
+    }
 };
 
 function renderToken() {
-    var filter = $('filterTokenUnit') ? $('filterTokenUnit').value : '';
-    var list = filter ? tokenList.filter(function(t) { return t.unit === filter; }) : tokenList;
-    list = list.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
-    $('tokenTable').innerHTML = list.length ? list.map(function(t) {
-        return '<tr><td>' + fdate(t.date) + '</td><td><b>' + t.unit + '</b></td><td>' + rp(t.nominal) + '</td><td>' + (t.meteran || '-') + '</td><td>' + (t.ket || '-') + '</td><td>' + t.inputBy + '</td><td>' +
-            (currentUser && currentUser.role === 'owner' ? '<div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editToken(' + t.id + ')">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteToken(' + t.id + ')">🗑️</button></div>' : '-') + '</td></tr>';
-    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px">Belum ada data token</td></tr>';
-    var thisMonth = new Date().getMonth();
-    var thisYear = new Date().getFullYear();
-    var monthlyByUnit = {};
-    tokenList.forEach(function(t) {
-        var d = new Date(t.date);
+    const filter = $('filterTokenUnit')?.value;
+    let list = filter ? tokenList.filter(t => t.unit === filter) : tokenList;
+    list = list.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    $('tokenTable').innerHTML = list.length ? list.map(t => `
+        <tr><td>${fdate(t.date)}</td><td><b>${t.unit}</b></td><td>${rp(t.nominal)}</td><td>${t.meteran || '-'}</td><td>${t.ket || '-'}</td><td>${t.inputBy}</td><td>${currentUser?.role === 'owner' ? `<div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editToken(${t.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteToken(${t.id})">🗑️</button></div>` : '-'}</td></tr>
+    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px">Belum ada data token</td></tr>';
+    
+    // Analysis
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
+    const monthlyByUnit = {};
+    
+    tokenList.forEach(t => {
+        const d = new Date(t.date);
         if (d.getMonth() === thisMonth && d.getFullYear() === thisYear) {
             monthlyByUnit[t.unit] = (monthlyByUnit[t.unit] || 0) + (t.nominal || 0);
         }
     });
-    var sorted = Object.entries(monthlyByUnit).sort(function(a, b) { return b[1] - a[1]; });
-    $('tokenAnalysis').innerHTML = sorted.length ? sorted.map(function(entry) {
-        var unit = entry[0], total = entry[1];
-        var isBoros = total > 500000;
-        return '<div class="token-item ' + (isBoros ? 'token-high' : 'token-normal') + '"><span><b>' + unit + '</b> ' + (isBoros ? '🔴 BOROS' : '🟢') + '</span><span>' + rp(total) + '/bulan</span></div>';
+    
+    const sorted = Object.entries(monthlyByUnit).sort((a, b) => b[1] - a[1]);
+    
+    $('tokenAnalysis').innerHTML = sorted.length ? sorted.map(([unit, total]) => {
+        const isBoros = total > 500000;
+        return `<div class="token-item ${isBoros ? 'token-high' : 'token-normal'}">
+            <span><b>${unit}</b> ${isBoros ? '🔴 BOROS' : '🟢'}</span>
+            <span>${rp(total)}/bulan</span>
+        </div>`;
     }).join('') : '<p style="color:var(--text-light);text-align:center;padding:20px">Belum ada data bulan ini</p>';
 }
 
 // ==================== PENGAJUAN ====================
+$('pJenis').onchange = () => {
+    const j = $('pJenis').value;
+    $('pNominalG').style.display = j !== 'cuti' ? 'block' : 'none';
+    $('pDurasiG').style.display = j === 'cuti' ? 'block' : 'none';
+    $('pBuktiG').style.display = j === 'reimburse' ? 'block' : 'none';
+};
+
+$('pengajuanTabs').onclick = e => {
+    if (e.target.classList.contains('tab-btn')) {
+        document.querySelectorAll('#pengajuanTabs .tab-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        pengajuanFilter = e.target.dataset.filter;
+        renderPengajuan();
+    }
+};
+
 function renderPengajuan() {
-    var list = pengajuanList;
-    if (pengajuanFilter !== 'semua') list = list.filter(function(p) { return p.jenis === pengajuanFilter; });
-    if (currentUser && ['staff', 'marketing'].includes(currentUser.role)) list = list.filter(function(p) { return p.nama === getName(); });
-    list = list.sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
-    $('pengajuanTable').innerHTML = list.length ? list.map(function(p) {
-        return '<tr><td>' + fdate(p.tanggal) + '</td><td>' + p.nama + '</td>' +
-            '<td>' + (p.jenis === 'kasbon' ? '💵' : p.jenis === 'cuti' ? '🏖️' : '🧾') + ' ' + (p.jenis ? p.jenis.toUpperCase() : '') + '</td>' +
-            '<td>' + (p.jenis === 'cuti' ? (p.durasi || 1) + ' hari' : rp(p.nominal)) + '<br><small style="color:var(--text-light)">' + (p.ket || '-') + '</small></td>' +
-            '<td><span class="badge badge-' + p.status + '">' + (p.status === 'approved' ? '✅ Disetujui' : p.status === 'rejected' ? '❌ Ditolak' : '⏳ Pending') + '</span></td>' +
-            '<td>' + (canApprove() && p.status === 'pending' ? '<button class="btn btn-success btn-xs" onclick="approvePengajuan(' + p.id + ')">✓</button> <button class="btn btn-danger btn-xs" onclick="rejectPengajuan(' + p.id + ')">✗</button>' : '-') + '</td></tr>';
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Tidak ada pengajuan</td></tr>';
+    let list = pengajuanList;
+    if (pengajuanFilter !== 'semua') list = list.filter(p => p.jenis === pengajuanFilter);
+    if (['staff', 'marketing'].includes(currentUser?.role)) list = list.filter(p => p.nama === getName());
+    list = list.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+    
+    $('pengajuanTable').innerHTML = list.length ? list.map(p => `
+        <tr>
+            <td>${fdate(p.tanggal)}</td><td>${p.nama}</td>
+            <td>${p.jenis === 'kasbon' ? '💵' : p.jenis === 'cuti' ? '🏖️' : '🧾'} ${p.jenis?.toUpperCase()}</td>
+            <td>${p.jenis === 'cuti' ? (p.durasi || 1) + ' hari' : rp(p.nominal)}<br><small style="color:var(--text-light)">${p.ket || '-'}</small></td>
+            <td><span class="badge badge-${p.status}">${p.status === 'approved' ? '✅ Disetujui' : p.status === 'rejected' ? '❌ Ditolak' : '⏳ Pending'}</span></td>
+            <td>${canApprove() && p.status === 'pending' ? `<button class="btn btn-success btn-xs" onclick="approvePengajuan(${p.id})">✓</button> <button class="btn btn-danger btn-xs" onclick="rejectPengajuan(${p.id})">✗</button>` : '-'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Tidak ada pengajuan</td></tr>';
 }
 
-window.approvePengajuan = function(id) {
-    var p = pengajuanList.find(function(x) { return x.id === id; });
-    if (p) { p.status = 'approved'; p.approvedBy = getName(); savePengajuan(p); toast('Pengajuan disetujui!'); }
+$('addPengajuanBtn').onclick = () => showModal('pengajuanModal');
+
+$('savePengajuanBtn').onclick = () => {
+    const ket = $('pKet').value.trim();
+    if (!ket) return toast('Keterangan wajib!', 'error');
+    const jenis = $('pJenis').value;
+    if (jenis === 'reimburse' && !$('pBukti').value.trim()) return toast('Bukti wajib untuk reimburse!', 'error');
+    
+    const newPengajuan = { 
+        id: Date.now(), 
+        tanggal: new Date().toISOString().split('T')[0], 
+        nama: getName(),
+        jenis, 
+        nominal: +$('pNominal').value || 0, 
+        durasi: +$('pDurasi').value || 1, 
+        ket,
+        bukti: $('pBukti').value,
+        status: 'pending' 
+    };
+    
+    savePengajuan(newPengajuan);
+    hideModal('pengajuanModal');
+    toast('Pengajuan berhasil dikirim!');
 };
-window.rejectPengajuan = function(id) {
-    var p = pengajuanList.find(function(x) { return x.id === id; });
-    if (p) { p.status = 'rejected'; savePengajuan(p); toast('Pengajuan ditolak!', 'error'); }
+
+window.approvePengajuan = id => { 
+    const p = pengajuanList.find(x => x.id === id); 
+    if (p) { 
+        p.status = 'approved'; 
+        p.approvedBy = getName();
+        savePengajuan(p);
+        toast('Pengajuan disetujui!'); 
+    } 
+};
+
+window.rejectPengajuan = id => { 
+    const p = pengajuanList.find(x => x.id === id); 
+    if (p) { 
+        p.status = 'rejected'; 
+        savePengajuan(p);
+        toast('Pengajuan ditolak!', 'error'); 
+    } 
 };
 
 // ==================== REPORT ====================
 function renderReport() {
-    var list = reportList.sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
-    $('reportTable').innerHTML = list.length ? list.map(function(r) {
-        return '<tr><td>' + fdate(r.tanggal) + '</td><td><b>' + r.unit + '</b></td>' +
-            '<td class="priority-' + r.priority + '">' + (r.priority === 'high' ? '🔴 URGENT' : r.priority === 'medium' ? '🟡 Sedang' : '🟢 Rendah') + '</td>' +
-            '<td>' + r.desc + '</td><td>' + r.reporter + '</td>' +
-            '<td><span class="badge badge-' + (r.status === 'selesai' ? 'approved' : 'pending') + '">' + (r.status === 'selesai' ? '✅ Selesai' : '🔧 Proses') + '</span></td></tr>';
-    }).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Belum ada report</td></tr>';
+    const list = reportList.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+    $('reportTable').innerHTML = list.length ? list.map(r => `
+        <tr>
+            <td>${fdate(r.tanggal)}</td><td><b>${r.unit}</b></td>
+            <td class="priority-${r.priority}">${r.priority === 'high' ? '🔴 URGENT' : r.priority === 'medium' ? '🟡 Sedang' : '🟢 Rendah'}</td>
+            <td>${r.desc}</td><td>${r.reporter}</td>
+            <td><span class="badge badge-${r.status === 'selesai' ? 'approved' : 'pending'}">${r.status === 'selesai' ? '✅ Selesai' : '🔧 Proses'}</span></td>
+        </tr>
+    `).join('') : '<tr><td colspan="6" style="text-align:center;padding:40px">Belum ada report</td></tr>';
 }
+
+$('reportForm').onsubmit = e => {
+    e.preventDefault();
+    const unit = $('reportUnit').value;
+    const desc = $('reportDesc').value.trim();
+    if (!unit || !desc) return toast('Lengkapi form!', 'error');
+    
+    const newReport = { 
+        id: Date.now(), 
+        tanggal: new Date().toISOString().split('T')[0], 
+        unit, 
+        priority: $('reportPriority').value, 
+        desc, 
+        reporter: getName(),
+        status: 'proses'
+    };
+    
+    saveReport(newReport);
+    
+    // Update unit status to maintenance
+    const u = unitList.find(x => x.nomor === unit);
+    if (u) {
+        u.status = 'maintenance';
+        saveUnit(u);
+    }
+    
+    $('reportForm').reset();
+    toast('Report berhasil dikirim! Unit status: MAINTENANCE');
+};
 
 // ==================== ABSENSI ====================
 function updateSelects() {
-    var opts = '<option value="">-- Pilih Staff --</option>' + staffList.map(function(s) { return '<option value="' + s.id + '">' + s.nama + '</option>'; }).join('');
+    const opts = '<option value="">-- Pilih Staff --</option>' + staffList.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
     if ($('absensiStaff')) $('absensiStaff').innerHTML = opts;
     if ($('gajiStaff')) $('gajiStaff').innerHTML = opts;
 }
 
-function renderAbsensi() {
-    var list = absensiList.sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
-    $('absensiTable').innerHTML = list.length ? list.map(function(a) {
-        return '<tr><td>' + fdate(a.tanggal) + '</td><td>' + a.nama + '</td>' +
-            '<td>' + (a.status === 'hadir' ? '✅' : a.status === 'izin' ? '📝' : a.status === 'sakit' ? '🤒' : a.status === 'libur' ? '🏖️' : '❌') +
-            ' <span class="badge badge-' + (a.status === 'libur' ? 'libur' : a.status) + '">' + (a.status ? a.status.toUpperCase() : '') + '</span></td>' +
-            '<td>' + a.jadwal + '</td><td>' + a.aktual + '</td>' +
-            '<td>' + (a.telat > 0 ? a.telat + ' menit' : '-') + '</td>' +
-            '<td style="color:var(--danger)">' + (a.potongan > 0 ? rp(a.potongan) : '-') + '</td></tr>';
-    }).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px">Belum ada data absensi</td></tr>';
+// Helper: cek apakah tanggal jatuh di hari libur tetap staff
+function isHariLiburTetap(staff, tanggalStr) {
+    if (!staff.libur || !tanggalStr) return false;
+    const hariNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const parts = tanggalStr.split('-').map(Number);
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    return hariNames[d.getDay()] === staff.libur;
 }
 
-// ==================== GAJI ====================
-function calcGaji() {
-    var staff = staffList.find(function(s) { return s.id === +$('gajiStaff').value; });
-    if (!staff) { $('slipContainer').style.display = 'none'; return; }
-    var bulan = +$('gajiBulan').value;
-    var tahun = 2026;
-    var startMonth, startYear, endMonth, endYear;
-    if (bulan === 1) {
-        startMonth = 11; startYear = tahun - 1; endMonth = 0; endYear = tahun;
+$('absensiStaff').onchange = $('absensiStatus').onchange = $('absensiAktual').onchange = $('absensiDate').onchange = () => {
+    const staffId = +$('absensiStaff').value;
+    const staff = staffList.find(s => s.id === staffId);
+    const status = $('absensiStatus').value;
+    const aktual = $('absensiAktual').value;
+    const tanggal = $('absensiDate').value;
+    
+    if (!staff) { $('absensiPreview').style.display = 'none'; return; }
+    
+    const jadwal = staff.jamMasuk || '08:00';
+    let telat = 0, potongan = 0, uangMakan = 0;
+    
+    if (status === 'hadir') {
+        uangMakan = staff.uangMakanHarian || 20000;
+        if (aktual) {
+            const j = new Date('2000-01-01T' + jadwal);
+            const a = new Date('2000-01-01T' + aktual);
+            telat = Math.max(0, Math.floor((a - j) / 60000));
+            if (telat <= 10) potongan = 0;
+            else if (telat <= 30) potongan = 25000;
+            else potongan = Math.round((staff.gaji || 3000000) / 30);
+        }
+    } else if (status === 'libur') {
+        const isLiburTetap = isHariLiburTetap(staff, tanggal);
+        potongan = isLiburTetap ? 0 : Math.round((staff.gaji || 3000000) / 30);
+        uangMakan = 0;
     } else {
-        startMonth = bulan - 2; startYear = tahun; endMonth = bulan - 1; endYear = tahun;
+        // IZIN, SAKIT, ALFA
+        potongan = Math.round((staff.gaji || 3000000) / 30);
     }
-    var startDate = new Date(startYear, startMonth, 27);
-    var endDate = new Date(endYear, endMonth, 26, 23, 59, 59);
-    var absenPeriodeIni = absensiList.filter(function(a) {
-        var d = new Date(a.tanggal);
+    
+    $('absensiPreview').style.display = 'block';
+    
+    if (status === 'libur') {
+        const isLiburTetap = isHariLiburTetap(staff, tanggal);
+        const hariNames = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+        const parts = tanggal ? tanggal.split('-').map(Number) : null;
+        const namaHari = parts ? hariNames[new Date(parts[0], parts[1]-1, parts[2]).getDay()] : '?';
+        if (isLiburTetap) {
+            $('absensiPreview').innerHTML = `<b>Preview:</b> 🏖️ LIBUR TETAP (${namaHari}) — ✅ Tidak ada potongan gaji`;
+        } else {
+            $('absensiPreview').innerHTML = `<b>Preview:</b> ⚠️ LIBUR di luar jadwal libur tetap${staff.libur ? ` (libur tetap: ${staff.libur})` : ' (tidak punya libur tetap)'} — Potongan: ${rp(potongan)}`;
+            $('absensiPreview').style.background = '#fef3c7';
+        }
+    } else {
+        $('absensiPreview').style.background = '';
+        $('absensiPreview').innerHTML = `<b>Preview:</b> ⏰ Jadwal: ${jadwal} | ${status === 'hadir' ? `Terlambat: ${telat} menit |` : ''} Potongan: ${rp(potongan)} | Uang Makan: ${rp(uangMakan)}`;
+    }
+};
+
+function renderAbsensi() {
+    const list = absensiList.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+    $('absensiTable').innerHTML = list.length ? list.map(a => `
+        <tr>
+            <td>${fdate(a.tanggal)}</td><td>${a.nama}</td>
+            <td>${a.status === 'hadir' ? '✅' : a.status === 'izin' ? '📝' : a.status === 'sakit' ? '🤒' : a.status === 'libur' ? '🏖️' : '❌'} 
+                <span class="badge badge-${a.status === 'libur' ? 'libur' : a.status}">${a.status?.toUpperCase()}</span>
+            </td>
+            <td>${a.jadwal}</td><td>${a.aktual}</td>
+            <td>${a.telat > 0 ? a.telat + ' menit' : '-'}</td>
+            <td style="color:var(--danger)">${a.potongan > 0 ? rp(a.potongan) : '-'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px">Belum ada data absensi</td></tr>';
+}
+
+$('absensiForm').onsubmit = e => {
+    e.preventDefault();
+    const staffId = +$('absensiStaff').value;
+    const staff = staffList.find(s => s.id === staffId);
+    if (!staff) return toast('Pilih staff!', 'error');
+    
+    const status = $('absensiStatus').value;
+    const tanggal = $('absensiDate').value;
+    const jadwal = staff.jamMasuk || '08:00';
+    const aktual = $('absensiAktual').value;
+    let telat = 0, potongan = 0, uangMakan = 0;
+
+    // Validasi: status LIBUR hanya untuk owner & admin
+    if (status === 'libur' && !hasAccess(['owner', 'admin'])) {
+        return toast('Status LIBUR hanya bisa diinput Owner/Admin!', 'error');
+    }
+    
+    if (status === 'hadir') {
+        uangMakan = staff.uangMakanHarian || 20000;
+        if (aktual) {
+            const j = new Date('2000-01-01T' + jadwal);
+            const a = new Date('2000-01-01T' + aktual);
+            telat = Math.max(0, Math.floor((a - j) / 60000));
+            if (telat <= 10) potongan = 0;
+            else if (telat <= 30) potongan = 25000;
+            else potongan = Math.round((staff.gaji || 3000000) / 30);
+        }
+    } else if (status === 'libur') {
+        // Cek apakah tanggal ini = hari libur tetap staff
+        const isLiburTetap = isHariLiburTetap(staff, tanggal);
+        potongan = isLiburTetap ? 0 : Math.round((staff.gaji || 3000000) / 30);
+        uangMakan = 0;
+    } else {
+        // IZIN, SAKIT, ALFA
+        potongan = Math.round((staff.gaji || 3000000) / 30);
+    }
+    
+    const newAbsensi = { 
+        id: Date.now(), 
+        tanggal, 
+        staffId, 
+        nama: staff.nama, 
+        status, 
+        jadwal, 
+        aktual: status === 'hadir' ? aktual : '-', 
+        telat, 
+        potongan,
+        uangMakan
+    };
+    
+    saveAbsensi(newAbsensi);
+    $('absensiStaff').value = '';
+    $('absensiAktual').value = '';
+    $('absensiPreview').style.display = 'none';
+    $('absensiPreview').style.background = '';
+    toast('Absensi berhasil disimpan!');
+};
+
+// ==================== GAJI (PERIODE 27-26) ====================
+function calcGaji() {
+    const staff = staffList.find(s => s.id === +$('gajiStaff').value);
+    if (!staff) { $('slipContainer').style.display = 'none'; return; }
+    
+    const bulan = +$('gajiBulan').value;
+    const tahun = new Date().getFullYear();
+
+    // Tanggal gajian staff (default 27 kalau belum diset)
+    const tglGajian = staff.tanggalGajian || 27;
+
+    // Periode: (tglGajian+1) bulan lalu s/d tglGajian bulan ini
+    // Contoh: gajian tgl 2 Maret → periode 3 Feb – 2 Mar
+    // Contoh: gajian tgl 27 Mar → periode 28 Feb – 27 Mar
+    let startDay = tglGajian + 1;
+    let startMonth, startYear, endMonth, endYear;
+
+    endMonth = bulan - 1; // 0-indexed bulan ini
+    endYear = tahun;
+
+    if (bulan === 1) {
+        startMonth = 11; // Desember
+        startYear = tahun - 1;
+    } else {
+        startMonth = bulan - 2; // 0-indexed bulan lalu
+        startYear = tahun;
+    }
+
+    // Handle kalau startDay melebihi hari di bulan startMonth
+    // misal tglGajian=31, startDay=32 → pakai tanggal 1 bulan berikutnya
+    const maxDayStart = new Date(startYear, startMonth + 1, 0).getDate();
+    if (startDay > maxDayStart) {
+        startMonth += 1;
+        if (startMonth > 11) { startMonth = 0; startYear += 1; }
+        startDay = 1;
+    }
+
+    const startDate = new Date(startYear, startMonth, startDay);
+    const endDate = new Date(endYear, endMonth, tglGajian, 23, 59, 59);
+
+    // FIX: parse tanggal sebagai local time (bukan UTC)
+    const absenPeriodeIni = absensiList.filter(a => {
+        const parts = a.tanggal ? a.tanggal.split('-').map(Number) : null;
+        if (!parts || parts.length < 3) return false;
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
         return a.staffId === staff.id && d >= startDate && d <= endDate;
     });
-    var hariMasuk = absenPeriodeIni.filter(function(a) { return a.status === 'hadir'; }).length;
-    var totalUangMakan = hariMasuk * (staff.uangMakanHarian || 20000);
-    var potTelat = absenPeriodeIni.filter(function(a) { return a.status === 'hadir'; }).reduce(function(s, a) { return s + (a.potongan || 0); }, 0);
-    var potAbsen = absenPeriodeIni.filter(function(a) { return ['izin', 'sakit', 'alfa'].includes(a.status); }).reduce(function(s, a) { return s + (a.potongan || 0); }, 0);
-    var kasbon = +$('gajiKasbon').value || 0;
-    var gantiRugi = +$('gajiGantiRugi').value || 0;
-    var gajiBersih = Math.max(0, (staff.gaji || 3000000) - potTelat - potAbsen - kasbon - gantiRugi);
-    var bulanNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    var periodeText = '27 ' + bulanNames[startMonth] + ' ' + startYear + ' - 26 ' + bulanNames[endMonth] + ' ' + endYear;
+    
+    // Hitung hanya yang hadir (tidak termasuk libur untuk perhitungan hari masuk)
+    const hariMasuk = absenPeriodeIni.filter(a => a.status === 'hadir').length;
+    const totalUangMakan = hariMasuk * (staff.uangMakanHarian || 20000);
+    
+    // Potongan terlambat hanya dari yang hadir
+    const potTelat = absenPeriodeIni.filter(a => a.status === 'hadir').reduce((s, a) => s + (a.potongan || 0), 0);
+    
+    // Potongan absen: IZIN, SAKIT, ALFA (tidak termasuk LIBUR)
+    const potAbsen = absenPeriodeIni.filter(a => ['izin', 'sakit', 'alfa'].includes(a.status)).reduce((s, a) => s + (a.potongan || 0), 0);
+    
+    const kasbon = +$('gajiKasbon').value || 0;
+    const gantiRugi = +$('gajiGantiRugi').value || 0;
+    const gajiBersih = Math.max(0, (staff.gaji || 3000000) - potTelat - potAbsen - kasbon - gantiRugi);
+    
+    const bulanNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    
+    // Format tampilan periode
+    const startBulanNama = bulanNames[startMonth];
+    const endBulanNama = bulanNames[endMonth];
+    const periodeText = `${startDay} ${startBulanNama} ${startYear} - ${tglGajian} ${endBulanNama} ${endYear}`;
+    
     $('slipContainer').style.display = 'block';
-    $('slipPeriode').textContent = 'Periode: ' + periodeText;
+    $('slipPeriode').textContent = `Periode: ${periodeText}`;
     $('slipNama').textContent = staff.nama;
     $('slipGaji').textContent = rp(staff.gaji);
     $('slipHari').textContent = hariMasuk + ' hari';
@@ -1742,35 +2058,156 @@ function calcGaji() {
     $('slipKasbon').textContent = '- ' + rp(kasbon);
     $('slipGantiRugi').textContent = '- ' + rp(gantiRugi);
     $('slipBersih').textContent = rp(gajiBersih);
+    
+    // Simpan periode untuk WhatsApp
     $('slipContainer').dataset.periodeText = periodeText;
 }
 
-// ==================== AKUN ====================
-function renderAkun() {
-    $('akunTable').innerHTML = users.map(function(u) {
-        return '<tr><td>' + u.username + '</td>' +
-            '<td><span class="badge ' + roleBadge(u.role) + '">' + roleLabel(u.role) + '</span></td>' +
-            '<td><span class="badge badge-approved">✅ Aktif</span></td>' +
-            '<td>' + (u.role !== 'owner' && hasAccess(['owner', 'admin']) ? '<button class="btn btn-danger btn-xs" onclick="delAkun(' + u.id + ')">🗑️</button>' : '-') + '</td></tr>';
-    }).join('');
-}
+$('gajiStaff').onchange = () => { calcGaji(); if ($('editGajiBtn')) $('editGajiBtn').style.display = currentUser?.role === 'owner' ? 'inline-flex' : 'none'; };
+$('gajiBulan').onchange = calcGaji;
+$('gajiKasbon').onchange = calcGaji;
+$('gajiGantiRugi').onchange = calcGaji;
 
-window.delAkun = function(id) {
-    if (confirm('Hapus akun ini?')) { deleteUserFromDB(id); toast('Akun dihapus!'); }
+$('sendWABtn').onclick = () => {
+    const staff = staffList.find(s => s.id === +$('gajiStaff').value);
+    if (!staff) return toast('Pilih staff!', 'error');
+    if (!staff.wa) return toast('Staff belum ada nomor WA!', 'error');
+    
+    const periodeText = $('slipContainer').dataset.periodeText || $('slipPeriode').textContent.replace('Periode: ', '');
+    
+    const msg = `🏢 *SLIP GAJI ZEA PROPERTY*
+
+📅 *Periode:* ${periodeText}
+
+👤 *Nama:* ${staff.nama}
+💰 *Gaji Pokok:* ${$(‘slipGaji’).textContent}
+
+📅 *Hari Masuk:* ${$(‘slipHari’).textContent}
+🍽️ *Uang Makan:* ${$(‘slipMakan’).textContent} *(cash harian)*
+
+*POTONGAN:*
+⏰ Terlambat: ${$(‘slipTelat’).textContent}
+📅 Absen: ${$(‘slipAbsen’).textContent}
+💵 Kasbon: ${$(‘slipKasbon’).textContent}
+💸 Ganti Rugi: ${$(‘slipGantiRugi’).textContent}
+
+💵 *GAJI TRANSFER: ${$(‘slipBersih’).textContent}*
+
+*Terima kasih!* 💪`;
+
+    const waNumber = staff.wa.replace(/\D/g, '');
+    window.open('https://wa.me/' + (waNumber.startsWith('0') ? '62' + waNumber.slice(1) : waNumber) + '?text=' + encodeURIComponent(msg), '_blank');
 };
 
-// ==================== INIT APP ====================
+$('saveGajiBtn').onclick = () => {
+    if (!$('gajiStaff').value) return toast('Pilih staff!', 'error');
+    toast('Data gaji disimpan!');
+};
+
+// ==================== EDIT GAJI (OWNER) ====================
+document.addEventListener('DOMContentLoaded', () => {
+    const editGajiBtn = $('editGajiBtn');
+    const saveEditGajiBtn = $('saveEditGajiBtn');
+    if (editGajiBtn) {
+        editGajiBtn.onclick = () => {
+            if (currentUser?.role !== 'owner') return toast('Akses ditolak!', 'error');
+            const staffId = +$('gajiStaff').value;
+            const staff = staffList.find(s => s.id === staffId);
+            if (!staff) return toast('Pilih staff terlebih dahulu!', 'error');
+            $('editGajiStaffName').textContent = staff.nama;
+            $('editGajiPokok').value = staff.gaji || 3000000;
+            $('editGajiMakan').value = staff.uangMakanHarian || 20000;
+            $('editGajiStaffId').value = staff.id;
+            showModal('editGajiModal');
+        };
+    }
+    if (saveEditGajiBtn) {
+        saveEditGajiBtn.onclick = () => {
+            const staffId = +$('editGajiStaffId').value;
+            const staff = staffList.find(s => s.id === staffId);
+            if (!staff) return;
+            staff.gaji = +$('editGajiPokok').value || 3000000;
+            staff.uangMakanHarian = +$('editGajiMakan').value || 20000;
+            saveStaff(staff);
+            hideModal('editGajiModal');
+            calcGaji();
+            toast('Gaji berhasil diupdate!');
+        };
+    }
+});
+
+// ==================== AKUN ====================
+function renderAkun() {
+    $('akunTable').innerHTML = users.map(u => `
+        <tr>
+            <td>${u.username}</td>
+            <td><span class="badge ${roleBadge(u.role)}">${roleLabel(u.role)}</span></td>
+            <td><span class="badge badge-approved">✅ Aktif</span></td>
+            <td>${u.role !== 'owner' && hasAccess(['owner', 'admin']) ? `<button class="btn btn-danger btn-xs" onclick="delAkun(${u.id})">🗑️</button>` : '-'}</td>
+        </tr>
+    `).join('');
+}
+
+$('addAkunBtn').onclick = () => showModal('akunModal');
+
+$('saveAkunBtn').onclick = () => {
+    const user = $('aUser').value.trim();
+    const pass = $('aPass').value;
+    if (!user || !pass) return toast('Username & password wajib!', 'error');
+    if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) return toast('Username sudah ada!', 'error');
+    
+    const newUser = { id: Date.now(), username: user, password: pass, role: $('aRole').value, name: user };
+    saveUser(newUser);
+    hideModal('akunModal');
+    $('aUser').value = '';
+    $('aPass').value = '';
+    toast('Akun berhasil ditambahkan!');
+};
+
+window.delAkun = id => { 
+    if (confirm('Hapus akun ini?')) { 
+        deleteUserFromDB(id);
+        toast('Akun dihapus!');
+    } 
+};
+
+// ==================== MODAL CLOSE ====================
+document.querySelectorAll('[data-close]').forEach(btn => btn.onclick = () => hideModal(btn.dataset.close));
+document.querySelectorAll('.modal-overlay').forEach(m => m.onclick = e => { if (e.target === m) m.classList.remove('active'); });
+
+// ==================== INIT ====================
 function initApp() {
     $('headerUserName').textContent = getName();
     $('headerUserRole').textContent = roleLabel(currentUser.role);
     $('headerUserAvatar').textContent = initials(getName());
     $('headerUserAvatar').style.background = roleColor(currentUser.role);
-    setupNav(); updateDashboard(); renderStaff(); renderUnit();
-    updateUnitSelects(); renderToken(); renderPengajuan(); renderReport();
-    updateSelects(); renderAbsensi(); renderAkun();
+    
+    setupNav();
+    updateDashboard();
+    renderStaff();
+    renderUnit();
+    updateUnitSelects();
+    renderToken();
+    renderPengajuan();
+    renderReport();
+    updateSelects();
+    renderAbsensi();
+    renderAkun();
+    
     $('absensiDate').valueAsDate = new Date();
     $('tokenDate').valueAsDate = new Date();
+
+    // Sembunyikan opsi LIBUR untuk selain owner & admin
+    const liburOpt = $('liburOption');
+    if (liburOpt) {
+        liburOpt.style.display = hasAccess(['owner', 'admin']) ? '' : 'none';
+    }
 }
+
+// ==================== START APP ====================
+document.addEventListener('DOMContentLoaded', () => {
+    initFirebase();
+});
 </script>
 
 </body>
