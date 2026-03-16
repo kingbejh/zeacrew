@@ -402,20 +402,21 @@
     }
     .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .post-avatar {
-        width: 42px; height: 42px; border-radius: 50%;
-        background: var(--primary);
+        width: 40px; height: 40px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        color: white; font-weight: 600; flex-shrink: 0;
+        color: white; font-weight: 600; font-size: 14px;
     }
     .post-meta { flex: 1; }
-    .post-author { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .verified-badge { background: #2563eb; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+    .post-author { font-weight: 600; font-size: 14px; }
+    .verified-badge { background: #3b82f6; color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
     .post-time { font-size: 12px; color: var(--text-light); }
-    .post-type { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-    .post-type.pengumuman { background: #dbeafe; color: #1d4ed8; }
-    .post-type.info { background: #dcfce7; color: #16a34a; }
-    .post-type.keluhan { background: #fef3c7; color: #d97706; }
-    .post-type.lainnya { background: #f3e8ff; color: #9333ea; }
+    .post-type {
+        padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .post-type.info { background: #dbeafe; color: #2563eb; }
+    .post-type.pengumuman { background: #fef3c7; color: #d97706; }
+    .post-type.keluhan { background: #fee2e2; color: #dc2626; }
+    .post-type.lainnya { background: #f1f5f9; color: #64748b; }
     .post-content { margin-bottom: 14px; line-height: 1.6; white-space: pre-wrap; font-size: 14px; }
     .post-actions { display: flex; gap: 20px; padding-top: 12px; border-top: 1px solid var(--border); }
     .post-action-btn {
@@ -498,7 +499,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Menghubungkan ke Firebase...</div>
+        <div class="loading-text">Memuat ZEA CREW...</div>
     </div>
 
 <!-- Sync Status -->
@@ -562,7 +563,6 @@
         <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
     </nav>
 
-```
 <main class="content">
     <!-- Dashboard -->
     <div class="page active" id="page-dashboard">
@@ -831,7 +831,6 @@
         </div>
     </div>
 </main>
-```
 
 </div>
 
@@ -935,11 +934,11 @@ const firebaseConfig = {
     appId: "1:1043212202064:web:8bd9e3e0e9f1c5eb0ee155"
 };
 
-// HARD FAILSAFE: paksa hide loading setelah 5 detik apapun yang terjadi
-setTimeout(() => {
-    const overlay = document.getElementById('loadingOverlay');
+// HARD FAILSAFE: Paksa hide loading setelah 2 detik — apapun yang terjadi
+setTimeout(function() {
+    var overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.add('hidden');
-}, 5000);
+}, 2000);
 
 // Initialize Firebase dengan try-catch
 let db = null;
@@ -948,7 +947,7 @@ try {
     db = firebase.database();
 } catch(e) {
     console.error('Firebase init error:', e);
-    const overlay = document.getElementById('loadingOverlay');
+    var overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.add('hidden');
 }
 
@@ -1064,66 +1063,71 @@ function hideModal(id) { $(id).classList.remove('active'); }
 function setSyncStatus(status) {
     const el = $('syncStatus');
     const text = $('syncText');
+    if (!el || !text) return;
     el.className = 'sync-status ' + status;
     text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
 }
 
 function hideLoading() {
-    $('loadingOverlay').classList.add('hidden');
+    const overlay = $('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
 }
 
 function showLoading(text) {
-    $('loadingOverlay').classList.remove('hidden');
-    $('loadingOverlay').querySelector('.loading-text').textContent = text || 'Loading...';
+    const overlay = $('loadingOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    const lt = overlay.querySelector('.loading-text');
+    if (lt) lt.textContent = text || 'Loading...';
 }
 
 // ==================== FIREBASE FUNCTIONS ====================
 async function initFirebase() {
-    showLoading('Menghubungkan ke Firebase...');
-
-    // Load data lokal dulu supaya login bisa jalan offline
+    // 1. Load default data dulu supaya login bisa jalan langsung
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
 
-    // Kalau db null (Firebase gagal init), langsung offline mode
+    // 2. Langsung sembunyi loading — user bisa login tanpa nunggu Firebase
+    hideLoading();
+
+    // 3. Kalau db null (Firebase gagal init), langsung offline mode
     if (!db) {
-        hideLoading();
         setSyncStatus('offline');
         return;
     }
 
-    // FALLBACK: Kalau 3 detik masih loading, paksa hide overlay
-    const loadingTimeout = setTimeout(() => {
-        hideLoading();
-        setSyncStatus('offline');
-    }, 3000);
+    // 4. Coba konek Firebase di background (tidak blokir UI)
+    setSyncStatus('syncing');
 
-    // Konek Firebase di background
     try {
+        // Monitor koneksi realtime
         db.ref('.info/connected').on('value', (snap) => {
-            setSyncStatus(snap.val() ? 'online' : 'offline');
+            if (snap.val()) setSyncStatus('online');
+            else setSyncStatus('offline');
         });
-    } catch(e) {}
 
-    try {
+        // Load semua data dengan timeout 5 detik
         await Promise.race([
             loadAllData(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 5000))
         ]);
+
+        // Setup listener realtime setelah data berhasil dimuat
         setupRealtimeListeners();
-    } catch(e) {
-        console.warn('Firebase gagal/timeout:', e);
-        setSyncStatus('offline');
-    } finally {
-        clearTimeout(loadingTimeout);
-        hideLoading();
+        setSyncStatus('online');
+
+        // Refresh UI kalau user sudah login
         if (currentUser) {
             renderStaff(); renderUnit(); updateUnitSelects();
             renderToken(); renderPengajuan(); renderReport();
             updateSelects(); renderAbsensi(); renderAkun();
             updateDashboard();
         }
+    } catch(e) {
+        console.warn('Firebase gagal/timeout, mode offline:', e.message);
+        setSyncStatus('offline');
+        // Data default tetap tersedia, user tetap bisa login
     }
 }
 
@@ -1134,7 +1138,6 @@ async function loadAllData() {
         if (usersSnap.exists()) {
             users = Object.values(usersSnap.val());
         } else {
-            // Initialize with default users
             await db.ref('users').set(defaultUsers.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
             users = [...defaultUsers];
         }
@@ -1179,9 +1182,11 @@ async function loadAllData() {
         
     } catch (error) {
         console.error('Error loading data:', error);
+        // Fallback ke default kalau Firebase error
         if (!users.length) users = [...defaultUsers];
         if (!unitList.length) unitList = [...defaultUnits];
         if (!posts.length) posts = [...defaultPosts];
+        throw error; // Re-throw supaya ditangkap oleh initFirebase
     }
 }
 
@@ -1990,7 +1995,6 @@ function calcGaji() {
     const tglGajian = staff.tanggalGajian || 27;
 
     // Periode: (tglGajian+1) bulan lalu s/d tglGajian bulan ini
-    // Contoh: gajian tgl 2 Maret → periode 3 Feb – 2 Mar
     // Contoh: gajian tgl 27 Mar → periode 28 Feb – 27 Mar
     let startDay = tglGajian + 1;
     let startMonth, startYear, endMonth, endYear;
@@ -2007,7 +2011,6 @@ function calcGaji() {
     }
 
     // Handle kalau startDay melebihi hari di bulan startMonth
-    // misal tglGajian=31, startDay=32 → pakai tanggal 1 bulan berikutnya
     const maxDayStart = new Date(startYear, startMonth + 1, 0).getDate();
     if (startDay > maxDayStart) {
         startMonth += 1;
@@ -2080,18 +2083,18 @@ $('sendWABtn').onclick = () => {
 📅 *Periode:* ${periodeText}
 
 👤 *Nama:* ${staff.nama}
-💰 *Gaji Pokok:* ${$(‘slipGaji’).textContent}
+💰 *Gaji Pokok:* ${$('slipGaji').textContent}
 
-📅 *Hari Masuk:* ${$(‘slipHari’).textContent}
-🍽️ *Uang Makan:* ${$(‘slipMakan’).textContent} *(cash harian)*
+📅 *Hari Masuk:* ${$('slipHari').textContent}
+🍽️ *Uang Makan:* ${$('slipMakan').textContent} *(cash harian)*
 
 *POTONGAN:*
-⏰ Terlambat: ${$(‘slipTelat’).textContent}
-📅 Absen: ${$(‘slipAbsen’).textContent}
-💵 Kasbon: ${$(‘slipKasbon’).textContent}
-💸 Ganti Rugi: ${$(‘slipGantiRugi’).textContent}
+⏰ Terlambat: ${$('slipTelat').textContent}
+📅 Absen: ${$('slipAbsen').textContent}
+💵 Kasbon: ${$('slipKasbon').textContent}
+💸 Ganti Rugi: ${$('slipGantiRugi').textContent}
 
-💵 *GAJI TRANSFER: ${$(‘slipBersih’).textContent}*
+💵 *GAJI TRANSFER: ${$('slipBersih').textContent}*
 
 *Terima kasih!* 💪`;
 
