@@ -6,22 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEA CREW - Sistem Manajemen ZEA Property</title>
 
-<!-- Inline failsafe: hide loading SEBELUM Firebase SDK load, max 1.5 detik -->
+<!-- Inline failsafe: hide loading segera saat DOM ready -->
 
 <script>
 window.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        var el = document.getElementById('loadingOverlay');
-        if (el) el.classList.add('hidden');
-    }, 1500);
+    var el = document.getElementById('loadingOverlay');
+    if (el) el.classList.add('hidden');
 });
 </script>
 
-<!-- Firebase SDK (async supaya tidak block render) -->
+<!-- Firebase SDK (sync dari Google CDN - biasanya cepat) -->
 
-<script async src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 
-<script async src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1185,19 +1183,13 @@ const firebaseConfig = {
 };
 
 // HARD FAILSAFE: paksa hide loading setelah 2 detik apapun yang terjadi
-// Initialize Firebase dengan waitForSDK pattern
+// Initialize Firebase
 let db = null;
-
-function tryInitFirebase() {
-    try {
-        if (typeof firebase === 'undefined') return false;
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        db = firebase.database();
-        return true;
-    } catch(e) {
-        console.error('Firebase init error:', e);
-        return false;
-    }
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+} catch(e) {
+    console.error('Firebase init error:', e);
 }
 
 // ==================== DATA STATE ====================
@@ -1330,45 +1322,45 @@ function showLoading(text) {
 
 // ==================== FIREBASE FUNCTIONS ====================
 async function initFirebase() {
-    // Load default data dulu — login bisa jalan sebelum Firebase ready
+    // 1. Load default data dulu — login langsung bisa pakai ini
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
 
-    // Kalau db null, langsung offline
+    // 2. Loading sudah di-hide oleh inline script di head.
+    //    Ini backup kalau inline script telat jalan.
+    hideLoading();
+
+    // 3. Kalau Firebase gagal init, stop di sini
     if (!db) {
-        hideLoading();
         setSyncStatus('offline');
         return;
     }
 
-    // Selalu hide loading max 1.5 detik — jangan tunggu Firebase
-    const loadingTimeout = setTimeout(() => hideLoading(), 1500);
-
-    // Cek koneksi realtime
+    // 4. Cek koneksi
     try {
-        db.ref('.info/connected').on('value', snap => setSyncStatus(snap.val() ? 'online' : 'offline'));
+        db.ref('.info/connected').on('value', snap => {
+            setSyncStatus(snap.val() ? 'online' : 'offline');
+        });
     } catch(e) {}
 
-    // Load data Firebase — timeout 4 detik, tapi loading sudah ke-hide sebelumnya
+    // 5. Load data Firebase di background — tidak blokir login
     try {
         await Promise.race([
             loadAllData(),
-            new Promise((_, rej) => setTimeout(() => rej('timeout'), 4000))
+            new Promise((_, rej) => setTimeout(() => rej('timeout'), 5000))
         ]);
         setupRealtimeListeners();
     } catch(e) {
-        console.warn('Firebase:', e);
+        console.warn('Firebase load:', e);
         setSyncStatus('offline');
     } finally {
-        clearTimeout(loadingTimeout);
-        hideLoading();
+        // Kalau user sudah login sebelum Firebase selesai, refresh render
         if (currentUser) {
             renderStaff(); renderUnit(); updateUnitSelects();
             renderToken(); renderPengajuan(); renderReport();
             updateSelects(); renderAbsensi(); renderAkun();
-            renderTopup();
-            updateDashboard();
+            renderTopup(); updateDashboard();
         }
     }
 }
@@ -2694,29 +2686,9 @@ function initApp() {
 
 // ==================== START APP ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Coba init Firebase — SDK mungkin belum selesai load (async)
-    // Poll setiap 100ms, max 3 detik. Kalau gagal, tetap jalan offline.
-    let attempts = 0;
-    const maxAttempts = 30; // 30 x 100ms = 3 detik
-
-    function tryStart() {
-        attempts++;
-        if (tryInitFirebase()) {
-            // Firebase SDK ready
-            initFirebase();
-        } else if (attempts >= maxAttempts) {
-            // Timeout — jalan offline
-            hideLoading();
-            setSyncStatus('offline');
-            users = [...defaultUsers];
-            unitList = [...defaultUnits];
-            posts = [...defaultPosts];
-        } else {
-            setTimeout(tryStart, 100);
-        }
-    }
-
-    tryStart();
+    // Loading sudah di-hide oleh inline script di head.
+    // Init Firebase di background — login tetap bisa jalan pakai defaultUsers.
+    initFirebase();
 });
 </script>
 
