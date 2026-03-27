@@ -402,21 +402,20 @@
     }
     .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .post-avatar {
-        width: 40px; height: 40px; border-radius: 50%;
+        width: 42px; height: 42px; border-radius: 50%;
+        background: var(--primary);
         display: flex; align-items: center; justify-content: center;
-        color: white; font-weight: 600; font-size: 14px;
+        color: white; font-weight: 600; flex-shrink: 0;
     }
     .post-meta { flex: 1; }
-    .post-author { font-weight: 600; font-size: 14px; }
-    .verified-badge { background: #3b82f6; color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
+    .post-author { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .verified-badge { background: #2563eb; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
     .post-time { font-size: 12px; color: var(--text-light); }
-    .post-type {
-        padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
-    }
-    .post-type.info { background: #dbeafe; color: #2563eb; }
-    .post-type.pengumuman { background: #fef3c7; color: #d97706; }
-    .post-type.keluhan { background: #fee2e2; color: #dc2626; }
-    .post-type.lainnya { background: #f1f5f9; color: #64748b; }
+    .post-type { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+    .post-type.pengumuman { background: #dbeafe; color: #1d4ed8; }
+    .post-type.info { background: #dcfce7; color: #16a34a; }
+    .post-type.keluhan { background: #fef3c7; color: #d97706; }
+    .post-type.lainnya { background: #f3e8ff; color: #9333ea; }
     .post-content { margin-bottom: 14px; line-height: 1.6; white-space: pre-wrap; font-size: 14px; }
     .post-actions { display: flex; gap: 20px; padding-top: 12px; border-top: 1px solid var(--border); }
     .post-action-btn {
@@ -492,6 +491,131 @@
         font-weight: 600;
         margin-left: 10px;
     }
+
+    /* LinkAja Topup */
+    .linkaja-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 22px;
+        font-weight: 800;
+        color: #e8192c;
+        letter-spacing: -0.5px;
+    }
+    .linkaja-logo span { font-size: 14px; font-weight: 600; color: var(--text-light); }
+    .topup-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    .topup-stat {
+        background: linear-gradient(135deg, #e8192c 0%, #ff5757 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 16px;
+        text-align: center;
+    }
+    .topup-stat.secondary {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    }
+    .topup-stat.tertiary {
+        background: linear-gradient(135deg, #065f46 0%, #22c55e 100%);
+    }
+    .topup-stat-value { font-size: 22px; font-weight: 700; }
+    .topup-stat-label { font-size: 12px; opacity: 0.9; margin-top: 4px; }
+    .foto-preview-wrap {
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        position: relative;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 8px;
+        background: var(--bg);
+    }
+    .foto-preview-wrap:hover { border-color: var(--primary); background: rgba(37,99,235,0.05); }
+    .foto-preview-wrap.has-image { border-color: var(--success); background: #f0fdf4; }
+    .foto-preview-wrap img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        object-fit: contain;
+    }
+    .foto-preview-wrap .foto-placeholder { color: var(--text-light); font-size: 13px; }
+    .foto-preview-wrap .foto-placeholder-icon { font-size: 32px; }
+    .foto-clear-btn {
+        position: absolute;
+        top: 8px; right: 8px;
+        background: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px; height: 24px;
+        font-size: 12px;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .foto-clear-btn.visible { display: flex; }
+    .topup-thumb {
+        width: 40px; height: 40px;
+        border-radius: 6px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid var(--border);
+        transition: transform 0.2s;
+    }
+    .topup-thumb:hover { transform: scale(1.1); border-color: var(--primary); }
+    .no-foto { color: var(--text-light); font-size: 12px; }
+    .foto-lightbox {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.9);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .foto-lightbox.active { display: flex; }
+    .foto-lightbox img {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 12px;
+        object-fit: contain;
+    }
+    .foto-lightbox-close {
+        position: absolute;
+        top: 20px; right: 20px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px; height: 40px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .metode-badge {
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    .metode-transfer { background: #dbeafe; color: #1d4ed8; }
+    .metode-atm { background: #fef3c7; color: #d97706; }
+    .metode-minimarket { background: #f3e8ff; color: #9333ea; }
+    .metode-ecommerce { background: #dcfce7; color: #16a34a; }
+    .metode-lainnya { background: #f1f5f9; color: #64748b; }
 </style>
 
 </head>
@@ -499,7 +623,7 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Memuat ZEA CREW...</div>
+        <div class="loading-text">Menghubungkan ke Firebase...</div>
     </div>
 
 <!-- Sync Status -->
@@ -559,10 +683,12 @@
         <div class="nav-item" data-page="report"><span class="nav-icon">🔧</span><span>Report Kerusakan</span></div>
         <div class="nav-item" data-page="absensi" data-roles="owner,admin,leader"><span class="nav-icon">📋</span><span>Absensi</span></div>
         <div class="nav-item" data-page="gaji" data-roles="owner,admin,leader"><span class="nav-icon">💰</span><span>Penggajian</span></div>
+        <div class="nav-item" data-page="linkaja" data-roles="owner,admin"><span class="nav-icon">💳</span><span>LinkAja Top Up</span></div>
         <div class="nav-item" data-page="akun" data-roles="owner,admin"><span class="nav-icon">⚙️</span><span>Kelola Akun</span></div>
         <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
     </nav>
 
+```
 <main class="content">
     <!-- Dashboard -->
     <div class="page active" id="page-dashboard">
@@ -800,6 +926,110 @@
         </div>
     </div>
 
+    <!-- LinkAja Top Up -->
+    <div class="page" id="page-linkaja">
+        <div class="page-header">
+            <div class="linkaja-logo">💳 LinkAja <span>Top Up Saldo</span></div>
+        </div>
+        <div class="topup-summary">
+            <div class="topup-stat">
+                <div class="topup-stat-value" id="topupTotalNominal">Rp 0</div>
+                <div class="topup-stat-label">Total Top Up Bulan Ini</div>
+            </div>
+            <div class="topup-stat secondary">
+                <div class="topup-stat-value" id="topupTotalCount">0x</div>
+                <div class="topup-stat-label">Frekuensi Bulan Ini</div>
+            </div>
+            <div class="topup-stat tertiary">
+                <div class="topup-stat-value" id="topupTotalAll">Rp 0</div>
+                <div class="topup-stat-label">Total Keseluruhan</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title" id="topupFormTitle">➕ Catat Top Up LinkAja</h3>
+            </div>
+            <div class="form-row" style="margin-top:8px">
+                <div class="form-group">
+                    <label>💰 Nominal Top Up (Rp)</label>
+                    <input type="number" id="topupNominal" placeholder="cth: 500000" min="1">
+                </div>
+                <div class="form-group">
+                    <label>📅 Tanggal Top Up</label>
+                    <input type="date" id="topupTanggal">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>🏪 Metode Top Up</label>
+                <select id="topupMetode">
+                    <option value="transfer">🏦 Transfer Bank</option>
+                    <option value="atm">🏧 ATM</option>
+                    <option value="minimarket">🏪 Minimarket (Indomaret/Alfamart)</option>
+                    <option value="ecommerce">🛒 E-Commerce / DANA / GoPay</option>
+                    <option value="lainnya">💬 Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>📷 Lampiran Bukti (Foto/Screenshot)</label>
+                <input type="file" id="topupFotoInput" accept="image/*" style="display:none">
+                <div class="foto-preview-wrap" id="topupFotoWrap" onclick="document.getElementById('topupFotoInput').click()">
+                    <div class="foto-placeholder">
+                        <div class="foto-placeholder-icon">📷</div>
+                        <div>Klik untuk upload foto bukti top up</div>
+                        <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
+                    </div>
+                    <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>📝 Keterangan (opsional)</label>
+                <input type="text" id="topupKet" placeholder="cth: Top up rutin mingguan, emergency, dll">
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <button class="btn btn-primary" id="saveTopupBtn">💾 Simpan Top Up</button>
+                <button class="btn btn-secondary" id="cancelTopupBtn" style="display:none" onclick="resetTopupForm()">✖ Batal Edit</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📋 Riwayat Top Up LinkAja</h3>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <select id="filterTopupBulan" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px">
+                        <option value="">Semua Bulan</option>
+                        <option value="1">Januari</option><option value="2">Februari</option>
+                        <option value="3">Maret</option><option value="4">April</option>
+                        <option value="5">Mei</option><option value="6">Juni</option>
+                        <option value="7">Juli</option><option value="8">Agustus</option>
+                        <option value="9">September</option><option value="10">Oktober</option>
+                        <option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <select id="filterTopupTahun" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px">
+                        <option value="">Semua Tahun</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Nominal</th>
+                            <th>Metode</th>
+                            <th>Keterangan</th>
+                            <th>Bukti</th>
+                            <th>Input By</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topupTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Akun -->
     <div class="page" id="page-akun">
         <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
@@ -831,7 +1061,15 @@
         </div>
     </div>
 </main>
+```
 
+</div>
+
+<!-- Foto Lightbox -->
+
+<div class="foto-lightbox" id="fotoLightbox" onclick="closeLightbox()">
+    <button class="foto-lightbox-close" onclick="closeLightbox()">×</button>
+    <img id="fotoLightboxImg" src="" alt="Bukti Top Up">
 </div>
 
 <!-- Modal Staff -->
@@ -934,11 +1172,11 @@ const firebaseConfig = {
     appId: "1:1043212202064:web:8bd9e3e0e9f1c5eb0ee155"
 };
 
-// HARD FAILSAFE: Paksa hide loading setelah 2 detik — apapun yang terjadi
-setTimeout(function() {
-    var overlay = document.getElementById('loadingOverlay');
+// HARD FAILSAFE: paksa hide loading setelah 5 detik apapun yang terjadi
+setTimeout(() => {
+    const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.add('hidden');
-}, 2000);
+}, 5000);
 
 // Initialize Firebase dengan try-catch
 let db = null;
@@ -947,7 +1185,7 @@ try {
     db = firebase.database();
 } catch(e) {
     console.error('Firebase init error:', e);
-    var overlay = document.getElementById('loadingOverlay');
+    const overlay = document.getElementById('loadingOverlay');
     if (overlay) overlay.classList.add('hidden');
 }
 
@@ -958,11 +1196,14 @@ let pengajuanFilter = 'semua';
 let editStaffId = null;
 let editUnitId = null;
 let editTokenId = null;
+let editTopupId = null;
+let topupFotoBase64 = null;
 
 // Data arrays (will be synced with Firebase)
 let users = [];
 let staffList = [];
 let unitList = [];
+let topupList = [];
 let posts = [];
 let pengajuanList = [];
 let reportList = [];
@@ -1063,71 +1304,67 @@ function hideModal(id) { $(id).classList.remove('active'); }
 function setSyncStatus(status) {
     const el = $('syncStatus');
     const text = $('syncText');
-    if (!el || !text) return;
     el.className = 'sync-status ' + status;
     text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
 }
 
 function hideLoading() {
-    const overlay = $('loadingOverlay');
-    if (overlay) overlay.classList.add('hidden');
+    $('loadingOverlay').classList.add('hidden');
 }
 
 function showLoading(text) {
-    const overlay = $('loadingOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('hidden');
-    const lt = overlay.querySelector('.loading-text');
-    if (lt) lt.textContent = text || 'Loading...';
+    $('loadingOverlay').classList.remove('hidden');
+    $('loadingOverlay').querySelector('.loading-text').textContent = text || 'Loading...';
 }
 
 // ==================== FIREBASE FUNCTIONS ====================
 async function initFirebase() {
-    // 1. Load default data dulu supaya login bisa jalan langsung
+    showLoading('Menghubungkan ke Firebase...');
+
+    // Load data lokal dulu supaya login bisa jalan offline
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
 
-    // 2. Langsung sembunyi loading — user bisa login tanpa nunggu Firebase
-    hideLoading();
-
-    // 3. Kalau db null (Firebase gagal init), langsung offline mode
+    // Kalau db null (Firebase gagal init), langsung offline mode
     if (!db) {
+        hideLoading();
         setSyncStatus('offline');
         return;
     }
 
-    // 4. Coba konek Firebase di background (tidak blokir UI)
-    setSyncStatus('syncing');
+    // FALLBACK: Kalau 3 detik masih loading, paksa hide overlay
+    const loadingTimeout = setTimeout(() => {
+        hideLoading();
+        setSyncStatus('offline');
+    }, 3000);
+
+    // Konek Firebase di background
+    try {
+        db.ref('.info/connected').on('value', (snap) => {
+            setSyncStatus(snap.val() ? 'online' : 'offline');
+        });
+    } catch(e) {}
 
     try {
-        // Monitor koneksi realtime
-        db.ref('.info/connected').on('value', (snap) => {
-            if (snap.val()) setSyncStatus('online');
-            else setSyncStatus('offline');
-        });
-
-        // Load semua data dengan timeout 5 detik
         await Promise.race([
             loadAllData(),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 5000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
         ]);
-
-        // Setup listener realtime setelah data berhasil dimuat
         setupRealtimeListeners();
-        setSyncStatus('online');
-
-        // Refresh UI kalau user sudah login
+    } catch(e) {
+        console.warn('Firebase gagal/timeout:', e);
+        setSyncStatus('offline');
+    } finally {
+        clearTimeout(loadingTimeout);
+        hideLoading();
         if (currentUser) {
             renderStaff(); renderUnit(); updateUnitSelects();
             renderToken(); renderPengajuan(); renderReport();
             updateSelects(); renderAbsensi(); renderAkun();
+            renderTopup();
             updateDashboard();
         }
-    } catch(e) {
-        console.warn('Firebase gagal/timeout, mode offline:', e.message);
-        setSyncStatus('offline');
-        // Data default tetap tersedia, user tetap bisa login
     }
 }
 
@@ -1138,6 +1375,7 @@ async function loadAllData() {
         if (usersSnap.exists()) {
             users = Object.values(usersSnap.val());
         } else {
+            // Initialize with default users
             await db.ref('users').set(defaultUsers.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
             users = [...defaultUsers];
         }
@@ -1179,14 +1417,16 @@ async function loadAllData() {
         // Load tokens
         const tokensSnap = await db.ref('tokens').once('value');
         tokenList = tokensSnap.exists() ? Object.values(tokensSnap.val()) : [];
+
+        // Load topup linkaja
+        const topupSnap = await db.ref('topup').once('value');
+        topupList = topupSnap.exists() ? Object.values(topupSnap.val()) : [];
         
     } catch (error) {
         console.error('Error loading data:', error);
-        // Fallback ke default kalau Firebase error
         if (!users.length) users = [...defaultUsers];
         if (!unitList.length) unitList = [...defaultUnits];
         if (!posts.length) posts = [...defaultPosts];
-        throw error; // Re-throw supaya ditangkap oleh initFirebase
     }
 }
 
@@ -1252,6 +1492,12 @@ function setupRealtimeListeners() {
         tokenList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderToken();
     });
+
+    // Topup LinkAja listener
+    db.ref('topup').on('value', (snap) => {
+        topupList = snap.exists() ? Object.values(snap.val()) : [];
+        if (currentUser) renderTopup();
+    });
 }
 
 // Firebase save functions
@@ -1303,6 +1549,16 @@ function saveToken(t) {
 function deleteTokenFromDB(id) {
     setSyncStatus('syncing');
     return db.ref('tokens/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
+}
+
+function saveTopup(t) {
+    setSyncStatus('syncing');
+    return db.ref('topup/' + t.id).set(t).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
+}
+
+function deleteTopupFromDB(id) {
+    setSyncStatus('syncing');
+    return db.ref('topup/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function deleteUserFromDB(id) {
@@ -1724,6 +1980,226 @@ function renderToken() {
     }).join('') : '<p style="color:var(--text-light);text-align:center;padding:20px">Belum ada data bulan ini</p>';
 }
 
+// ==================== LINKAJA TOP UP ====================
+const metodeLabel = m => ({
+    transfer: '🏦 Transfer Bank',
+    atm: '🏧 ATM',
+    minimarket: '🏪 Minimarket',
+    ecommerce: '🛒 E-Commerce',
+    lainnya: '💬 Lainnya'
+}[m] || m);
+
+const metodeBadge = m => 'metode-badge metode-' + (m || 'lainnya');
+
+// Compress gambar ke base64 max 800px, quality 0.75
+function compressImage(file) {
+    return new Promise((resolve, reject) => {
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
+        if (file.size > MAX_SIZE) {
+            toast('Ukuran foto maks. 5MB!', 'error');
+            return reject('too_large');
+        }
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_PX = 900;
+                let w = img.width, h = img.height;
+                if (w > MAX_PX || h > MAX_PX) {
+                    if (w > h) { h = Math.round(h * MAX_PX / w); w = MAX_PX; }
+                    else { w = Math.round(w * MAX_PX / h); h = MAX_PX; }
+                }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL('image/jpeg', 0.75));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// Handler file input
+$('topupFotoInput').onchange = async function () {
+    const file = this.files[0];
+    if (!file) return;
+    try {
+        const base64 = await compressImage(file);
+        topupFotoBase64 = base64;
+        const wrap = $('topupFotoWrap');
+        wrap.innerHTML = `<img src="${base64}" alt="Preview"><button class="foto-clear-btn visible" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
+        wrap.classList.add('has-image');
+    } catch (e) {
+        if (e !== 'too_large') toast('Gagal memuat foto!', 'error');
+        this.value = '';
+    }
+};
+
+window.clearTopupFoto = function(e) {
+    e.stopPropagation();
+    topupFotoBase64 = null;
+    $('topupFotoInput').value = '';
+    const wrap = $('topupFotoWrap');
+    wrap.classList.remove('has-image');
+    wrap.innerHTML = `<div class="foto-placeholder">
+        <div class="foto-placeholder-icon">📷</div>
+        <div>Klik untuk upload foto bukti top up</div>
+        <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
+    </div>
+    <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
+    wrap.onclick = () => $('topupFotoInput').click();
+};
+
+$('saveTopupBtn').onclick = () => {
+    const nominal = +$('topupNominal').value;
+    const tanggal = $('topupTanggal').value;
+    if (!nominal || nominal <= 0) return toast('Nominal harus diisi!', 'error');
+    if (!tanggal) return toast('Tanggal harus diisi!', 'error');
+
+    const data = {
+        id: editTopupId || Date.now(),
+        tanggal,
+        nominal,
+        metode: $('topupMetode').value,
+        ket: $('topupKet').value.trim(),
+        foto: topupFotoBase64 || null,
+        inputBy: getName(),
+        createdAt: editTopupId ? undefined : Date.now()
+    };
+
+    saveTopup(data);
+    resetTopupForm();
+    toast(editTopupId ? 'Data top up berhasil diupdate!' : 'Top up LinkAja berhasil dicatat!');
+};
+
+window.resetTopupForm = function() {
+    editTopupId = null;
+    topupFotoBase64 = null;
+    $('topupNominal').value = '';
+    $('topupTanggal').valueAsDate = new Date();
+    $('topupMetode').value = 'transfer';
+    $('topupKet').value = '';
+    $('topupFotoInput').value = '';
+    const wrap = $('topupFotoWrap');
+    wrap.classList.remove('has-image');
+    wrap.innerHTML = `<div class="foto-placeholder">
+        <div class="foto-placeholder-icon">📷</div>
+        <div>Klik untuk upload foto bukti top up</div>
+        <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
+    </div>
+    <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
+    wrap.onclick = () => $('topupFotoInput').click();
+    $('topupFormTitle').textContent = '➕ Catat Top Up LinkAja';
+    $('cancelTopupBtn').style.display = 'none';
+};
+
+window.editTopup = function(id) {
+    if (!hasAccess(['owner', 'admin'])) return toast('Akses ditolak!', 'error');
+    const t = topupList.find(x => x.id === id);
+    if (!t) return;
+    editTopupId = id;
+    $('topupNominal').value = t.nominal;
+    $('topupTanggal').value = t.tanggal;
+    $('topupMetode').value = t.metode || 'transfer';
+    $('topupKet').value = t.ket || '';
+    $('topupFormTitle').textContent = '✏️ Edit Data Top Up';
+    $('cancelTopupBtn').style.display = 'inline-flex';
+
+    const wrap = $('topupFotoWrap');
+    if (t.foto) {
+        topupFotoBase64 = t.foto;
+        wrap.innerHTML = `<img src="${t.foto}" alt="Preview"><button class="foto-clear-btn visible" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
+        wrap.classList.add('has-image');
+    } else {
+        topupFotoBase64 = null;
+        wrap.classList.remove('has-image');
+        wrap.innerHTML = `<div class="foto-placeholder">
+            <div class="foto-placeholder-icon">📷</div>
+            <div>Klik untuk upload foto bukti top up</div>
+            <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
+        </div>
+        <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
+        wrap.onclick = () => $('topupFotoInput').click();
+    }
+    $('page-linkaja').scrollIntoView({ behavior: 'smooth' });
+    toast('Mode edit aktif — ubah data lalu klik Simpan');
+};
+
+window.deleteTopup = function(id) {
+    if (!hasAccess(['owner', 'admin'])) return toast('Akses ditolak!', 'error');
+    if (confirm('Yakin hapus data top up ini?')) {
+        deleteTopupFromDB(id);
+        toast('Data top up dihapus!');
+    }
+};
+
+window.openFotoLightbox = function(src) {
+    $('fotoLightboxImg').src = src;
+    $('fotoLightbox').classList.add('active');
+};
+
+window.closeLightbox = function() {
+    $('fotoLightbox').classList.remove('active');
+    $('fotoLightboxImg').src = '';
+};
+
+$('filterTopupBulan').onchange = renderTopup;
+$('filterTopupTahun').onchange = renderTopup;
+
+function renderTopup() {
+    const now = new Date();
+    const bulanFilter = $('filterTopupBulan')?.value;
+    const tahunFilter = $('filterTopupTahun')?.value;
+
+    let list = [...topupList];
+
+    if (bulanFilter) list = list.filter(t => {
+        const d = new Date(t.tanggal);
+        return (d.getMonth() + 1) === +bulanFilter;
+    });
+    if (tahunFilter) list = list.filter(t => {
+        return new Date(t.tanggal).getFullYear() === +tahunFilter;
+    });
+
+    list = list.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+    // Summary bulan ini
+    const thisBulan = now.getMonth();
+    const thisTahun = now.getFullYear();
+    const bulanIni = topupList.filter(t => {
+        const d = new Date(t.tanggal);
+        return d.getMonth() === thisBulan && d.getFullYear() === thisTahun;
+    });
+    const totalBulanIni = bulanIni.reduce((s, t) => s + (t.nominal || 0), 0);
+    const totalAll = topupList.reduce((s, t) => s + (t.nominal || 0), 0);
+    if ($('topupTotalNominal')) $('topupTotalNominal').textContent = rp(totalBulanIni);
+    if ($('topupTotalCount')) $('topupTotalCount').textContent = bulanIni.length + 'x';
+    if ($('topupTotalAll')) $('topupTotalAll').textContent = rp(totalAll);
+
+    const isAdmin = hasAccess(['owner', 'admin']);
+    $('topupTable').innerHTML = list.length ? list.map(t => `
+        <tr>
+            <td>${fdate(t.tanggal)}</td>
+            <td><b style="color:var(--success)">${rp(t.nominal)}</b></td>
+            <td><span class="${metodeBadge(t.metode)}">${metodeLabel(t.metode)}</span></td>
+            <td style="max-width:160px;word-break:break-word">${t.ket || '<span style="color:var(--text-light)">-</span>'}</td>
+            <td>${t.foto
+                ? `<img class="topup-thumb" src="${t.foto}" alt="bukti" onclick="openFotoLightbox('${t.foto.replace(/'/g, "\\'")}')">` 
+                : '<span class="no-foto">📷 Tidak ada</span>'
+            }</td>
+            <td>${t.inputBy || '-'}</td>
+            <td>${isAdmin
+                ? `<div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editTopup(${t.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteTopup(${t.id})">🗑️</button></div>`
+                : '-'
+            }</td>
+        </tr>
+    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light)">Belum ada data top up</td></tr>';
+}
+
 // ==================== PENGAJUAN ====================
 $('pJenis').onchange = () => {
     const j = $('pJenis').value;
@@ -1995,6 +2471,7 @@ function calcGaji() {
     const tglGajian = staff.tanggalGajian || 27;
 
     // Periode: (tglGajian+1) bulan lalu s/d tglGajian bulan ini
+    // Contoh: gajian tgl 2 Maret → periode 3 Feb – 2 Mar
     // Contoh: gajian tgl 27 Mar → periode 28 Feb – 27 Mar
     let startDay = tglGajian + 1;
     let startMonth, startYear, endMonth, endYear;
@@ -2011,6 +2488,7 @@ function calcGaji() {
     }
 
     // Handle kalau startDay melebihi hari di bulan startMonth
+    // misal tglGajian=31, startDay=32 → pakai tanggal 1 bulan berikutnya
     const maxDayStart = new Date(startYear, startMonth + 1, 0).getDate();
     if (startDay > maxDayStart) {
         startMonth += 1;
@@ -2083,18 +2561,18 @@ $('sendWABtn').onclick = () => {
 📅 *Periode:* ${periodeText}
 
 👤 *Nama:* ${staff.nama}
-💰 *Gaji Pokok:* ${$('slipGaji').textContent}
+💰 *Gaji Pokok:* ${$(‘slipGaji’).textContent}
 
-📅 *Hari Masuk:* ${$('slipHari').textContent}
-🍽️ *Uang Makan:* ${$('slipMakan').textContent} *(cash harian)*
+📅 *Hari Masuk:* ${$(‘slipHari’).textContent}
+🍽️ *Uang Makan:* ${$(‘slipMakan’).textContent} *(cash harian)*
 
 *POTONGAN:*
-⏰ Terlambat: ${$('slipTelat').textContent}
-📅 Absen: ${$('slipAbsen').textContent}
-💵 Kasbon: ${$('slipKasbon').textContent}
-💸 Ganti Rugi: ${$('slipGantiRugi').textContent}
+⏰ Terlambat: ${$(‘slipTelat’).textContent}
+📅 Absen: ${$(‘slipAbsen’).textContent}
+💵 Kasbon: ${$(‘slipKasbon’).textContent}
+💸 Ganti Rugi: ${$(‘slipGantiRugi’).textContent}
 
-💵 *GAJI TRANSFER: ${$('slipBersih').textContent}*
+💵 *GAJI TRANSFER: ${$(‘slipBersih’).textContent}*
 
 *Terima kasih!* 💪`;
 
@@ -2196,9 +2674,11 @@ function initApp() {
     updateSelects();
     renderAbsensi();
     renderAkun();
+    renderTopup();
     
     $('absensiDate').valueAsDate = new Date();
     $('tokenDate').valueAsDate = new Date();
+    $('topupTanggal').valueAsDate = new Date();
 
     // Sembunyikan opsi LIBUR untuk selain owner & admin
     const liburOpt = $('liburOption');
