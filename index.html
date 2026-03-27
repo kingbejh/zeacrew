@@ -6,16 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEA CREW - Sistem Manajemen ZEA Property</title>
 
-<!-- Inline failsafe: hide loading segera saat DOM ready -->
-
-<script>
-window.addEventListener('DOMContentLoaded', function() {
-    var el = document.getElementById('loadingOverlay');
-    if (el) el.classList.add('hidden');
-});
-</script>
-
-<!-- Firebase SDK (sync dari Google CDN - biasanya cepat) -->
+<!-- Firebase SDK -->
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 
@@ -411,20 +402,21 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
     .post-avatar {
-        width: 42px; height: 42px; border-radius: 50%;
-        background: var(--primary);
+        width: 40px; height: 40px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
-        color: white; font-weight: 600; flex-shrink: 0;
+        color: white; font-weight: 600; font-size: 14px;
     }
     .post-meta { flex: 1; }
-    .post-author { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .verified-badge { background: #2563eb; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+    .post-author { font-weight: 600; font-size: 14px; }
+    .verified-badge { background: #3b82f6; color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
     .post-time { font-size: 12px; color: var(--text-light); }
-    .post-type { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
-    .post-type.pengumuman { background: #dbeafe; color: #1d4ed8; }
-    .post-type.info { background: #dcfce7; color: #16a34a; }
-    .post-type.keluhan { background: #fef3c7; color: #d97706; }
-    .post-type.lainnya { background: #f3e8ff; color: #9333ea; }
+    .post-type {
+        padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600;
+    }
+    .post-type.info { background: #dbeafe; color: #2563eb; }
+    .post-type.pengumuman { background: #fef3c7; color: #d97706; }
+    .post-type.keluhan { background: #fee2e2; color: #dc2626; }
+    .post-type.lainnya { background: #f1f5f9; color: #64748b; }
     .post-content { margin-bottom: 14px; line-height: 1.6; white-space: pre-wrap; font-size: 14px; }
     .post-actions { display: flex; gap: 20px; padding-top: 12px; border-top: 1px solid var(--border); }
     .post-action-btn {
@@ -500,131 +492,6 @@ window.addEventListener('DOMContentLoaded', function() {
         font-weight: 600;
         margin-left: 10px;
     }
-
-    /* LinkAja Topup */
-    .linkaja-logo {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 22px;
-        font-weight: 800;
-        color: #e8192c;
-        letter-spacing: -0.5px;
-    }
-    .linkaja-logo span { font-size: 14px; font-weight: 600; color: var(--text-light); }
-    .topup-summary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 16px;
-        margin-bottom: 20px;
-    }
-    .topup-stat {
-        background: linear-gradient(135deg, #e8192c 0%, #ff5757 100%);
-        color: white;
-        padding: 20px;
-        border-radius: 16px;
-        text-align: center;
-    }
-    .topup-stat.secondary {
-        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-    }
-    .topup-stat.tertiary {
-        background: linear-gradient(135deg, #065f46 0%, #22c55e 100%);
-    }
-    .topup-stat-value { font-size: 22px; font-weight: 700; }
-    .topup-stat-label { font-size: 12px; opacity: 0.9; margin-top: 4px; }
-    .foto-preview-wrap {
-        border: 2px dashed var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s;
-        position: relative;
-        min-height: 120px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        gap: 8px;
-        background: var(--bg);
-    }
-    .foto-preview-wrap:hover { border-color: var(--primary); background: rgba(37,99,235,0.05); }
-    .foto-preview-wrap.has-image { border-color: var(--success); background: #f0fdf4; }
-    .foto-preview-wrap img {
-        max-width: 100%;
-        max-height: 200px;
-        border-radius: 8px;
-        object-fit: contain;
-    }
-    .foto-preview-wrap .foto-placeholder { color: var(--text-light); font-size: 13px; }
-    .foto-preview-wrap .foto-placeholder-icon { font-size: 32px; }
-    .foto-clear-btn {
-        position: absolute;
-        top: 8px; right: 8px;
-        background: var(--danger);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 24px; height: 24px;
-        font-size: 12px;
-        cursor: pointer;
-        display: none;
-        align-items: center;
-        justify-content: center;
-    }
-    .foto-clear-btn.visible { display: flex; }
-    .topup-thumb {
-        width: 40px; height: 40px;
-        border-radius: 6px;
-        object-fit: cover;
-        cursor: pointer;
-        border: 2px solid var(--border);
-        transition: transform 0.2s;
-    }
-    .topup-thumb:hover { transform: scale(1.1); border-color: var(--primary); }
-    .no-foto { color: var(--text-light); font-size: 12px; }
-    .foto-lightbox {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.9);
-        z-index: 9999;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-    .foto-lightbox.active { display: flex; }
-    .foto-lightbox img {
-        max-width: 100%;
-        max-height: 90vh;
-        border-radius: 12px;
-        object-fit: contain;
-    }
-    .foto-lightbox-close {
-        position: absolute;
-        top: 20px; right: 20px;
-        background: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px; height: 40px;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .metode-badge {
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-    }
-    .metode-transfer { background: #dbeafe; color: #1d4ed8; }
-    .metode-atm { background: #fef3c7; color: #d97706; }
-    .metode-minimarket { background: #f3e8ff; color: #9333ea; }
-    .metode-ecommerce { background: #dcfce7; color: #16a34a; }
-    .metode-lainnya { background: #f1f5f9; color: #64748b; }
 </style>
 
 </head>
@@ -632,7 +499,7 @@ window.addEventListener('DOMContentLoaded', function() {
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <div class="loading-text">Menghubungkan ke Firebase...</div>
+        <div class="loading-text">Memuat ZEA CREW...</div>
     </div>
 
 <!-- Sync Status -->
@@ -692,7 +559,6 @@ window.addEventListener('DOMContentLoaded', function() {
         <div class="nav-item" data-page="report"><span class="nav-icon">🔧</span><span>Report Kerusakan</span></div>
         <div class="nav-item" data-page="absensi" data-roles="owner,admin,leader"><span class="nav-icon">📋</span><span>Absensi</span></div>
         <div class="nav-item" data-page="gaji" data-roles="owner,admin,leader"><span class="nav-icon">💰</span><span>Penggajian</span></div>
-        <div class="nav-item" data-page="linkaja" data-roles="owner,admin"><span class="nav-icon">💳</span><span>LinkAja Top Up</span></div>
         <div class="nav-item" data-page="akun" data-roles="owner,admin"><span class="nav-icon">⚙️</span><span>Kelola Akun</span></div>
         <div class="nav-item" data-page="panduan"><span class="nav-icon">📖</span><span>Panduan</span></div>
     </nav>
@@ -724,362 +590,248 @@ window.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 
-```
-<!-- Staff -->
-<div class="page" id="page-staff">
-    <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
-    <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Daftar Staff</h3>
-            <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Tgl Gajian</th><th>Aksi</th></tr></thead>
-                <tbody id="staffTable"></tbody>
-            </table>
+    <!-- Staff -->
+    <div class="page" id="page-staff">
+        <div class="page-header"><h1 class="page-title">👥 Manajemen Staff</h1></div>
+        <div class="info-box">💡 Data tersimpan otomatis ke Firebase. Semua perubahan akan sync ke semua device.</div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Staff</h3>
+                <button class="btn btn-primary btn-sm" id="addStaffBtn">+ Tambah Staff</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Staff</th><th>Role</th><th>Cabang</th><th>Gaji</th><th>Uang Makan/Hari</th><th>Jam Kerja</th><th>Libur</th><th>Tgl Gajian</th><th>Aksi</th></tr></thead>
+                    <tbody id="staffTable"></tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Unit -->
-<div class="page" id="page-unit">
-    <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
-    <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
-        <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
-    </div>
-    <div class="card" id="unitFormCard">
-        <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
-        <input type="hidden" id="unitEditId">
-        <div class="form-row-3" style="margin-top:16px">
-            <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
-            <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
-            <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
+    <!-- Unit -->
+    <div class="page" id="page-unit">
+        <div class="page-header"><h1 class="page-title">🏠 Unit Apartemen</h1></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-value" id="unitReady">0</div><div class="stat-label">Ready</div></div>
+            <div class="stat-card"><div class="stat-icon">🔴</div><div class="stat-value" id="unitMaint">0</div><div class="stat-label">Maintenance</div></div>
         </div>
-        <div class="form-row">
-            <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
-            <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
-        </div>
-        <div class="form-row">
-            <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
-            <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
-        </div>
-        <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
-        <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
-    </div>
-    <div class="card">
-        <h3 class="card-title">Daftar Unit</h3>
-        <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
-        <div class="unit-grid" id="unitGridStudio"></div>
-        <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
-        <div class="unit-grid" id="unitGrid1BR"></div>
-        <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
-        <div class="unit-grid" id="unitGrid2BR"></div>
-        <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
-        <div class="unit-grid" id="unitGridKios"></div>
-    </div>
-</div>
-
-<!-- Token Listrik -->
-<div class="page" id="page-token">
-    <div class="page-header">
-        <h1 class="page-title">⚡ Token Listrik</h1>
-        <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
-    </div>
-    <div class="card">
-        <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
-        <form id="tokenForm" style="margin-top:16px">
-            <div class="form-row">
-                <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
-                <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
+        <div class="card" id="unitFormCard">
+            <h3 class="card-title" id="unitFormTitle">Tambah/Update Unit</h3>
+            <input type="hidden" id="unitEditId">
+            <div class="form-row-3" style="margin-top:16px">
+                <div class="form-group"><label>Nomor Unit</label><input type="text" id="uNomor" placeholder="DB12B"></div>
+                <div class="form-group"><label>Status</label><select id="uStatus"><option value="ready">✅ READY</option><option value="maintenance">🔧 MAINTENANCE</option></select></div>
+                <div class="form-group"><label>Tipe Unit</label><select id="uTipe"><option value="Studio">🏠 Studio</option><option value="1BR">🛏️ 1 Bedroom</option><option value="2BR">🛏️🛏️ 2 Bedroom</option><option value="Kios">🏪 Kios</option></select></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
-                <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
-            </div>
-            <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
-            <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
-            <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
-        </form>
-    </div>
-    <div class="card">
-        <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
-        <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
-        <div id="tokenAnalysis"></div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">📜 Riwayat Token Listrik</h3>
-            <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
-                <tbody id="tokenTable"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Pengajuan -->
-<div class="page" id="page-pengajuan">
-    <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
-    <div class="tabs" id="pengajuanTabs">
-        <button class="tab-btn active" data-filter="semua">Semua</button>
-        <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
-        <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
-        <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Daftar Pengajuan</h3>
-            <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
-        </div>
-        <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
-    </div>
-</div>
-
-<!-- Report -->
-<div class="page" id="page-report">
-    <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
-    <div class="card">
-        <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
-        <form id="reportForm">
-            <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
-            <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
-            <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
-            <button type="submit" class="btn btn-primary">Kirim Report</button>
-        </form>
-    </div>
-    <div class="card">
-        <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
-        <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
-    </div>
-</div>
-
-<!-- Absensi -->
-<div class="page" id="page-absensi">
-    <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
-    <div class="warning-box">
-        <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja (Gaji÷30)<br>
-        <b>🏖️ Aturan LIBUR:</b> Status LIBUR hanya bisa diinput Owner/Admin. Tidak ada potongan hanya jika hari tersebut = hari libur tetap staff. Di luar hari libur tetap = potongan 1 hari kerja.
-    </div>
-    <div class="card">
-        <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
-        <form id="absensiForm">
-            <div class="form-row">
-                <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
-                <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
+                <div class="form-group"><label>Nama Owner (Opsional)</label><input type="text" id="uOwner" placeholder="Nama pemilik unit"></div>
+                <div class="form-group"><label>WiFi</label><select id="uWifi"><option value="ada">📶 WiFi</option><option value="tidak">❌ Non WiFi</option></select></div>
             </div>
             <div class="form-row">
-                <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
-                    <option value="hadir">✅ HADIR</option>
-                    <option value="izin">📝 IZIN</option>
-                    <option value="sakit">🤒 SAKIT</option>
-                    <option value="alfa">❌ ALFA</option>
-                    <option value="libur" id="liburOption">🏖️ LIBUR</option>
-                </select></div>
-                <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
+                <div class="form-group"><label>Nominal Perpanjangan (Rp)</label><input type="number" id="uNominal" value="2500000"></div>
+                <div class="form-group"><label>Tanggal Jatuh Tempo</label><input type="date" id="uTempo"></div>
             </div>
-            <div id="absensiPreview" class="info-box" style="display:none"></div>
-            <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
-        </form>
+            <button class="btn btn-primary" id="saveUnitBtn">💾 Simpan Unit</button>
+            <button class="btn btn-secondary" id="resetUnitBtn" style="margin-left:10px">Reset</button>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Daftar Unit</h3>
+            <div class="section-title">🏠 Studio (<span id="countStudio">0</span>)</div>
+            <div class="unit-grid" id="unitGridStudio"></div>
+            <div class="section-title">🛏️ 1 Bedroom (<span id="count1BR">0</span>)</div>
+            <div class="unit-grid" id="unitGrid1BR"></div>
+            <div class="section-title">🛏️🛏️ 2 Bedroom (<span id="count2BR">0</span>)</div>
+            <div class="unit-grid" id="unitGrid2BR"></div>
+            <div class="section-title">🏪 Kios (<span id="countKios">0</span>)</div>
+            <div class="unit-grid" id="unitGridKios"></div>
+        </div>
     </div>
-    <div class="card">
-        <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
-        <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
-    </div>
-</div>
 
-<!-- Gaji -->
-<div class="page" id="page-gaji">
-    <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
-    <div class="info-box">
-        <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
-        <b>Periode Gaji:</b> Setiap staff berbeda sesuai tanggal gajian. Contoh: gajian tgl 2 → periode 3 bln lalu s/d 2 bln ini<br>
-        <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
-        <b>Catatan:</b> Status LIBUR di hari libur tetap staff tidak dikenakan potongan
-    </div>
-    <div class="card">
-        <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
-        <div class="form-row">
-            <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
-            <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
+    <!-- Token Listrik -->
+    <div class="page" id="page-token">
+        <div class="page-header">
+            <h1 class="page-title">⚡ Token Listrik</h1>
+            <p class="page-subtitle">Catat pembelian token untuk deteksi unit boros listrik</p>
         </div>
-        <div class="form-row">
-            <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
-            <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
-        </div>
-        <div class="slip-container" id="slipContainer" style="display:none">
-            <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
-            <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
-            <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
-            <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-            <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
-            <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
-            <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
-            <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
-            <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
-            <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
-            <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
-            <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
-            <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
-        </div>
-        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
-            <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
-            <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
-        </div>
-    </div>
-</div>
-
-<!-- LinkAja Top Up -->
-<div class="page" id="page-linkaja">
-    <div class="page-header">
-        <div class="linkaja-logo">💳 LinkAja <span>Top Up Saldo</span></div>
-    </div>
-    <div class="topup-summary">
-        <div class="topup-stat">
-            <div class="topup-stat-value" id="topupTotalNominal">Rp 0</div>
-            <div class="topup-stat-label">Total Top Up Bulan Ini</div>
-        </div>
-        <div class="topup-stat secondary">
-            <div class="topup-stat-value" id="topupTotalCount">0x</div>
-            <div class="topup-stat-label">Frekuensi Bulan Ini</div>
-        </div>
-        <div class="topup-stat tertiary">
-            <div class="topup-stat-value" id="topupTotalAll">Rp 0</div>
-            <div class="topup-stat-label">Total Keseluruhan</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title" id="topupFormTitle">➕ Catat Top Up LinkAja</h3>
-        </div>
-        <div class="form-row" style="margin-top:8px">
-            <div class="form-group">
-                <label>💰 Nominal Top Up (Rp)</label>
-                <input type="number" id="topupNominal" placeholder="cth: 500000" min="1">
-            </div>
-            <div class="form-group">
-                <label>📅 Tanggal Top Up</label>
-                <input type="date" id="topupTanggal">
-            </div>
-        </div>
-        <div class="form-group">
-            <label>🏪 Metode Top Up</label>
-            <select id="topupMetode">
-                <option value="transfer">🏦 Transfer Bank</option>
-                <option value="atm">🏧 ATM</option>
-                <option value="minimarket">🏪 Minimarket (Indomaret/Alfamart)</option>
-                <option value="ecommerce">🛒 E-Commerce / DANA / GoPay</option>
-                <option value="lainnya">💬 Lainnya</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>📷 Lampiran Bukti (Foto/Screenshot)</label>
-            <input type="file" id="topupFotoInput" accept="image/*" style="display:none">
-            <div class="foto-preview-wrap" id="topupFotoWrap" onclick="document.getElementById('topupFotoInput').click()">
-                <div class="foto-placeholder">
-                    <div class="foto-placeholder-icon">📷</div>
-                    <div>Klik untuk upload foto bukti top up</div>
-                    <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
+        <div class="card">
+            <h3 class="card-title" id="tokenFormTitle">Form Input Token Listrik</h3>
+            <form id="tokenForm" style="margin-top:16px">
+                <div class="form-row">
+                    <div class="form-group"><label>🏠 Pilih Unit</label><select id="tokenUnit" required></select></div>
+                    <div class="form-group"><label>📅 Tanggal Beli</label><input type="date" id="tokenDate" required></div>
                 </div>
-                <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>
+                <div class="form-row">
+                    <div class="form-group"><label>💰 Nominal (Rp)</label><input type="number" id="tokenNominal" placeholder="100000" required></div>
+                    <div class="form-group"><label>🔢 Angka Meteran (kWh)</label><input type="number" id="tokenMeteran" placeholder="1234" step="0.01"></div>
+                </div>
+                <div class="form-group"><label>📝 Keterangan (opsional)</label><input type="text" id="tokenKet" placeholder="Token rutin / darurat / dll"></div>
+                <button type="submit" class="btn btn-primary">💾 Simpan Token</button>
+                <button type="button" class="btn btn-secondary" id="cancelTokenEdit" style="display:none" onclick="resetTokenForm()">✖ Batal Edit</button>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">📊 Analisis Pemakaian Listrik</h3></div>
+            <div class="warning-box">⚠️ Unit dengan pengeluaran token <b>> Rp 500.000/bulan</b> ditandai sebagai <b style="color:var(--danger)">BOROS</b></div>
+            <div id="tokenAnalysis"></div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📜 Riwayat Token Listrik</h3>
+                <select id="filterTokenUnit" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px"><option value="">Semua Unit</option></select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Tanggal</th><th>Unit</th><th>Nominal</th><th>Meteran</th><th>Keterangan</th><th>Input By</th><th>Aksi</th></tr></thead>
+                    <tbody id="tokenTable"></tbody>
+                </table>
             </div>
         </div>
-        <div class="form-group">
-            <label>📝 Keterangan (opsional)</label>
-            <input type="text" id="topupKet" placeholder="cth: Top up rutin mingguan, emergency, dll">
+    </div>
+
+    <!-- Pengajuan -->
+    <div class="page" id="page-pengajuan">
+        <div class="page-header"><h1 class="page-title">📝 Pengajuan</h1></div>
+        <div class="tabs" id="pengajuanTabs">
+            <button class="tab-btn active" data-filter="semua">Semua</button>
+            <button class="tab-btn" data-filter="kasbon">💵 Kasbon</button>
+            <button class="tab-btn" data-filter="cuti">🏖️ Cuti</button>
+            <button class="tab-btn" data-filter="reimburse">🧾 Reimburse</button>
         </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-primary" id="saveTopupBtn">💾 Simpan Top Up</button>
-            <button class="btn btn-secondary" id="cancelTopupBtn" style="display:none" onclick="resetTopupForm()">✖ Batal Edit</button>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Pengajuan</h3>
+                <button class="btn btn-primary btn-sm" id="addPengajuanBtn">+ Buat Pengajuan</button>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Detail</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="pengajuanTable"></tbody></table></div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">📋 Riwayat Top Up LinkAja</h3>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                <select id="filterTopupBulan" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px">
-                    <option value="">Semua Bulan</option>
-                    <option value="1">Januari</option><option value="2">Februari</option>
-                    <option value="3">Maret</option><option value="4">April</option>
-                    <option value="5">Mei</option><option value="6">Juni</option>
-                    <option value="7">Juli</option><option value="8">Agustus</option>
-                    <option value="9">September</option><option value="10">Oktober</option>
-                    <option value="11">November</option><option value="12">Desember</option>
-                </select>
-                <select id="filterTopupTahun" style="padding:8px 12px;border:2px solid var(--border);border-radius:8px;font-size:13px">
-                    <option value="">Semua Tahun</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                </select>
+
+    <!-- Report -->
+    <div class="page" id="page-report">
+        <div class="page-header"><h1 class="page-title">🔧 Report Kerusakan</h1></div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Form Report Kerusakan</h3>
+            <form id="reportForm">
+                <div class="form-group"><label>🏠 Pilih Unit</label><select id="reportUnit" required></select></div>
+                <div class="form-group"><label>⚠️ Prioritas</label><select id="reportPriority"><option value="low">🟢 Rendah</option><option value="medium">🟡 Sedang</option><option value="high">🔴 Tinggi - URGENT!</option></select></div>
+                <div class="form-group"><label>📝 Keterangan Kerusakan</label><textarea id="reportDesc" rows="4" required placeholder="Tulis semua kerusakan/komplain..."></textarea></div>
+                <button type="submit" class="btn btn-primary">Kirim Report</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Riwayat Report</h3>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Unit</th><th>Prioritas</th><th>Keterangan</th><th>Reporter</th><th>Status</th></tr></thead><tbody id="reportTable"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Absensi -->
+    <div class="page" id="page-absensi">
+        <div class="page-header"><h1 class="page-title">📋 Sistem Absensi</h1></div>
+        <div class="warning-box">
+            <b>⏰ Aturan Potongan:</b> 0-10 menit = Rp 0 | 11-30 menit = Rp 25.000 | >30 menit = 1 hari kerja | IZIN/SAKIT/ALFA = 1 hari kerja (Gaji÷30)<br>
+            <b>🏖️ Aturan LIBUR:</b> Status LIBUR hanya bisa diinput Owner/Admin. Tidak ada potongan hanya jika hari tersebut = hari libur tetap staff. Di luar hari libur tetap = potongan 1 hari kerja.
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Input Absensi</h3>
+            <form id="absensiForm">
+                <div class="form-row">
+                    <div class="form-group"><label>👤 Pilih Staff</label><select id="absensiStaff" required></select></div>
+                    <div class="form-group"><label>📅 Tanggal</label><input type="date" id="absensiDate" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>📊 Status</label><select id="absensiStatus">
+                        <option value="hadir">✅ HADIR</option>
+                        <option value="izin">📝 IZIN</option>
+                        <option value="sakit">🤒 SAKIT</option>
+                        <option value="alfa">❌ ALFA</option>
+                        <option value="libur" id="liburOption">🏖️ LIBUR</option>
+                    </select></div>
+                    <div class="form-group"><label>⏱️ Jam Masuk Aktual</label><input type="time" id="absensiAktual"></div>
+                </div>
+                <div id="absensiPreview" class="info-box" style="display:none"></div>
+                <button type="submit" class="btn btn-primary">💾 Simpan Absensi</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Riwayat Absensi</h3>
+            <div class="table-container"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Status</th><th>Jadwal</th><th>Aktual</th><th>Terlambat</th><th>Potongan</th></tr></thead><tbody id="absensiTable"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Gaji -->
+    <div class="page" id="page-gaji">
+        <div class="page-header"><h1 class="page-title">💰 Sistem Penggajian</h1></div>
+        <div class="info-box">
+            <b>Formula:</b> GAJI TRANSFER = Gaji Pokok - (Potongan Terlambat + Absen + Kasbon + Ganti Rugi)<br>
+            <b>Periode Gaji:</b> Setiap staff berbeda sesuai tanggal gajian. Contoh: gajian tgl 2 → periode 3 bln lalu s/d 2 bln ini<br>
+            <b>Uang Makan:</b> Catatan saja (sudah diambil cash harian, TIDAK ditransfer)<br>
+            <b>Catatan:</b> Status LIBUR di hari libur tetap staff tidak dikenakan potongan
+        </div>
+        <div class="card">
+            <h3 class="card-title" style="margin-bottom:20px">Proses Gaji</h3>
+            <div class="form-row">
+                <div class="form-group"><label>👤 Pilih Staff</label><select id="gajiStaff"></select></div>
+                <div class="form-group"><label>📅 Bulan Gaji</label><select id="gajiBulan"><option value="1">Januari</option><option value="2" selected>Februari</option><option value="3">Maret</option><option value="4">April</option><option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Agustus</option><option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>💵 Pot. Kasbon</label><input type="number" id="gajiKasbon" value="0"></div>
+                <div class="form-group"><label>💸 Pot. Ganti Rugi</label><input type="number" id="gajiGantiRugi" value="0"></div>
+            </div>
+            <div class="slip-container" id="slipContainer" style="display:none">
+                <div class="slip-header"><h3>🏢 ZEA PROPERTY</h3><p>SLIP GAJI</p><p id="slipPeriode"></p></div>
+                <div class="slip-row"><span>👤 Nama</span><span id="slipNama">-</span></div>
+                <div class="slip-row"><span>💰 Gaji Pokok</span><span id="slipGaji">Rp 0</span></div>
+                <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                <div class="slip-row"><span>📅 Hari Masuk</span><span id="slipHari">0</span></div>
+                <div class="slip-row"><span>🍽️ Uang Makan (Cash)</span><span id="slipMakan">Rp 0</span></div>
+                <hr style="margin:12px 0;border:none;border-top:1px dashed var(--border)">
+                <p style="font-weight:600;margin-bottom:8px;color:var(--danger)">POTONGAN:</p>
+                <div class="slip-row" style="color:var(--danger)"><span>⏰ Terlambat</span><span id="slipTelat">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>📅 Absen (tidak termasuk libur)</span><span id="slipAbsen">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>💵 Kasbon</span><span id="slipKasbon">- Rp 0</span></div>
+                <div class="slip-row" style="color:var(--danger)"><span>💸 Ganti Rugi</span><span id="slipGantiRugi">- Rp 0</span></div>
+                <div class="slip-row slip-total" style="color:var(--success)"><span>💵 GAJI TRANSFER</span><span id="slipBersih">Rp 0</span></div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+                <button class="btn btn-success" id="sendWABtn">📱 Kirim WA</button>
+                <button class="btn btn-primary" id="saveGajiBtn">💾 Simpan</button>
+                <button class="btn btn-warning" id="editGajiBtn" style="display:none">✏️ Edit Gaji Pokok</button>
             </div>
         </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Tanggal</th>
-                        <th>Nominal</th>
-                        <th>Metode</th>
-                        <th>Keterangan</th>
-                        <th>Bukti</th>
-                        <th>Input By</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="topupTable"></tbody>
-            </table>
+    </div>
+
+    <!-- Akun -->
+    <div class="page" id="page-akun">
+        <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
+        <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Akun</h3>
+                <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
         </div>
     </div>
-</div>
 
-<!-- Akun -->
-<div class="page" id="page-akun">
-    <div class="page-header"><h1 class="page-title">⚙️ Kelola Akun</h1></div>
-    <div class="info-box">💡 Buat akun di sini, lalu tambahkan data staff di menu "Staff"</div>
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">Daftar Akun</h3>
-            <button class="btn btn-primary btn-sm" id="addAkunBtn">+ Tambah Akun</button>
+    <!-- Panduan -->
+    <div class="page" id="page-panduan">
+        <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
+        <div class="card">
+            <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
+                🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
+            </div>
+            <div class="section-title">🔐 Role & Akses</div>
+            <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
+            <div class="section-title">💰 Formula Gaji</div>
+            <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
+            <div class="section-title">⏰ Potongan Terlambat</div>
+            <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
+            <div class="section-title">📞 Bantuan</div>
+            <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
         </div>
-        <div class="table-container"><table><thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="akunTable"></tbody></table></div>
     </div>
-</div>
-
-<!-- Panduan -->
-<div class="page" id="page-panduan">
-    <div class="page-header"><h1 class="page-title">📖 Panduan</h1></div>
-    <div class="card">
-        <div class="info-box" style="background:#fff3e0;border-color:#f57c00">
-            🔥 <b>Firebase Connected!</b> Semua data tersimpan di cloud dan sync otomatis ke semua device.
-        </div>
-        <div class="section-title">🔐 Role & Akses</div>
-        <p style="padding:12px 0">👑 Owner: Full | ⚙️ Admin: Edit semua | 📋 Leader: Staff & Unit | 📢 Marketing: View & Posting | 👤 Staff: Data sendiri</p>
-        <div class="section-title">💰 Formula Gaji</div>
-        <p style="padding:12px 0">GAJI TRANSFER = Gaji Pokok - (Terlambat + Absen + Kasbon + Ganti Rugi)<br>Periode: 27 bulan lalu s/d 26 bulan ini<br>Uang makan = Cash harian (tidak ditransfer)<br>LIBUR = Tidak ada potongan gaji</p>
-        <div class="section-title">⏰ Potongan Terlambat</div>
-        <p style="padding:12px 0">0-10 menit: Rp 0 | 11-30 menit: Rp 25.000 | >30 menit: 1 hari kerja</p>
-        <div class="section-title">📞 Bantuan</div>
-        <p style="padding:12px 0">Teknis: Wulan/Riko | Operasional: Iwa | Keputusan: Ibu Zea/King Bejh</p>
-    </div>
-</div>
-```
-
 </main>
 
-</div>
-
-<!-- Foto Lightbox -->
-
-<div class="foto-lightbox" id="fotoLightbox" onclick="closeLightbox()">
-    <button class="foto-lightbox-close" onclick="closeLightbox()">×</button>
-    <img id="fotoLightboxImg" src="" alt="Bukti Top Up">
 </div>
 
 <!-- Modal Staff -->
@@ -1182,14 +934,21 @@ const firebaseConfig = {
     appId: "1:1043212202064:web:8bd9e3e0e9f1c5eb0ee155"
 };
 
-// HARD FAILSAFE: paksa hide loading setelah 2 detik apapun yang terjadi
-// Initialize Firebase
+// HARD FAILSAFE: Paksa hide loading setelah 2 detik — apapun yang terjadi
+setTimeout(function() {
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
+}, 2000);
+
+// Initialize Firebase dengan try-catch
 let db = null;
 try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.database();
 } catch(e) {
     console.error('Firebase init error:', e);
+    var overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
 }
 
 // ==================== DATA STATE ====================
@@ -1199,14 +958,11 @@ let pengajuanFilter = 'semua';
 let editStaffId = null;
 let editUnitId = null;
 let editTokenId = null;
-let editTopupId = null;
-let topupFotoBase64 = null;
 
 // Data arrays (will be synced with Firebase)
 let users = [];
 let staffList = [];
 let unitList = [];
-let topupList = [];
 let posts = [];
 let pengajuanList = [];
 let reportList = [];
@@ -1307,61 +1063,71 @@ function hideModal(id) { $(id).classList.remove('active'); }
 function setSyncStatus(status) {
     const el = $('syncStatus');
     const text = $('syncText');
+    if (!el || !text) return;
     el.className = 'sync-status ' + status;
     text.textContent = status === 'online' ? '🟢 Online' : status === 'offline' ? '🔴 Offline' : '🔄 Syncing...';
 }
 
 function hideLoading() {
-    $('loadingOverlay').classList.add('hidden');
+    const overlay = $('loadingOverlay');
+    if (overlay) overlay.classList.add('hidden');
 }
 
 function showLoading(text) {
-    $('loadingOverlay').classList.remove('hidden');
-    $('loadingOverlay').querySelector('.loading-text').textContent = text || 'Loading...';
+    const overlay = $('loadingOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    const lt = overlay.querySelector('.loading-text');
+    if (lt) lt.textContent = text || 'Loading...';
 }
 
 // ==================== FIREBASE FUNCTIONS ====================
 async function initFirebase() {
-    // 1. Load default data dulu — login langsung bisa pakai ini
+    // 1. Load default data dulu supaya login bisa jalan langsung
     users = [...defaultUsers];
     unitList = [...defaultUnits];
     posts = [...defaultPosts];
 
-    // 2. Loading sudah di-hide oleh inline script di head.
-    //    Ini backup kalau inline script telat jalan.
+    // 2. Langsung sembunyi loading — user bisa login tanpa nunggu Firebase
     hideLoading();
 
-    // 3. Kalau Firebase gagal init, stop di sini
+    // 3. Kalau db null (Firebase gagal init), langsung offline mode
     if (!db) {
         setSyncStatus('offline');
         return;
     }
 
-    // 4. Cek koneksi
-    try {
-        db.ref('.info/connected').on('value', snap => {
-            setSyncStatus(snap.val() ? 'online' : 'offline');
-        });
-    } catch(e) {}
+    // 4. Coba konek Firebase di background (tidak blokir UI)
+    setSyncStatus('syncing');
 
-    // 5. Load data Firebase di background — tidak blokir login
     try {
+        // Monitor koneksi realtime
+        db.ref('.info/connected').on('value', (snap) => {
+            if (snap.val()) setSyncStatus('online');
+            else setSyncStatus('offline');
+        });
+
+        // Load semua data dengan timeout 5 detik
         await Promise.race([
             loadAllData(),
-            new Promise((_, rej) => setTimeout(() => rej('timeout'), 5000))
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase timeout')), 5000))
         ]);
+
+        // Setup listener realtime setelah data berhasil dimuat
         setupRealtimeListeners();
-    } catch(e) {
-        console.warn('Firebase load:', e);
-        setSyncStatus('offline');
-    } finally {
-        // Kalau user sudah login sebelum Firebase selesai, refresh render
+        setSyncStatus('online');
+
+        // Refresh UI kalau user sudah login
         if (currentUser) {
             renderStaff(); renderUnit(); updateUnitSelects();
             renderToken(); renderPengajuan(); renderReport();
             updateSelects(); renderAbsensi(); renderAkun();
-            renderTopup(); updateDashboard();
+            updateDashboard();
         }
+    } catch(e) {
+        console.warn('Firebase gagal/timeout, mode offline:', e.message);
+        setSyncStatus('offline');
+        // Data default tetap tersedia, user tetap bisa login
     }
 }
 
@@ -1372,7 +1138,6 @@ async function loadAllData() {
         if (usersSnap.exists()) {
             users = Object.values(usersSnap.val());
         } else {
-            // Initialize with default users
             await db.ref('users').set(defaultUsers.reduce((acc, u) => { acc[u.id] = u; return acc; }, {}));
             users = [...defaultUsers];
         }
@@ -1414,16 +1179,14 @@ async function loadAllData() {
         // Load tokens
         const tokensSnap = await db.ref('tokens').once('value');
         tokenList = tokensSnap.exists() ? Object.values(tokensSnap.val()) : [];
-
-        // Load topup linkaja
-        const topupSnap = await db.ref('topup').once('value');
-        topupList = topupSnap.exists() ? Object.values(topupSnap.val()) : [];
         
     } catch (error) {
         console.error('Error loading data:', error);
+        // Fallback ke default kalau Firebase error
         if (!users.length) users = [...defaultUsers];
         if (!unitList.length) unitList = [...defaultUnits];
         if (!posts.length) posts = [...defaultPosts];
+        throw error; // Re-throw supaya ditangkap oleh initFirebase
     }
 }
 
@@ -1489,12 +1252,6 @@ function setupRealtimeListeners() {
         tokenList = snap.exists() ? Object.values(snap.val()) : [];
         if (currentUser) renderToken();
     });
-
-    // Topup LinkAja listener
-    db.ref('topup').on('value', (snap) => {
-        topupList = snap.exists() ? Object.values(snap.val()) : [];
-        if (currentUser) renderTopup();
-    });
 }
 
 // Firebase save functions
@@ -1546,16 +1303,6 @@ function saveToken(t) {
 function deleteTokenFromDB(id) {
     setSyncStatus('syncing');
     return db.ref('tokens/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
-}
-
-function saveTopup(t) {
-    setSyncStatus('syncing');
-    return db.ref('topup/' + t.id).set(t).then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
-}
-
-function deleteTopupFromDB(id) {
-    setSyncStatus('syncing');
-    return db.ref('topup/' + id).remove().then(() => setSyncStatus('online')).catch(() => setSyncStatus('offline'));
 }
 
 function deleteUserFromDB(id) {
@@ -1977,226 +1724,6 @@ function renderToken() {
     }).join('') : '<p style="color:var(--text-light);text-align:center;padding:20px">Belum ada data bulan ini</p>';
 }
 
-// ==================== LINKAJA TOP UP ====================
-const metodeLabel = m => ({
-    transfer: '🏦 Transfer Bank',
-    atm: '🏧 ATM',
-    minimarket: '🏪 Minimarket',
-    ecommerce: '🛒 E-Commerce',
-    lainnya: '💬 Lainnya'
-}[m] || m);
-
-const metodeBadge = m => 'metode-badge metode-' + (m || 'lainnya');
-
-// Compress gambar ke base64 max 800px, quality 0.75
-function compressImage(file) {
-    return new Promise((resolve, reject) => {
-        const MAX_SIZE = 5 * 1024 * 1024; // 5MB limit
-        if (file.size > MAX_SIZE) {
-            toast('Ukuran foto maks. 5MB!', 'error');
-            return reject('too_large');
-        }
-
-        const reader = new FileReader();
-        reader.onload = e => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_PX = 900;
-                let w = img.width, h = img.height;
-                if (w > MAX_PX || h > MAX_PX) {
-                    if (w > h) { h = Math.round(h * MAX_PX / w); w = MAX_PX; }
-                    else { w = Math.round(w * MAX_PX / h); h = MAX_PX; }
-                }
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL('image/jpeg', 0.75));
-            };
-            img.onerror = reject;
-            img.src = e.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-}
-
-// Handler file input
-$('topupFotoInput').onchange = async function () {
-    const file = this.files[0];
-    if (!file) return;
-    try {
-        const base64 = await compressImage(file);
-        topupFotoBase64 = base64;
-        const wrap = $('topupFotoWrap');
-        wrap.innerHTML = `<img src="${base64}" alt="Preview"><button class="foto-clear-btn visible" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
-        wrap.classList.add('has-image');
-    } catch (e) {
-        if (e !== 'too_large') toast('Gagal memuat foto!', 'error');
-        this.value = '';
-    }
-};
-
-window.clearTopupFoto = function(e) {
-    e.stopPropagation();
-    topupFotoBase64 = null;
-    $('topupFotoInput').value = '';
-    const wrap = $('topupFotoWrap');
-    wrap.classList.remove('has-image');
-    wrap.innerHTML = `<div class="foto-placeholder">
-        <div class="foto-placeholder-icon">📷</div>
-        <div>Klik untuk upload foto bukti top up</div>
-        <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
-    </div>
-    <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
-    wrap.onclick = () => $('topupFotoInput').click();
-};
-
-$('saveTopupBtn').onclick = () => {
-    const nominal = +$('topupNominal').value;
-    const tanggal = $('topupTanggal').value;
-    if (!nominal || nominal <= 0) return toast('Nominal harus diisi!', 'error');
-    if (!tanggal) return toast('Tanggal harus diisi!', 'error');
-
-    const data = {
-        id: editTopupId || Date.now(),
-        tanggal,
-        nominal,
-        metode: $('topupMetode').value,
-        ket: $('topupKet').value.trim(),
-        foto: topupFotoBase64 || null,
-        inputBy: getName(),
-        createdAt: editTopupId ? undefined : Date.now()
-    };
-
-    saveTopup(data);
-    resetTopupForm();
-    toast(editTopupId ? 'Data top up berhasil diupdate!' : 'Top up LinkAja berhasil dicatat!');
-};
-
-window.resetTopupForm = function() {
-    editTopupId = null;
-    topupFotoBase64 = null;
-    $('topupNominal').value = '';
-    $('topupTanggal').valueAsDate = new Date();
-    $('topupMetode').value = 'transfer';
-    $('topupKet').value = '';
-    $('topupFotoInput').value = '';
-    const wrap = $('topupFotoWrap');
-    wrap.classList.remove('has-image');
-    wrap.innerHTML = `<div class="foto-placeholder">
-        <div class="foto-placeholder-icon">📷</div>
-        <div>Klik untuk upload foto bukti top up</div>
-        <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
-    </div>
-    <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
-    wrap.onclick = () => $('topupFotoInput').click();
-    $('topupFormTitle').textContent = '➕ Catat Top Up LinkAja';
-    $('cancelTopupBtn').style.display = 'none';
-};
-
-window.editTopup = function(id) {
-    if (!hasAccess(['owner', 'admin'])) return toast('Akses ditolak!', 'error');
-    const t = topupList.find(x => x.id === id);
-    if (!t) return;
-    editTopupId = id;
-    $('topupNominal').value = t.nominal;
-    $('topupTanggal').value = t.tanggal;
-    $('topupMetode').value = t.metode || 'transfer';
-    $('topupKet').value = t.ket || '';
-    $('topupFormTitle').textContent = '✏️ Edit Data Top Up';
-    $('cancelTopupBtn').style.display = 'inline-flex';
-
-    const wrap = $('topupFotoWrap');
-    if (t.foto) {
-        topupFotoBase64 = t.foto;
-        wrap.innerHTML = `<img src="${t.foto}" alt="Preview"><button class="foto-clear-btn visible" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
-        wrap.classList.add('has-image');
-    } else {
-        topupFotoBase64 = null;
-        wrap.classList.remove('has-image');
-        wrap.innerHTML = `<div class="foto-placeholder">
-            <div class="foto-placeholder-icon">📷</div>
-            <div>Klik untuk upload foto bukti top up</div>
-            <div style="font-size:11px;margin-top:4px;color:#94a3b8">JPG, PNG, WEBP — maks. 5MB</div>
-        </div>
-        <button class="foto-clear-btn" id="topupFotoClear" onclick="clearTopupFoto(event)">×</button>`;
-        wrap.onclick = () => $('topupFotoInput').click();
-    }
-    $('page-linkaja').scrollIntoView({ behavior: 'smooth' });
-    toast('Mode edit aktif — ubah data lalu klik Simpan');
-};
-
-window.deleteTopup = function(id) {
-    if (!hasAccess(['owner', 'admin'])) return toast('Akses ditolak!', 'error');
-    if (confirm('Yakin hapus data top up ini?')) {
-        deleteTopupFromDB(id);
-        toast('Data top up dihapus!');
-    }
-};
-
-window.openFotoLightbox = function(src) {
-    $('fotoLightboxImg').src = src;
-    $('fotoLightbox').classList.add('active');
-};
-
-window.closeLightbox = function() {
-    $('fotoLightbox').classList.remove('active');
-    $('fotoLightboxImg').src = '';
-};
-
-$('filterTopupBulan').onchange = renderTopup;
-$('filterTopupTahun').onchange = renderTopup;
-
-function renderTopup() {
-    const now = new Date();
-    const bulanFilter = $('filterTopupBulan')?.value;
-    const tahunFilter = $('filterTopupTahun')?.value;
-
-    let list = [...topupList];
-
-    if (bulanFilter) list = list.filter(t => {
-        const d = new Date(t.tanggal);
-        return (d.getMonth() + 1) === +bulanFilter;
-    });
-    if (tahunFilter) list = list.filter(t => {
-        return new Date(t.tanggal).getFullYear() === +tahunFilter;
-    });
-
-    list = list.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    // Summary bulan ini
-    const thisBulan = now.getMonth();
-    const thisTahun = now.getFullYear();
-    const bulanIni = topupList.filter(t => {
-        const d = new Date(t.tanggal);
-        return d.getMonth() === thisBulan && d.getFullYear() === thisTahun;
-    });
-    const totalBulanIni = bulanIni.reduce((s, t) => s + (t.nominal || 0), 0);
-    const totalAll = topupList.reduce((s, t) => s + (t.nominal || 0), 0);
-    if ($('topupTotalNominal')) $('topupTotalNominal').textContent = rp(totalBulanIni);
-    if ($('topupTotalCount')) $('topupTotalCount').textContent = bulanIni.length + 'x';
-    if ($('topupTotalAll')) $('topupTotalAll').textContent = rp(totalAll);
-
-    const isAdmin = hasAccess(['owner', 'admin']);
-    $('topupTable').innerHTML = list.length ? list.map(t => `
-        <tr>
-            <td>${fdate(t.tanggal)}</td>
-            <td><b style="color:var(--success)">${rp(t.nominal)}</b></td>
-            <td><span class="${metodeBadge(t.metode)}">${metodeLabel(t.metode)}</span></td>
-            <td style="max-width:160px;word-break:break-word">${t.ket || '<span style="color:var(--text-light)">-</span>'}</td>
-            <td>${t.foto
-                ? `<img class="topup-thumb" src="${t.foto}" alt="bukti" onclick="openFotoLightbox('${t.foto.replace(/'/g, "\\'")}')">` 
-                : '<span class="no-foto">📷 Tidak ada</span>'
-            }</td>
-            <td>${t.inputBy || '-'}</td>
-            <td>${isAdmin
-                ? `<div class="action-btns"><button class="btn btn-warning btn-xs" onclick="editTopup(${t.id})">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteTopup(${t.id})">🗑️</button></div>`
-                : '-'
-            }</td>
-        </tr>
-    `).join('') : '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-light)">Belum ada data top up</td></tr>';
-}
-
 // ==================== PENGAJUAN ====================
 $('pJenis').onchange = () => {
     const j = $('pJenis').value;
@@ -2468,7 +1995,6 @@ function calcGaji() {
     const tglGajian = staff.tanggalGajian || 27;
 
     // Periode: (tglGajian+1) bulan lalu s/d tglGajian bulan ini
-    // Contoh: gajian tgl 2 Maret → periode 3 Feb – 2 Mar
     // Contoh: gajian tgl 27 Mar → periode 28 Feb – 27 Mar
     let startDay = tglGajian + 1;
     let startMonth, startYear, endMonth, endYear;
@@ -2485,7 +2011,6 @@ function calcGaji() {
     }
 
     // Handle kalau startDay melebihi hari di bulan startMonth
-    // misal tglGajian=31, startDay=32 → pakai tanggal 1 bulan berikutnya
     const maxDayStart = new Date(startYear, startMonth + 1, 0).getDate();
     if (startDay > maxDayStart) {
         startMonth += 1;
@@ -2558,18 +2083,18 @@ $('sendWABtn').onclick = () => {
 📅 *Periode:* ${periodeText}
 
 👤 *Nama:* ${staff.nama}
-💰 *Gaji Pokok:* ${$(‘slipGaji’).textContent}
+💰 *Gaji Pokok:* ${$('slipGaji').textContent}
 
-📅 *Hari Masuk:* ${$(‘slipHari’).textContent}
-🍽️ *Uang Makan:* ${$(‘slipMakan’).textContent} *(cash harian)*
+📅 *Hari Masuk:* ${$('slipHari').textContent}
+🍽️ *Uang Makan:* ${$('slipMakan').textContent} *(cash harian)*
 
 *POTONGAN:*
-⏰ Terlambat: ${$(‘slipTelat’).textContent}
-📅 Absen: ${$(‘slipAbsen’).textContent}
-💵 Kasbon: ${$(‘slipKasbon’).textContent}
-💸 Ganti Rugi: ${$(‘slipGantiRugi’).textContent}
+⏰ Terlambat: ${$('slipTelat').textContent}
+📅 Absen: ${$('slipAbsen').textContent}
+💵 Kasbon: ${$('slipKasbon').textContent}
+💸 Ganti Rugi: ${$('slipGantiRugi').textContent}
 
-💵 *GAJI TRANSFER: ${$(‘slipBersih’).textContent}*
+💵 *GAJI TRANSFER: ${$('slipBersih').textContent}*
 
 *Terima kasih!* 💪`;
 
@@ -2671,11 +2196,9 @@ function initApp() {
     updateSelects();
     renderAbsensi();
     renderAkun();
-    renderTopup();
     
     $('absensiDate').valueAsDate = new Date();
     $('tokenDate').valueAsDate = new Date();
-    $('topupTanggal').valueAsDate = new Date();
 
     // Sembunyikan opsi LIBUR untuk selain owner & admin
     const liburOpt = $('liburOption');
@@ -2686,8 +2209,6 @@ function initApp() {
 
 // ==================== START APP ====================
 document.addEventListener('DOMContentLoaded', () => {
-    // Loading sudah di-hide oleh inline script di head.
-    // Init Firebase di background — login tetap bisa jalan pakai defaultUsers.
     initFirebase();
 });
 </script>
